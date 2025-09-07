@@ -32,7 +32,9 @@ const defaultSettings = {
   trackFavoritesLikes: false,
   // Video hiding settings
   hideLikedVideos: false,
-  hideFavoritedVideos: false
+  hideFavoritedVideos: false,
+  // Studio URL redirect settings
+  autoRedirectStudioUrls: false
 };
 
 // Settings storage key
@@ -88,7 +90,9 @@ export async function saveSettings(settings) {
       trackFavoritesLikes: Boolean(settings.trackFavoritesLikes),
       // Video hiding validation
       hideLikedVideos: Boolean(settings.hideLikedVideos),
-      hideFavoritedVideos: Boolean(settings.hideFavoritedVideos)
+      hideFavoritedVideos: Boolean(settings.hideFavoritedVideos),
+      // Studio URL redirect validation
+      autoRedirectStudioUrls: Boolean(settings.autoRedirectStudioUrls)
     };
     
     await chrome.storage.sync.set({ [STORAGE_KEY]: validatedSettings });

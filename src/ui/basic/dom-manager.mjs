@@ -51,7 +51,8 @@ export function getAllUIElements() {
     'refresh-storage-btn',
     'storage-display',
     'hide-liked-videos-toggle',
-    'hide-favorited-videos-toggle'
+    'hide-favorited-videos-toggle',
+    'auto-redirect-studio-urls-toggle'
   ];
   
   return getElementsByIds(elementIds);

@@ -191,6 +191,11 @@ export function setupEventListeners(elements, updateUI) {
   if (elements['hide-favorited-videos-toggle']) {
     elements['hide-favorited-videos-toggle'].addEventListener('click', createToggleHandler('hideFavoritedVideos', updateUI));
   }
+  
+  // Studio URL redirect handlers
+  if (elements['auto-redirect-studio-urls-toggle']) {
+    elements['auto-redirect-studio-urls-toggle'].addEventListener('click', createToggleHandler('autoRedirectStudioUrls', updateUI));
+  }
 }
 
 /**

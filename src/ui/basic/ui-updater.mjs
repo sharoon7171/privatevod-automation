@@ -82,6 +82,9 @@ export function updateUI(settings, elements) {
   updateToggleState(elements['hide-liked-videos-toggle'], settings.hideLikedVideos);
   updateToggleState(elements['hide-favorited-videos-toggle'], settings.hideFavoritedVideos);
   
+  // Update studio URL redirect toggle
+  updateToggleState(elements['auto-redirect-studio-urls-toggle'], settings.autoRedirectStudioUrls);
+  
   // Load storage display on page load
   loadStorageDisplay(elements);
 }
