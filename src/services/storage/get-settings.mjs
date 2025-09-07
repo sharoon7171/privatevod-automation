@@ -15,7 +15,9 @@ const defaultSettings = {
   // Auto-favorite star settings
   autoFavoriteStar: false,
   autoFavoriteStarTimer: 0,
-  autoCloseAfterFavoriteStar: false
+  autoCloseAfterFavoriteStar: false,
+  // Screenshot automation settings
+  autoScreenshotModal: false
 };
 
 /**

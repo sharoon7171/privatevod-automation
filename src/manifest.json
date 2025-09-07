@@ -36,7 +36,8 @@
       ],
       "js": [
         "content-scripts/video-autoplay.mjs",
-        "content-scripts/auto-favorite-video.mjs"
+        "content-scripts/auto-favorite-video.mjs",
+        "content-scripts/auto-screenshot-modal.mjs"
       ]
     },
     {

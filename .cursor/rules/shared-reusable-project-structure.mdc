@@ -1,18 +1,15 @@
 ---
 description: Shared-Reusable Chrome Extension Project Structure - Zero Code Duplication Strategy
 globs:
-- "**/shared/**"
-- "**/reusable/**"
-- "**/common/**"
 - "**/core/**"
-- "**/base/**"
-- "**/foundation/**"
+- "**/utilities/**"
+- "**/components/**"
+- "**/services/**"
 - "**/templates/**"
 - "**/styles/**"
 - "**/ui/**"
 - "**/controllers/**"
 - "**/managers/**"
-- "**/services/**"
 - "**/handlers/**"
 - "**/validators/**"
 - "**/formatters/**"
@@ -28,18 +25,18 @@ alwaysApply: true
 priority: critical
 ---
 
-# Shared-Reusable Chrome Extension Project Structure
+# Reusable Chrome Extension Project Structure
 
 ## Core Principle: ZERO CODE DUPLICATION (DRY)
 - **Write Once, Use Everywhere** - every function/component written once and reused
 - **Single Source of Truth** - change once, updates everywhere automatically
-- **Shared Foundation** - common utilities, patterns, and components in shared/ directory
+- **Reusable Foundation** - common utilities, patterns, and components organized naturally
 - **Reusable Components** - UI components that can be used across all pages/contexts
 - **Common Services** - business logic shared across all features
 - **Base Classes** - foundational classes that other components extend
 - **No Code Duplication** - absolutely no repeated code anywhere in the project
 - **Create Only What's Needed** - never create directories/files "just in case"
-- **Need-Based Development** - create shared components only when actually needed
+- **Need-Based Development** - create reusable components only when actually needed
 - **Minimal Structure** - start with minimal structure, expand only when required
 - **No Premature Optimization** - don't create infrastructure until you need it
 
@@ -66,14 +63,13 @@ chrome-extension/
 ### ✅ EXPAND STRUCTURE AS NEEDED
 When you need to create files, create the directory structure at the same time:
 
-**Example 1: Creating a shared utility**
+**Example 1: Creating a reusable utility**
 ```
 chrome-extension/
 ├── manifest.json
 ├── service-worker.mjs
-└── shared/                         # Created when first file is added
-    └── utilities/
-        └── dom-utils.mjs           # File and directory created together
+└── utilities/                      # Created when first file is added
+    └── dom-utils.mjs               # File and directory created together
 ```
 
 **Example 2: Adding a popup page**
@@ -81,9 +77,8 @@ chrome-extension/
 chrome-extension/
 ├── manifest.json
 ├── service-worker.mjs
-├── shared/
-│   └── utilities/
-│       └── dom-utils.mjs
+├── utilities/
+│   └── dom-utils.mjs
 └── pages/                          # Created when first file is added
     └── popup/
         ├── popup.html              # File and directory created together
@@ -95,11 +90,10 @@ chrome-extension/
 chrome-extension/
 ├── manifest.json
 ├── service-worker.mjs
-├── shared/
-│   ├── utilities/
-│   │   └── dom-utils.mjs
-│   └── components/                 # Created when first component is added
-│       └── button.mjs              # File and directory created together
+├── utilities/
+│   └── dom-utils.mjs
+├── components/                     # Created when first component is added
+│   └── button.mjs                  # File and directory created together
 └── pages/
     └── popup/
         ├── popup.html
@@ -126,9 +120,8 @@ chrome-extension/
 chrome-extension/
 ├── manifest.json
 ├── service-worker.mjs
-└── shared/                         # Created when first shared file is needed
-    └── utilities/
-        └── dom-utils.mjs           # Directory and file created together
+└── utilities/                      # Created when first reusable file is needed
+    └── dom-utils.mjs               # Directory and file created together
 ```
 
 **Continue growing as needed:**
@@ -136,34 +129,33 @@ chrome-extension/
 chrome-extension/
 ├── manifest.json
 ├── service-worker.mjs
-├── shared/
-│   ├── utilities/
-│   │   └── dom-utils.mjs
-│   └── components/                 # Created when first component is needed
-│       └── button.mjs              # Directory and file created together
+├── utilities/
+│   └── dom-utils.mjs
+├── components/                     # Created when first component is needed
+│   └── button.mjs                  # Directory and file created together
 └── pages/                          # Created when first page is needed
     └── popup/
         ├── popup.html              # Directory and files created together
         └── popup.mjs
 ```
 
-## When to Create Shared Components
+## When to Create Reusable Components
 
-### ✅ CREATE SHARED COMPONENTS WHEN:
+### ✅ CREATE REUSABLE COMPONENTS WHEN:
 - **You have duplicate code** - same function appears in 2+ places
 - **You need reusable UI** - same component used across multiple pages
 - **You have common business logic** - same service logic used in multiple features
 - **You have repeated utilities** - same helper functions used everywhere
 - **You have common patterns** - same base functionality needed by multiple components
 
-### ❌ DON'T CREATE SHARED COMPONENTS WHEN:
+### ❌ DON'T CREATE REUSABLE COMPONENTS WHEN:
 - **"Maybe we'll need this"** - creating for future hypothetical use
 - **"It might be useful"** - creating without immediate need
 - **"Just in case"** - creating placeholder infrastructure
 - **"Best practice"** - creating structure you think you should have
 - **"Following patterns"** - creating components to match a pattern without actual need
 
-### ✅ SHARED COMPONENT CREATION EXAMPLES
+### ✅ REUSABLE COMPONENT CREATION EXAMPLES
 
 **Scenario 1: You have duplicate DOM manipulation code**
 ```javascript
@@ -184,8 +176,8 @@ const createButton = (text) => {
   return button;
 };
 
-// ✅ AFTER: Create shared utility when you have duplication
-// shared/utilities/dom-utils.mjs
+// ✅ AFTER: Create reusable utility when you have duplication
+// utilities/dom-utils.mjs
 export const createButton = (text) => {
   const button = document.createElement('button');
   button.textContent = text;
@@ -193,7 +185,7 @@ export const createButton = (text) => {
   return button;
 };
 
-// Now both pages import and use the shared function
+// Now both pages import and use the reusable function
 ```
 
 **Scenario 2: You need the same API service in multiple places**
@@ -211,8 +203,8 @@ const fetchUserData = async (userId) => {
   return response.json();
 };
 
-// ✅ AFTER: Create shared service when you have duplication
-// shared/services/api-service.mjs
+// ✅ AFTER: Create reusable service when you have duplication
+// services/api-service.mjs
 export class ApiService {
   static async fetchUserData(userId) {
     const response = await fetch(`/api/users/${userId}`);
@@ -220,15 +212,15 @@ export class ApiService {
   }
 }
 
-// Now both files import and use the shared service
+// Now both files import and use the reusable service
 ```
 
 ## DRY Principle Implementation Patterns
 
-### 1. Shared Foundation Strategy
+### 1. Reusable Foundation Strategy
 ```javascript
 // ✅ WRITE ONCE, USE EVERYWHERE
-// shared/core/base-classes.mjs
+// core/base-classes.mjs
 export class BaseComponent {
   constructor(config) {
     this.config = config;
@@ -244,7 +236,7 @@ export class BaseComponent {
 }
 
 // ✅ REUSE IN ALL COMPONENTS
-// shared/components/button-component.mjs
+// components/button-component.mjs
 import { BaseComponent } from '../core/base-classes.mjs';
 export class ButtonComponent extends BaseComponent {
   // Only button-specific logic here
@@ -253,7 +245,7 @@ export class ButtonComponent extends BaseComponent {
   }
 }
 
-// shared/components/modal-component.mjs
+// components/modal-component.mjs
 import { BaseComponent } from '../core/base-classes.mjs';
 export class ModalComponent extends BaseComponent {
   // Only modal-specific logic here
@@ -266,7 +258,7 @@ export class ModalComponent extends BaseComponent {
 ### 2. Centralized Utilities Strategy
 ```javascript
 // ✅ CENTRALIZED UTILITIES - Used everywhere
-// shared/utilities/dom-utils.mjs
+// utilities/dom-utils.mjs
 export const createElement = (tag, options = {}) => {
   const element = document.createElement(tag);
   if (options.className) element.className = options.className;
@@ -282,19 +274,19 @@ export const addEventListeners = (element, events) => {
 
 // ✅ REUSE IN ALL PAGES
 // pages/popup-page.mjs
-import { createElement, addEventListeners } from '../shared/utilities/dom-utils.mjs';
+import { createElement, addEventListeners } from '../utilities/dom-utils.mjs';
 
 // pages/options-page.mjs
-import { createElement, addEventListeners } from '../shared/utilities/dom-utils.mjs';
+import { createElement, addEventListeners } from '../utilities/dom-utils.mjs';
 
 // content-scripts/main-content-script.mjs
-import { createElement, addEventListeners } from '../shared/utilities/dom-utils.mjs';
+import { createElement, addEventListeners } from '../utilities/dom-utils.mjs';
 ```
 
-### 3. Shared Services Strategy
+### 3. Reusable Services Strategy
 ```javascript
 // ✅ CENTRALIZED BUSINESS LOGIC
-// shared/services/api-service.mjs
+// services/api-service.mjs
 export class ApiService {
   static async get(url) {
     // Centralized API logic - used everywhere
@@ -315,23 +307,23 @@ export class ApiService {
 
 // ✅ REUSE IN ALL FEATURES
 // pages/popup-page.mjs
-import { ApiService } from '../shared/services/api-service.mjs';
+import { ApiService } from '../services/api-service.mjs';
 
 // pages/options-page.mjs
-import { ApiService } from '../shared/services/api-service.mjs';
+import { ApiService } from '../services/api-service.mjs';
 
 // content-scripts/main-content-script.mjs
-import { ApiService } from '../shared/services/api-service.mjs';
+import { ApiService } from '../services/api-service.mjs';
 ```
 
 ### 4. Composition over Duplication
 ```javascript
-// ✅ BUILD FEATURES BY COMPOSING SHARED COMPONENTS
-// reusable/features/search-feature.mjs
-import { BaseComponent } from '../../shared/core/base-classes.mjs';
-import { InputComponent } from '../../shared/components/input-component.mjs';
-import { ButtonComponent } from '../../shared/components/button-component.mjs';
-import { ApiService } from '../../shared/services/api-service.mjs';
+// ✅ BUILD FEATURES BY COMPOSING REUSABLE COMPONENTS
+// features/search-feature.mjs
+import { BaseComponent } from '../core/base-classes.mjs';
+import { InputComponent } from '../components/input-component.mjs';
+import { ButtonComponent } from '../components/button-component.mjs';
+import { ApiService } from '../services/api-service.mjs';
 
 export class SearchFeature extends BaseComponent {
   constructor(config) {
@@ -341,7 +333,7 @@ export class SearchFeature extends BaseComponent {
   }
   
   render() {
-    // Compose shared components instead of duplicating code
+    // Compose reusable components instead of duplicating code
     return this.createElement('div', {
       children: [this.input.render(), this.button.render()]
     });
@@ -349,69 +341,57 @@ export class SearchFeature extends BaseComponent {
 }
 ```
 
-## Complete SHARED-REUSABLE Project Structure
+## Complete REUSABLE Project Structure
 ```
 chrome-extension/
 ├── manifest.json                           # Extension configuration
 ├── service-worker.mjs                      # Main background worker entry point
 │
-├── shared/                                 # SHARED FOUNDATION (Zero Duplication)
-│   ├── core/                              # Core shared utilities
-│   │   ├── base-classes.mjs               # Base classes for all components
-│   │   ├── common-interfaces.mjs          # Shared interfaces
-│   │   ├── error-handling.mjs             # Centralized error handling
-│   │   ├── logging.mjs                    # Centralized logging
-│   │   ├── constants.mjs                  # All constants in one place
-│   │   ├── config.mjs                     # Centralized configuration
-│   │   └── types.mjs                      # Shared type definitions
-│   │
-│   ├── utilities/                         # Reusable utility functions
-│   │   ├── dom-utils.mjs                  # DOM manipulation utilities
-│   │   ├── data-utils.mjs                 # Data processing utilities
-│   │   ├── validation-utils.mjs           # Validation utilities
-│   │   ├── formatting-utils.mjs           # Formatting utilities
-│   │   ├── async-utils.mjs                # Async operation utilities
-│   │   ├── storage-utils.mjs              # Storage operation utilities
-│   │   ├── messaging-utils.mjs            # Messaging utilities
-│   │   └── chrome-api-utils.mjs           # Chrome API utilities
-│   │
-│   ├── components/                        # Reusable UI components
-│   │   ├── base-component.mjs             # Base component class
-│   │   ├── button-component.mjs           # Reusable button
-│   │   ├── input-component.mjs            # Reusable input
-│   │   ├── modal-component.mjs            # Reusable modal
-│   │   ├── form-component.mjs             # Reusable form
-│   │   ├── list-component.mjs             # Reusable list
-│   │   ├── table-component.mjs            # Reusable table
-│   │   └── notification-component.mjs     # Reusable notification
-│   │
-│   ├── services/                          # Shared business logic
-│   │   ├── api-service.mjs                # Centralized API service
-│   │   ├── storage-service.mjs            # Centralized storage service
-│   │   ├── messaging-service.mjs          # Centralized messaging service
-│   │   ├── validation-service.mjs         # Centralized validation service
-│   │   ├── formatting-service.mjs         # Centralized formatting service
-│   │   └── error-service.mjs              # Centralized error service
-│   │
-│   ├── hooks/                             # Reusable logic hooks
-│   │   ├── use-storage.mjs                # Storage hook
-│   │   ├── use-messaging.mjs              # Messaging hook
-│   │   ├── use-validation.mjs             # Validation hook
-│   │   ├── use-formatting.mjs             # Formatting hook
-│   │   └── use-api.mjs                    # API hook
-│   │
-│   ├── styles/                            # Shared styles
-│   │   ├── base-styles.css                # Base styles for all components
-│   │   ├── component-styles.css           # Shared component styles
-│   │   ├── theme-styles.css               # Theme styles
-│   │   └── utility-styles.css             # Utility classes
-│   │
-│   └── templates/                         # Shared HTML templates
-│       ├── component-templates.html       # Reusable component templates
-│       ├── layout-templates.html          # Reusable layout templates
-│       └── page-templates.html            # Reusable page templates
+├── core/                                   # CORE FOUNDATION (Zero Duplication)
+│   ├── base-classes.mjs                   # Base classes for all components
+│   ├── common-interfaces.mjs              # Reusable interfaces
+│   ├── error-handling.mjs                 # Centralized error handling
+│   ├── logging.mjs                        # Centralized logging
+│   ├── constants.mjs                      # All constants in one place
+│   ├── config.mjs                         # Centralized configuration
+│   └── types.mjs                          # Reusable type definitions
 │
-├── reusable/                              # REUSABLE FEATURES (Composed from shared/)
+├── utilities/                              # Reusable utility functions
+│   ├── dom-utils.mjs                      # DOM manipulation utilities
+│   ├── data-utils.mjs                     # Data processing utilities
+│   ├── validation-utils.mjs               # Validation utilities
+│   ├── formatting-utils.mjs               # Formatting utilities
+│   ├── async-utils.mjs                    # Async operation utilities
+│   ├── storage-utils.mjs                  # Storage operation utilities
+│   ├── messaging-utils.mjs                # Messaging utilities
+│   └── chrome-api-utils.mjs               # Chrome API utilities
+│
+├── components/                             # Reusable UI components
+│   ├── base-component.mjs                 # Base component class
+│   ├── button-component.mjs               # Reusable button
+│   ├── input-component.mjs                # Reusable input
+│   ├── modal-component.mjs                # Reusable modal
+│   ├── form-component.mjs                 # Reusable form
+│   ├── list-component.mjs                 # Reusable list
+│   ├── table-component.mjs                # Reusable table
+│   └── notification-component.mjs         # Reusable notification
+│
+├── services/                               # Reusable business logic
+│   ├── api-service.mjs                    # Centralized API service
+│   ├── storage-service.mjs                # Centralized storage service
+│   ├── messaging-service.mjs              # Centralized messaging service
+│   ├── validation-service.mjs             # Centralized validation service
+│   ├── formatting-service.mjs             # Centralized formatting service
+│   └── error-service.mjs                  # Centralized error service
+│
+├── hooks/                                  # Reusable logic hooks
+│   ├── use-storage.mjs                    # Storage hook
+│   ├── use-messaging.mjs                  # Messaging hook
+│   ├── use-validation.mjs                 # Validation hook
+│   ├── use-formatting.mjs                 # Formatting hook
+│   └── use-api.mjs                        # API hook
+│
+├── features/                               # REUSABLE FEATURES (Composed from core/)
 │   ├── ui/                                # Reusable UI features
 │   │   ├── search-feature.mjs             # Search functionality
 │   │   ├── filter-feature.mjs             # Filter functionality
@@ -863,42 +843,42 @@ chrome-extension/
 - **consistent extensions** - `.mjs` for modules, `.css` for styles
 - **no abbreviations** - `button.mjs` not `btn.mjs`
 
-### Shared-Reusable Organization Rules
+### Reusable Organization Rules
 1. **Zero Duplication Principle (DRY)**
-   - **Shared Foundation**: All common code in shared/ directory
+   - **Reusable Foundation**: All common code organized naturally
    - **Reusable Components**: UI components used across all pages/features
    - **Common Services**: Business logic shared across all features
    - **Base Classes**: Foundational classes that other components extend
-   - **Centralized Utilities**: All utility functions in shared/utilities/
+   - **Centralized Utilities**: All utility functions in utilities/
    - **Single Source of Truth**: Change once, updates everywhere automatically
    - **No Code Duplication**: Absolutely no repeated code anywhere
 
-2. **Shared Architecture Layers**
-   - **Foundation Layer**: shared/core/ + shared/utilities/ + shared/services/
-   - **Component Layer**: shared/components/ + shared/templates/ + shared/styles/
-   - **Feature Layer**: reusable/ (composed from shared components)
-   - **Page Layer**: pages/ (uses shared components and reusable features)
-   - **Integration Layer**: content-scripts/ (uses shared utilities)
+2. **Reusable Architecture Layers**
+   - **Foundation Layer**: core/ + utilities/ + services/
+   - **Component Layer**: components/ + templates/ + styles/
+   - **Feature Layer**: features/ (composed from reusable components)
+   - **Page Layer**: pages/ (uses reusable components and features)
+   - **Integration Layer**: content-scripts/ (uses reusable utilities)
 
 3. **Reusability Rules**
    - **Write Once, Use Everywhere**: Every function/component written once
-   - **Composition over Duplication**: Build features by composing shared components
+   - **Composition over Duplication**: Build features by composing reusable components
    - **Inheritance over Copying**: Extend base classes instead of copying code
    - **Import over Rewrite**: Always import existing functionality instead of rewriting
-   - **Centralized Configuration**: All settings/constants in shared/core/
+   - **Centralized Configuration**: All settings/constants in core/
 
-4. **Dependency Flow Rules (Shared-First)**
-   - **Pages** depend on reusable/ + shared/ only
-   - **Reusable Features** depend on shared/ only
-   - **Shared Components** depend on shared/core/ + shared/utilities/ only
-   - **Shared Services** depend on shared/core/ only
-   - **Shared Utilities** depend on shared/core/ only
-   - **Shared Core** depends on nothing (foundation layer)
+4. **Dependency Flow Rules (Reusable-First)**
+   - **Pages** depend on features/ + core/ + utilities/ + services/ + components/ only
+   - **Features** depend on core/ + utilities/ + services/ + components/ only
+   - **Components** depend on core/ + utilities/ only
+   - **Services** depend on core/ only
+   - **Utilities** depend on core/ only
+   - **Core** depends on nothing (foundation layer)
 
-## Shared-Reusable Import/Export Pattern
+## Reusable Import/Export Pattern
 ```javascript
-// ✅ Shared Base Class - Foundation for all components
-// shared/core/base-classes.mjs
+// ✅ Reusable Base Class - Foundation for all components
+// core/base-classes.mjs
 export class BaseComponent {
   constructor(config) {
     this.config = config;
@@ -918,14 +898,14 @@ export class BaseComponent {
   }
 }
 
-// ✅ Shared Utility Functions - Used everywhere
-// shared/utilities/dom-utils.mjs
+// ✅ Reusable Utility Functions - Used everywhere
+// utilities/dom-utils.mjs
 export const createElement = (tag, options = {}) => { /* */ };
 export const addEventListeners = (element, events) => { /* */ };
 export const removeEventListeners = (element, events) => { /* */ };
 
-// ✅ Shared Service - Centralized business logic
-// shared/services/api-service.mjs
+// ✅ Reusable Service - Centralized business logic
+// services/api-service.mjs
 export class ApiService {
   static async get(url) { /* */ }
   static async post(url, data) { /* */ }
@@ -933,8 +913,8 @@ export class ApiService {
   static async delete(url) { /* */ }
 }
 
-// ✅ Reusable Component - Composed from shared utilities
-// shared/components/button-component.mjs
+// ✅ Reusable Component - Composed from reusable utilities
+// components/button-component.mjs
 import { BaseComponent } from '../core/base-classes.mjs';
 import { createElement, addEventListeners } from '../utilities/dom-utils.mjs';
 
@@ -946,11 +926,11 @@ export class ButtonComponent extends BaseComponent {
   }
 }
 
-// ✅ Page Implementation - Uses shared components
+// ✅ Page Implementation - Uses reusable components
 // pages/popup-page.mjs
-import { ButtonComponent } from '../shared/components/button-component.mjs';
-import { ApiService } from '../shared/services/api-service.mjs';
-import { createElement } from '../shared/utilities/dom-utils.mjs';
+import { ButtonComponent } from '../components/button-component.mjs';
+import { ApiService } from '../services/api-service.mjs';
+import { createElement } from '../utilities/dom-utils.mjs';
 
 class PopupPage {
   constructor() {
@@ -962,12 +942,12 @@ class PopupPage {
   
   async handleClick() {
     const data = await ApiService.get('/api/data');
-    // Use shared utilities and components
+    // Use reusable utilities and components
   }
 }
 ```
 
-## Benefits of SHARED-REUSABLE Structure
+## Benefits of REUSABLE Structure
 
 ### Zero Duplication Benefits (DRY Principle)
 - **Write Once, Use Everywhere** - Every function/component written once and reused

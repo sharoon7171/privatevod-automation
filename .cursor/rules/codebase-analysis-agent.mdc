@@ -27,7 +27,7 @@ priority: critical
 - **CHUNK ANALYSIS** - break files >300 lines into 300-line segments for thorough review
 - **IDENTIFY DUPLICATES** - search for existing similar components/functionality
 - **MAP DEPENDENCIES** - understand relationships between files
-- **VERIFY SHARED-REUSABLE STRUCTURE** - ensure compliance with @shared-reusable-project-structure
+- **VERIFY REUSABLE STRUCTURE** - ensure compliance with @shared-reusable-project-structure
 
 ### Phase 1.6: Anti-Shortcut Protocol (CRITICAL)
 - **NO SIMPLE APPROACHES** - Complex projects require complex solutions, not shortcuts

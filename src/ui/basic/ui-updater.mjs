@@ -56,6 +56,9 @@ export function updateUI(settings, elements) {
   
   // Update auto-favorite star timer input
   updateInputValue(elements['auto-favorite-star-timer-input'], settings.autoFavoriteStarTimer);
+  
+  // Update screenshot automation toggle
+  updateToggleState(elements['auto-screenshot-modal-toggle'], settings.autoScreenshotModal);
 }
 
 /**

@@ -16,7 +16,8 @@ export const DEFAULT_SETTINGS = {
   autoCloseAfterFavoriteVideo: false,
   autoFavoriteStar: false,
   autoFavoriteStarTimer: 0,
-  autoCloseAfterFavoriteStar: false
+  autoCloseAfterFavoriteStar: false,
+  autoScreenshotModal: false
 };
 
 /**

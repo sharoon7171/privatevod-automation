@@ -10,48 +10,34 @@
 
 ## Phase 10: Complete Project Structure Reorganization (In Progress)
 
-### Step 10.1: Organize HTML Templates (HIGH PRIORITY)
-- [x] 10.1.1 Create `src/templates/` directory structure
-- [x] 10.1.2 Move HTML files to proper template directories
-- [ ] 10.1.3 Create component-specific HTML templates
-- [x] 10.1.4 Update all HTML references
-- [x] 10.1.5 Fix JavaScript import paths in HTML templates
+## Phase 11: Screenshot Automation Feature Implementation (In Progress)
 
-### Step 10.2: Organize CSS Styles (HIGH PRIORITY)  
-- [x] 10.2.1 Create proper CSS directory structure
-- [x] 10.2.2 Move CSS files to organized directories
-- [ ] 10.2.3 Create component-specific CSS files
-- [x] 10.2.4 Update all CSS references
+### Step 11.1: Create Reusable Utilities (HIGH PRIORITY)
+- [x] 11.1.1 Create `src/functions/dom/screenshot-pattern-detector.mjs` with pattern detection logic
+- [x] 11.1.2 Create `src/functions/dom/screenshot-url-generator.mjs` with URL generation logic
+- [x] 11.1.3 Create `src/functions/dom/screenshot-modal-handler.mjs` with modal interaction logic
+- [x] 11.1.4 Create `src/functions/dom/image-grid-embedder.mjs` with grid creation logic (5 images per row)
 
-### Step 10.5: Fix CSS Structure to Follow Rules (CRITICAL)
-- [x] 10.5.1 Move page-specific CSS to proper component structure
-- [x] 10.5.2 Create base CSS files (reset, variables, typography)
-- [x] 10.5.3 Create component-specific CSS files (button, input, toggle)
-- [x] 10.5.4 Create composite component CSS files (option-group)
-- [x] 10.5.5 Create complex component CSS files (popup, options)
-- [x] 10.5.6 Create main CSS file with imports
-- [x] 10.5.7 Update all CSS import paths
-- [x] 10.5.8 Remove duplicate styles directories and "shared" terminology
-- [x] 10.5.9 Verify all styling still works
+### Step 11.2: Create Screenshot Content Script (HIGH PRIORITY)
+- [x] 11.2.1 Create `src/content-scripts/auto-screenshot-modal.mjs` with bundled dynamic imports
+- [x] 11.2.2 Implement core screenshot logic using the utilities from Step 11.1 (Fixed: Include existing URLs in grid)
 
-### Step 10.3: Create Missing Directory Structure (CRITICAL)
-- [x] 10.3.1 Create `src/controllers/` directory
-- [x] 10.3.2 Create `src/managers/` directory  
-- [x] 10.3.3 Create `src/services/` directory
-- [x] 10.3.4 Create `src/handlers/` directory
-- [x] 10.3.5 Create `src/validators/` directory
-- [x] 10.3.6 Create `src/formatters/` directory
-- [x] 10.3.7 Create `src/models/` directory
-- [x] 10.3.8 Create `src/interfaces/` directory
-- [x] 10.3.9 Create `src/functions/` directory
-- [x] 10.3.10 Create `src/hooks/` directory
+### Step 11.3: Update Manifest Configuration (HIGH PRIORITY)
+- [x] 11.3.1 Add `auto-screenshot-modal.mjs` to video page content scripts in `src/manifest.json`
+- [x] 11.3.2 Verify host permissions cover screenshot image domains
+- [x] 11.3.3 Update web_accessible_resources if needed for new utilities
 
-### Step 10.4: Reorganize Files According to Rules (CRITICAL)
-- [x] 10.4.1 Move files to proper directories based on functionality
-- [x] 10.4.2 Update all import paths
-- [x] 10.4.3 Verify all functionality still works
-- [x] 10.4.4 Delete unused empty directories
-- [x] 10.4.5 Move core directory to logical location (remove shared terminology)
-- [x] 10.4.6 Move page-specific CSS to pages directory (not complex components)
-- [x] 10.4.7 Remove popup page completely (options page only)
+### Step 11.4: Implement Page Load Detection (MEDIUM PRIORITY)
+- [x] 11.4.1 Use existing `waitForPageLoad` utility from `src/functions/dom/page-loader.mjs`
+- [x] 11.4.2 Ensure screenshot functionality only starts after complete page load
+- [x] 11.4.3 Add error handling for page load detection
+
+### Step 11.5: Add Settings Integration (HIGH PRIORITY)
+- [x] 11.5.1 Add `autoScreenshotModal` setting to core settings
+- [x] 11.5.2 Update constants and storage services with screenshot setting
+- [x] 11.5.3 Add screenshot toggle to options page HTML template
+- [x] 11.5.4 Update content script to check settings before running
+- [x] 11.5.5 Follow DRY principle - reuse existing settings infrastructure
+- [x] 11.5.6 Add screenshot toggle to event handlers and UI updater
+- [x] 11.5.7 Add screenshot toggle to DOM manager element list
 

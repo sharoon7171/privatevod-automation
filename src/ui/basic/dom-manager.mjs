@@ -38,7 +38,8 @@ export function getAllUIElements() {
     'auto-close-after-favorite-video-toggle',
     'auto-favorite-star-toggle',
     'auto-favorite-star-timer-input',
-    'auto-close-after-favorite-star-toggle'
+    'auto-close-after-favorite-star-toggle',
+    'auto-screenshot-modal-toggle'
   ];
   
   return getElementsByIds(elementIds);

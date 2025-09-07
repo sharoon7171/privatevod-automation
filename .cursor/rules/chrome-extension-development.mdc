@@ -41,6 +41,13 @@ priority: critical
 - **Async/await only** - no callbacks or .then() chains
 - **Comprehensive error handling** - with custom error classes
 
+## Content Script Requirements
+- **NO direct ES6 imports** - Content scripts don't support `import` statements
+- **MUST use bundled dynamic imports** - Load all modules in parallel with `Promise.all()`
+- **All imports at once** - Don't use separate dynamic imports
+- **Use chrome.runtime.getURL()** - For resolving module paths
+- **Wrap in try/catch** - Handle import failures gracefully
+
 ## Chrome APIs - Latest Approaches
 ```javascript
 // ✅ Modern Chrome APIs Usage
@@ -61,7 +68,8 @@ await chrome.action.setBadgeText({ text: '5' });
 
 ## Performance Standards
 - **See @javascript-mjs-standards** - for detailed performance patterns
-- **Lazy load modules** - import only when needed
+- **Content Scripts**: Bundle all dynamic imports with Promise.all() for parallel loading
+- **Other Files**: Lazy load modules - import only when needed
 - **Cache API responses** - use chrome.storage for caching
 
 ## Security Requirements

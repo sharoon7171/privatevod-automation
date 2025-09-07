@@ -15,7 +15,9 @@ const defaultSettings = {
   // Auto-favorite star settings
   autoFavoriteStar: false,
   autoFavoriteStarTimer: 0, // seconds (0-10)
-  autoCloseAfterFavoriteStar: false
+  autoCloseAfterFavoriteStar: false,
+  // Screenshot automation settings
+  autoScreenshotModal: false
 };
 
 // Settings storage key
@@ -54,7 +56,9 @@ export async function saveSettings(settings) {
       // Auto-favorite star validation
       autoFavoriteStar: Boolean(settings.autoFavoriteStar),
       autoFavoriteStarTimer: Math.max(0, Math.min(10, Number(settings.autoFavoriteStarTimer) || 0)),
-      autoCloseAfterFavoriteStar: Boolean(settings.autoCloseAfterFavoriteStar)
+      autoCloseAfterFavoriteStar: Boolean(settings.autoCloseAfterFavoriteStar),
+      // Screenshot automation validation
+      autoScreenshotModal: Boolean(settings.autoScreenshotModal)
     };
     
     await chrome.storage.sync.set({ [STORAGE_KEY]: validatedSettings });

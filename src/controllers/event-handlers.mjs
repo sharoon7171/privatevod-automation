@@ -100,5 +100,10 @@ export function setupEventListeners(elements, updateUI) {
   if (elements['auto-close-after-favorite-star-toggle']) {
     elements['auto-close-after-favorite-star-toggle'].addEventListener('click', createToggleHandler('autoCloseAfterFavoriteStar', updateUI));
   }
+  
+  // Screenshot automation handlers
+  if (elements['auto-screenshot-modal-toggle']) {
+    elements['auto-screenshot-modal-toggle'].addEventListener('click', createToggleHandler('autoScreenshotModal', updateUI));
+  }
 }
 

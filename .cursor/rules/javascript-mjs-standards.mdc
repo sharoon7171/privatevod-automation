@@ -160,23 +160,37 @@ async function handleMessage(request, sender) {
   if (window.extensionInitialized) return;
   window.extensionInitialized = true;
 
-  // Import utilities
-  const { DOMUtils } = await import(chrome.runtime.getURL('lib/dom-utils.mjs'));
-  const { MessageHandler } = await import(chrome.runtime.getURL('lib/message-handler.mjs'));
+  try {
+    // ✅ BUNDLED DYNAMIC IMPORTS - Load all modules in parallel
+    // Content scripts don't support direct ES6 imports, must use dynamic imports
+    const [
+      { DOMUtils },
+      { MessageHandler },
+      { StorageManager },
+      { ApiClient }
+    ] = await Promise.all([
+      import(chrome.runtime.getURL('utilities/dom-utils.mjs')),
+      import(chrome.runtime.getURL('utilities/messaging-utils.mjs')),
+      import(chrome.runtime.getURL('services/storage-service.mjs')),
+      import(chrome.runtime.getURL('services/api-service.mjs'))
+    ]);
 
-  // Initialize extension features
-  await initializeExtensionFeatures();
-  
-  // Set up message listener
-  chrome.runtime.onMessage.addListener(handleContentMessage);
-  
-  async function handleContentMessage(request, sender, sendResponse) {
-    try {
-      const result = await processMessage(request);
-      sendResponse({ success: true, data: result });
-    } catch (error) {
-      sendResponse({ success: false, error: error.message });
+    // Initialize extension features
+    await initializeExtensionFeatures();
+    
+    // Set up message listener
+    chrome.runtime.onMessage.addListener(handleContentMessage);
+    
+    async function handleContentMessage(request, sender, sendResponse) {
+      try {
+        const result = await processMessage(request);
+        sendResponse({ success: true, data: result });
+      } catch (error) {
+        sendResponse({ success: false, error: error.message });
+      }
     }
+  } catch (error) {
+    console.error('Content script initialization failed:', error);
   }
 })();
 ```
@@ -278,6 +292,15 @@ const processLargeDataset = async (data) => {
 ```
 
 ## Import/Export Standards
+
+### Content Scripts (Special Requirements)
+- **NO direct ES6 imports** - Content scripts don't support `import` statements
+- **MUST use dynamic imports** - `import(chrome.runtime.getURL('path.mjs'))`
+- **BUNDLED imports only** - Load all modules in parallel with `Promise.all()`
+- **All imports at once** - Don't use separate dynamic imports
+- **Error handling required** - Wrap all imports in try/catch
+
+### Other Files (Service Workers, Popup, Options)
 - **ES Module syntax** - use import/export, no require()
 - **Group imports** - external, internal, relative
 - **Single default export** per module when possible
