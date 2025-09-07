@@ -182,7 +182,6 @@ export function createLogger(context, options = {}) {
  */
 export const loggers = {
   contentScript: createLogger('Content Script', { logLevel: LOG_LEVELS.INFO }),
-  popup: createLogger('Popup', { logLevel: LOG_LEVELS.INFO }),
   options: createLogger('Options', { logLevel: LOG_LEVELS.INFO }),
   background: createLogger('Background', { logLevel: LOG_LEVELS.INFO }),
   shared: createLogger('Shared', { logLevel: LOG_LEVELS.DEBUG })

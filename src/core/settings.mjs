@@ -1,6 +1,6 @@
 /**
  * Shared Settings for PrivateVOD Automation Extension
- * Used by both popup and options pages
+ * Used by options page
  */
 
 // Default settings
