@@ -53,4 +53,5 @@
 - [x] 10.4.4 Delete unused empty directories
 - [x] 10.4.5 Move core directory to logical location (remove shared terminology)
 - [x] 10.4.6 Move page-specific CSS to pages directory (not complex components)
+- [x] 10.4.7 Remove popup page completely (options page only)
 
