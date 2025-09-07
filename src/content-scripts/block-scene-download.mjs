@@ -5,7 +5,6 @@
 
 // Check if already initialized
 if (window.sceneDownloadBlockerInitialized) {
-  console.log('Scene Download Blocker extension already initialized');
 } else {
   window.sceneDownloadBlockerInitialized = true;
 
@@ -63,13 +62,10 @@ if (window.sceneDownloadBlockerInitialized) {
           }
 
           if (totalBlocked > 0) {
-            console.log(`Purchase Card Blocker: Successfully blocked ${totalBlocked} card type(s)`);
           } else {
-            console.log('Purchase Card Blocker: No cards to block based on current settings');
           }
 
         } catch (error) {
-          console.error('Purchase Card Blocker: Error:', error);
         }
       }
 
@@ -85,7 +81,6 @@ if (window.sceneDownloadBlockerInitialized) {
       );
 
     } catch (error) {
-      console.error('Scene Download Blocker Content Script: Failed to load modules:', error);
     }
   })();
 }

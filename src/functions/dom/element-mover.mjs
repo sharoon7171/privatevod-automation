@@ -26,12 +26,10 @@ export function moveElementToContainer(sourceSelector, targetSelector, options =
     const targetElement = document.querySelector(targetSelector);
 
     if (!sourceElement) {
-      console.warn(`${context}: Source element not found: ${sourceSelector}`);
       return false;
     }
 
     if (!targetElement) {
-      console.warn(`${context}: Target element not found: ${targetSelector}`);
       return false;
     }
 
@@ -54,7 +52,6 @@ export function moveElementToContainer(sourceSelector, targetSelector, options =
         targetElement.insertBefore(elementToMove, targetElement.firstChild);
         break;
       default:
-        console.warn(`${context}: Invalid position: ${position}`);
         return false;
     }
 
@@ -63,11 +60,9 @@ export function moveElementToContainer(sourceSelector, targetSelector, options =
       sourceElement.remove();
     }
 
-    console.log(`${context}: Successfully moved element to ${position} target container`);
     return true;
 
   } catch (error) {
-    console.error(`${context}: Error moving element:`, error);
     return false;
   }
 }
@@ -88,7 +83,6 @@ export function moveUserActionsToMembershipContainer(context = 'User Actions Mov
       context
     });
   } catch (error) {
-    console.error(`${context}: Error moving user actions:`, error);
     return false;
   }
 }
@@ -103,7 +97,6 @@ export function moveUserActionsToMembershipContainer(context = 'User Actions Mov
 export function applyContainerStyling(element, styling = {}, context = 'Container Styler') {
   try {
     if (!element) {
-      console.warn(`${context}: No element provided for styling`);
       return false;
     }
 
@@ -129,11 +122,9 @@ export function applyContainerStyling(element, styling = {}, context = 'Containe
       }
     });
 
-    console.log(`${context}: Successfully applied container styling`);
     return true;
 
   } catch (error) {
-    console.error(`${context}: Error applying container styling:`, error);
     return false;
   }
 }
@@ -169,7 +160,6 @@ export function moveAndStyleUserActions(context = 'User Actions Handler') {
 
     return false;
   } catch (error) {
-    console.error(`${context}: Error moving and styling user actions:`, error);
     return false;
   }
 }

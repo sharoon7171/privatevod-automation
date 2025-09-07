@@ -5,7 +5,6 @@
 
 // Check if already initialized
 if (window.activeButtonStylerInitialized) {
-  console.log('Active Button Styler extension already initialized');
 } else {
   window.activeButtonStylerInitialized = true;
 
@@ -31,19 +30,15 @@ if (window.activeButtonStylerInitialized) {
           // Check if feature is enabled
           const settings = await getSettings();
           if (!settings.styleActiveButtons) {
-            console.log('Active Button Styler: Feature disabled in settings');
             return;
           }
 
-          console.log('Active Button Styler: Elements found, styling active buttons...');
 
           // Style existing active buttons
           const success = styleFavoriteButtons('Active Button Styler');
           
           if (success) {
-            console.log('Active Button Styler: Successfully styled active buttons');
           } else {
-            console.log('Active Button Styler: No active buttons found to style');
           }
 
           // Set up continuous monitoring for state changes
@@ -61,7 +56,6 @@ if (window.activeButtonStylerInitialized) {
           window.stopActiveButtonWatching = stopWatching;
 
         } catch (error) {
-          console.error('Active Button Styler: Error:', error);
         }
       }
 
@@ -77,7 +71,6 @@ if (window.activeButtonStylerInitialized) {
       );
 
     } catch (error) {
-      console.error('Active Button Styler Content Script: Failed to load modules:', error);
     }
   })();
 }

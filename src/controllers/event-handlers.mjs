@@ -135,5 +135,94 @@ export function setupEventListeners(elements, updateUI) {
   if (elements['style-active-buttons-toggle']) {
     elements['style-active-buttons-toggle'].addEventListener('click', createToggleHandler('styleActiveButtons', updateUI));
   }
+  
+  // Favorite and like tracking handlers
+  if (elements['track-favorites-likes-toggle']) {
+    elements['track-favorites-likes-toggle'].addEventListener('click', createToggleHandler('trackFavoritesLikes', updateUI));
+  }
+  
+  // Clear favorites button handler
+  if (elements['clear-favorites-btn']) {
+    elements['clear-favorites-btn'].addEventListener('click', async () => {
+      try {
+        const { clearAllFavorites } = await import('../../services/storage/favorite-like-storage.mjs');
+        const success = await clearAllFavorites();
+        if (success) {
+          alert('All favorites cleared successfully!');
+          // Refresh the storage display
+          await refreshStorageDisplay(elements);
+        } else {
+          alert('Error clearing favorites. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error clearing favorites:', error);
+        alert('Error clearing favorites. Please try again.');
+      }
+    });
+  }
+  
+  // Clear likes button handler
+  if (elements['clear-likes-btn']) {
+    elements['clear-likes-btn'].addEventListener('click', async () => {
+      try {
+        const { clearAllLikes } = await import('../../services/storage/favorite-like-storage.mjs');
+        const success = await clearAllLikes();
+        if (success) {
+          alert('All likes cleared successfully!');
+          // Refresh the storage display
+          await refreshStorageDisplay(elements);
+        } else {
+          alert('Error clearing likes. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error clearing likes:', error);
+        alert('Error clearing likes. Please try again.');
+      }
+    });
+  }
+  
+  // Refresh storage button handler
+  if (elements['refresh-storage-btn']) {
+    elements['refresh-storage-btn'].addEventListener('click', async () => {
+      await refreshStorageDisplay(elements);
+    });
+  }
+  
+  // Video hiding handlers
+  if (elements['hide-liked-videos-toggle']) {
+    elements['hide-liked-videos-toggle'].addEventListener('click', createToggleHandler('hideLikedVideos', updateUI));
+  }
+  
+  if (elements['hide-favorited-videos-toggle']) {
+    elements['hide-favorited-videos-toggle'].addEventListener('click', createToggleHandler('hideFavoritedVideos', updateUI));
+  }
+}
+
+/**
+ * Refresh the storage display textarea
+ * @param {Object} elements - DOM elements object
+ */
+async function refreshStorageDisplay(elements) {
+  try {
+    const { getStorageStats } = await import('../../services/storage/favorite-like-storage.mjs');
+    const stats = await getStorageStats();
+    
+    const displayText = `FAVORITES (${stats.favoritesCount}):
+${stats.favorites.length > 0 ? stats.favorites.join(', ') : 'None'}
+
+LIKES (${stats.likesCount}):
+${stats.likes.length > 0 ? stats.likes.join(', ') : 'None'}
+
+Last updated: ${new Date().toLocaleString()}`;
+    
+    if (elements['storage-display']) {
+      elements['storage-display'].value = displayText;
+    }
+  } catch (error) {
+    console.error('Error refreshing storage display:', error);
+    if (elements['storage-display']) {
+      elements['storage-display'].value = 'Error loading storage data.';
+    }
+  }
 }
 

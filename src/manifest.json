@@ -39,7 +39,8 @@
         "content-scripts/auto-favorite-video.mjs",
         "content-scripts/auto-screenshot-modal.mjs",
         "content-scripts/move-user-actions.mjs",
-        "content-scripts/block-scene-download.mjs"
+        "content-scripts/block-scene-download.mjs",
+        "content-scripts/favorite-like-tracker.mjs"
       ]
     },
     {
@@ -57,7 +58,8 @@
         "https://privatevod.com/*"
       ],
       "js": [
-        "content-scripts/style-active-buttons.mjs"
+        "content-scripts/style-active-buttons.mjs",
+        "content-scripts/video-hiding.mjs"
       ]
     }
   ],
@@ -70,6 +72,7 @@
     {
       "resources": [
         "services/storage/*.mjs",
+        "services/*.mjs",
         "functions/dom/*.mjs",
         "functions/async/*.mjs",
         "core/*.mjs"

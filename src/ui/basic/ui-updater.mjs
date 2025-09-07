@@ -77,6 +77,44 @@ export function updateUI(settings, elements) {
   
   // Update active button styling toggle
   updateToggleState(elements['style-active-buttons-toggle'], settings.styleActiveButtons);
+  
+  // Update favorite and like tracking toggle
+  updateToggleState(elements['track-favorites-likes-toggle'], settings.trackFavoritesLikes);
+  
+  // Update video hiding toggles
+  updateToggleState(elements['hide-liked-videos-toggle'], settings.hideLikedVideos);
+  updateToggleState(elements['hide-favorited-videos-toggle'], settings.hideFavoritedVideos);
+  
+  // Load storage display on page load
+  loadStorageDisplay(elements);
+}
+
+/**
+ * Load storage display content
+ * @param {Object} elements - DOM elements object
+ */
+async function loadStorageDisplay(elements) {
+  try {
+    const { getStorageStats } = await import('../../services/storage/favorite-like-storage.mjs');
+    const stats = await getStorageStats();
+    
+    const displayText = `FAVORITES (${stats.favoritesCount}):
+${stats.favorites.length > 0 ? stats.favorites.join(', ') : 'None'}
+
+LIKES (${stats.likesCount}):
+${stats.likes.length > 0 ? stats.likes.join(', ') : 'None'}
+
+Last updated: ${new Date().toLocaleString()}`;
+    
+    if (elements['storage-display']) {
+      elements['storage-display'].value = displayText;
+    }
+  } catch (error) {
+    console.error('Error loading storage display:', error);
+    if (elements['storage-display']) {
+      elements['storage-display'].value = 'Error loading storage data.';
+    }
+  }
 }
 
 /**

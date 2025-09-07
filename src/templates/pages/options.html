@@ -148,6 +148,60 @@
                 </div>
             </div>
             
+            <!-- Favorite and Like Tracking Section -->
+            <div class="section">
+                <h3 class="section-title">Favorite & Like Tracking</h3>
+                <div class="option-group">
+                    <div class="toggle-container">
+                        <label class="toggle-label" for="track-favorites-likes-toggle">Track Favorites & Likes</label>
+                        <div class="toggle-switch" id="track-favorites-likes-toggle">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                    <p class="option-description">Tracks favorite and like button status on video pages. When buttons have 'active' class (favorited/liked), scene IDs are stored in local storage. When not active, scene IDs are removed from storage.</p>
+                </div>
+                <div class="option-group">
+                    <button class="btn btn-secondary" id="clear-favorites-btn">Clear All Favorites</button>
+                    <p class="option-description">Remove all favorited scene IDs from local storage.</p>
+                </div>
+                <div class="option-group">
+                    <button class="btn btn-secondary" id="clear-likes-btn">Clear All Likes</button>
+                    <p class="option-description">Remove all liked scene IDs from local storage.</p>
+                </div>
+                <div class="option-group">
+                    <button class="btn btn-primary" id="refresh-storage-btn">Refresh Storage List</button>
+                    <p class="option-description">Update the list below with current storage contents.</p>
+                </div>
+                <div class="option-group">
+                    <label class="form-label" for="storage-display">Current Storage Contents:</label>
+                    <textarea class="form-control" id="storage-display" rows="8" readonly style="font-family: monospace; font-size: 12px;"></textarea>
+                    <p class="option-description">Shows all favorited and liked scene IDs currently stored.</p>
+                </div>
+            </div>
+            
+            <!-- Video Hiding Section -->
+            <div class="section">
+                <h3 class="section-title">Video Hiding</h3>
+                <div class="option-group">
+                    <div class="toggle-container">
+                        <label class="toggle-label" for="hide-liked-videos-toggle">Hide Liked Videos</label>
+                        <div class="toggle-switch" id="hide-liked-videos-toggle">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                    <p class="option-description">Hides videos that you have manually liked (but not favorited) from all pages. Works instantly across all tabs.</p>
+                </div>
+                <div class="option-group">
+                    <div class="toggle-container">
+                        <label class="toggle-label" for="hide-favorited-videos-toggle">Hide Favorited Videos</label>
+                        <div class="toggle-switch" id="hide-favorited-videos-toggle">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                    <p class="option-description">Hides videos that you have favorited from all pages. Note: Favoriting a video automatically likes it too. Works instantly across all tabs.</p>
+                </div>
+            </div>
+            
         </div>
     </div>
     <script type="module" src="../../pages/options/options.mjs"></script>

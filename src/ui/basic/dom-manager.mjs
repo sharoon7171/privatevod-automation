@@ -45,7 +45,14 @@ export function getAllUIElements() {
     'block-hd-download-toggle',
     'block-stream-for-life-toggle',
     'block-hd-rental-toggle',
-    'style-active-buttons-toggle'
+    'style-active-buttons-toggle',
+    'track-favorites-likes-toggle',
+    'clear-favorites-btn',
+    'clear-likes-btn',
+    'refresh-storage-btn',
+    'storage-display',
+    'hide-liked-videos-toggle',
+    'hide-favorited-videos-toggle'
   ];
   
   return getElementsByIds(elementIds);

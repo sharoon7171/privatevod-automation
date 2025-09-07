@@ -5,7 +5,6 @@
 
 // Check if already initialized
 if (window.userActionsExtensionInitialized) {
-  console.log('User Actions extension already initialized');
 } else {
   window.userActionsExtensionInitialized = true;
 
@@ -31,23 +30,18 @@ if (window.userActionsExtensionInitialized) {
           // Check if feature is enabled
           const settings = await getSettings();
           if (!settings.moveUserActions) {
-            console.log('User Actions Mover: Feature disabled in settings');
             return;
           }
 
-          console.log('User Actions Mover: Elements found, moving user actions...');
 
           // Move and style the user actions
           const success = moveAndStyleUserActions('User Actions Mover');
           
           if (success) {
-            console.log('User Actions Mover: Successfully moved and styled user actions');
           } else {
-            console.error('User Actions Mover: Failed to move user actions');
           }
 
         } catch (error) {
-          console.error('User Actions Mover: Error:', error);
         }
       }
 
@@ -64,7 +58,6 @@ if (window.userActionsExtensionInitialized) {
       );
 
     } catch (error) {
-      console.error('User Actions Content Script: Failed to load modules:', error);
     }
   })();
 }

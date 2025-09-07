@@ -16,7 +16,6 @@
 export function applyActiveButtonStyling(button, options = {}, context = 'Button Styler') {
   try {
     if (!button) {
-      console.warn(`${context}: No button provided for styling`);
       return false;
     }
 
@@ -32,10 +31,8 @@ export function applyActiveButtonStyling(button, options = {}, context = 'Button
     button.style.borderColor = borderColor;
     button.style.transition = 'all 0.3s ease';
 
-    console.log(`${context}: Applied active styling to button`);
     return true;
   } catch (error) {
-    console.error(`${context}: Error applying active button styling:`, error);
     return false;
   }
 }
@@ -49,7 +46,6 @@ export function applyActiveButtonStyling(button, options = {}, context = 'Button
 export function removeActiveButtonStyling(button, context = 'Button Styler') {
   try {
     if (!button) {
-      console.warn(`${context}: No button provided for styling reset`);
       return false;
     }
 
@@ -59,10 +55,8 @@ export function removeActiveButtonStyling(button, context = 'Button Styler') {
     button.style.borderColor = '';
     button.style.transition = '';
 
-    console.log(`${context}: Removed active styling from button`);
     return true;
   } catch (error) {
-    console.error(`${context}: Error removing active button styling:`, error);
     return false;
   }
 }
@@ -103,10 +97,8 @@ export function styleActiveButtons(selector, options = {}, context = 'Active But
     });
 
     results.styledCount = styledCount;
-    console.log(`${context}: Styled ${styledCount}/${buttons.length} active buttons`);
     return results;
   } catch (error) {
-    console.error(`${context}: Error styling active buttons:`, error);
     return { totalButtons: 0, styledCount: 0, details: [], error: error.message };
   }
 }
@@ -161,17 +153,14 @@ export function watchButtonStateChanges(selector, options = {}, context = 'Butto
       attributeFilter: ['class']
     });
 
-    console.log(`${context}: Started watching button state changes`);
 
     // Return stop function
     return () => {
       isWatching = false;
       observer.disconnect();
-      console.log(`${context}: Stopped watching button state changes`);
     };
 
   } catch (error) {
-    console.error(`${context}: Error setting up button state watcher:`, error);
     return () => {}; // Return empty function
   }
 }
@@ -193,14 +182,11 @@ export function styleFavoriteButtons(context = 'Favorite Button Styler') {
     const results = styleActiveButtons(selector, options, context);
     
     if (results.styledCount > 0) {
-      console.log(`${context}: Successfully styled ${results.styledCount} favorite buttons`);
       return true;
     } else {
-      console.log(`${context}: No active favorite buttons found to style`);
       return false;
     }
   } catch (error) {
-    console.error(`${context}: Error styling favorite buttons:`, error);
     return false;
   }
 }

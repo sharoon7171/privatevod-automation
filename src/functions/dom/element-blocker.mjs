@@ -23,21 +23,17 @@ export function blockElement(selector, options = {}) {
     const element = document.querySelector(selector);
     
     if (!element) {
-      console.warn(`${context}: Element not found: ${selector}`);
       return false;
     }
 
     if (removeFromDOM) {
       element.remove();
-      console.log(`${context}: Element removed from DOM: ${selector}`);
     } else if (hideElement) {
       element.style.display = 'none';
-      console.log(`${context}: Element hidden: ${selector}`);
     }
 
     return true;
   } catch (error) {
-    console.error(`${context}: Error blocking element:`, error);
     return false;
   }
 }
@@ -62,19 +58,15 @@ export function blockSceneDownloadCard(context = 'Scene Download Blocker') {
         // This is a scene download card we want to block
         card.remove();
         blockedCount++;
-        console.log(`${context}: Scene download card blocked and removed (Price: ${priceElement?.textContent || 'Unknown'})`);
       }
     }
 
     if (blockedCount > 0) {
-      console.log(`${context}: Successfully blocked ${blockedCount} scene download card(s)`);
       return true;
     } else {
-      console.warn(`${context}: No scene download cards found`);
       return false;
     }
   } catch (error) {
-    console.error(`${context}: Error blocking scene download cards:`, error);
     return false;
   }
 }
@@ -97,19 +89,15 @@ export function blockHDDownloadCard(context = 'HD Download Blocker') {
       if (titleElement && titleElement.textContent.includes('+ Stream in HD for Life')) {
         card.remove();
         blockedCount++;
-        console.log(`${context}: HD Download card blocked and removed (Price: ${priceElement?.textContent || 'Unknown'})`);
       }
     }
 
     if (blockedCount > 0) {
-      console.log(`${context}: Successfully blocked ${blockedCount} HD Download card(s)`);
       return true;
     } else {
-      console.warn(`${context}: No HD Download cards found`);
       return false;
     }
   } catch (error) {
-    console.error(`${context}: Error blocking HD Download cards:`, error);
     return false;
   }
 }
@@ -132,19 +120,15 @@ export function blockStreamForLifeCard(context = 'Stream for Life Blocker') {
       if (titleElement && titleElement.textContent.includes('Stream Only')) {
         card.remove();
         blockedCount++;
-        console.log(`${context}: Stream for Life card blocked and removed (Price: ${priceElement?.textContent || 'Unknown'})`);
       }
     }
 
     if (blockedCount > 0) {
-      console.log(`${context}: Successfully blocked ${blockedCount} Stream for Life card(s)`);
       return true;
     } else {
-      console.warn(`${context}: No Stream for Life cards found`);
       return false;
     }
   } catch (error) {
-    console.error(`${context}: Error blocking Stream for Life cards:`, error);
     return false;
   }
 }
@@ -167,19 +151,15 @@ export function blockHDRentalCard(context = 'HD Rental Blocker') {
       if (titleElement && titleElement.textContent.includes('Stream in HD for 2 Days')) {
         card.remove();
         blockedCount++;
-        console.log(`${context}: HD Rental card blocked and removed (Price: ${priceElement?.textContent || 'Unknown'})`);
       }
     }
 
     if (blockedCount > 0) {
-      console.log(`${context}: Successfully blocked ${blockedCount} HD Rental card(s)`);
       return true;
     } else {
-      console.warn(`${context}: No HD Rental cards found`);
       return false;
     }
   } catch (error) {
-    console.error(`${context}: Error blocking HD Rental cards:`, error);
     return false;
   }
 }
@@ -204,11 +184,9 @@ export function blockMultipleElements(selectors, options = {}, context = 'Multi 
       results.details.push({ selector, success });
       if (success) results.successCount++;
     } catch (error) {
-      console.error(`${context}: Error blocking ${selector}:`, error);
       results.details.push({ selector, success: false, error: error.message });
     }
   });
 
-  console.log(`${context}: Blocked ${results.successCount}/${results.totalCount} elements`);
   return results;
 }

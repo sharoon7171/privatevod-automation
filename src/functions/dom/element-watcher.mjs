@@ -29,14 +29,12 @@ export function watchForElements(selectors, callback, options = {}) {
       const allFound = elements.every(element => element !== null);
       
       if (allFound) {
-        console.log(`${context}: All elements found, executing callback`);
         await callback(elements);
         return true;
       }
       
       return false;
     } catch (error) {
-      console.error(`${context}: Error checking elements:`, error);
       return false;
     }
   };
@@ -54,7 +52,6 @@ export function watchForElements(selectors, callback, options = {}) {
         clearInterval(retryTimer);
       } else if (retryCount >= maxRetries) {
         clearInterval(retryTimer);
-        console.warn(`${context}: Max retries reached, elements not found`);
       }
     }, retryInterval);
   });
@@ -62,7 +59,6 @@ export function watchForElements(selectors, callback, options = {}) {
   // Return function to clear watcher
   return () => {
     // This would need to be implemented if we need to clear the watcher
-    console.log(`${context}: Watcher cleared`);
   };
 }
 

@@ -5,7 +5,6 @@
 
 // Check if already initialized
 if (window.screenshotExtensionInitialized) {
-  console.log('Screenshot extension already initialized');
 } else {
   window.screenshotExtensionInitialized = true;
 
@@ -34,7 +33,6 @@ if (window.screenshotExtensionInitialized) {
         // Check if screenshot automation is enabled
         const settings = await getSettings();
         if (!settings.autoScreenshotModal) {
-          console.log('Screenshot automation is disabled in settings');
           return;
         }
         
@@ -43,29 +41,24 @@ if (window.screenshotExtensionInitialized) {
 
       async function processScreenshotAutomation() {
         try {
-          console.log('Starting screenshot automation...');
 
           // Step 1: Open screenshot modal
           const modalOpened = await openScreenshotModal();
           if (!modalOpened) {
-            console.error('Failed to open screenshot modal');
             return;
           }
 
           // Step 2: Get carousel container
           const carouselContainer = getCarouselContainer();
           if (!carouselContainer) {
-            console.error('Carousel container not found');
             await closeScreenshotModal();
             return;
           }
 
           // Step 3: Get existing image URLs
           const existingUrls = getExistingImageUrls(carouselContainer);
-          console.log('Found existing URLs:', existingUrls);
 
           if (existingUrls.length < 2) {
-            console.error('Need at least 2 existing URLs to detect pattern');
             await closeScreenshotModal();
             return;
           }
@@ -73,20 +66,16 @@ if (window.screenshotExtensionInitialized) {
           // Step 4: Detect pattern from first 2 URLs
           const pattern = detectScreenshotPattern(existingUrls[0], existingUrls[1]);
           if (!pattern) {
-            console.error('Failed to detect pattern from existing URLs');
             await closeScreenshotModal();
             return;
           }
 
-          console.log('Detected pattern:', pattern);
 
           // Step 5: Count total carousel items
           const totalItems = countCarouselItems(carouselContainer);
-          console.log('Total carousel items:', totalItems);
 
           // Step 6: Generate missing URLs
           const missingUrls = generateMissingUrls(pattern, totalItems, existingUrls);
-          console.log('Generated missing URLs:', missingUrls.length);
 
           // Step 7: Close modal
           await closeScreenshotModal();
@@ -118,21 +107,16 @@ if (window.screenshotExtensionInitialized) {
           if (allImageData.length > 0) {
             const gridElement = createAndEmbedImageGrid(allImageData);
             if (gridElement) {
-              console.log('Screenshot grid created and embedded successfully with', allImageData.length, 'images');
             } else {
-              console.error('Failed to create screenshot grid');
             }
           } else {
-            console.log('No images to display');
           }
 
         } catch (error) {
-          console.error('Screenshot automation error:', error);
         }
       }
 
     } catch (error) {
-      console.error('Screenshot content script initialization failed:', error);
     }
   })();
 }

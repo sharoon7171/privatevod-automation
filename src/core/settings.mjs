@@ -29,7 +29,12 @@ const defaultSettings = {
   // HD rental blocker settings
   blockHDRental: false,
   // Active button styling settings
-  styleActiveButtons: false
+  styleActiveButtons: false,
+  // Favorite and like tracking settings
+  trackFavoritesLikes: false,
+  // Video hiding settings
+  hideLikedVideos: false,
+  hideFavoritedVideos: false
 };
 
 // Settings storage key
@@ -82,7 +87,12 @@ export async function saveSettings(settings) {
       // HD rental blocker validation
       blockHDRental: Boolean(settings.blockHDRental),
       // Active button styling validation
-      styleActiveButtons: Boolean(settings.styleActiveButtons)
+      styleActiveButtons: Boolean(settings.styleActiveButtons),
+      // Favorite and like tracking validation
+      trackFavoritesLikes: Boolean(settings.trackFavoritesLikes),
+      // Video hiding validation
+      hideLikedVideos: Boolean(settings.hideLikedVideos),
+      hideFavoritedVideos: Boolean(settings.hideFavoritedVideos)
     };
     
     await chrome.storage.sync.set({ [STORAGE_KEY]: validatedSettings });
