@@ -16,3 +16,6 @@ packages/
 # Logs
 *.log
 npm-debug.log*
+
+# Documentation
+todo.md
