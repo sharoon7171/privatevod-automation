@@ -3,7 +3,7 @@
  * Toggle and timer event handling utilities
  */
 
-import { getSettings, saveSettings } from '../../shared/settings.mjs';
+import { getSettings, saveSettings } from '../core/settings.mjs';
 
 /**
  * Handle toggle click event

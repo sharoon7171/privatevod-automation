@@ -3,7 +3,7 @@
  * Options page with shared settings integration
  */
 
-import { initializeUIPage } from '../ui/shared/initializer.mjs';
+import { initializeUIPage } from '../../shared/components/initializer.mjs';
 
 // Initialize options page using shared initializer
 initializeUIPage('Options');

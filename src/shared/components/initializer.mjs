@@ -3,7 +3,7 @@
  * Page initialization utilities
  */
 
-import { getSettings, onSettingsChange } from '../../shared/settings.mjs';
+import { getSettings, onSettingsChange } from '../core/settings.mjs';
 import { getAllUIElements, validateElements } from './dom-manager.mjs';
 import { setupEventListeners } from './event-handlers.mjs';
 import { createUIUpdater } from './ui-updater.mjs';
