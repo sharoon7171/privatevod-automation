@@ -7,11 +7,11 @@
   "homepage_url": "https://sqtech.dev",
   
   "action": {
-    "default_popup": "pages/popup/popup.html",
+    "default_popup": "templates/pages/popup.html",
     "default_title": "PrivateVOD Automation"
   },
   
-  "options_page": "pages/options/options.html",
+  "options_page": "templates/pages/options.html",
   
   "background": {
     "service_worker": "background/service-worker.mjs"
@@ -58,9 +58,10 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "shared/utilities/*.mjs",
-        "shared/core/*.mjs",
-        "shared/components/*.mjs"
+        "services/storage/*.mjs",
+        "functions/dom/*.mjs",
+        "functions/async/*.mjs",
+        "core/*.mjs"
       ],
       "matches": [
         "https://www.privatevod.com/*",
