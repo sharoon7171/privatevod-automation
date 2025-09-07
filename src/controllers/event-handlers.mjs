@@ -105,5 +105,35 @@ export function setupEventListeners(elements, updateUI) {
   if (elements['auto-screenshot-modal-toggle']) {
     elements['auto-screenshot-modal-toggle'].addEventListener('click', createToggleHandler('autoScreenshotModal', updateUI));
   }
+  
+  // User actions mover handlers
+  if (elements['move-user-actions-toggle']) {
+    elements['move-user-actions-toggle'].addEventListener('click', createToggleHandler('moveUserActions', updateUI));
+  }
+  
+  // Scene download blocker handlers
+  if (elements['block-scene-download-toggle']) {
+    elements['block-scene-download-toggle'].addEventListener('click', createToggleHandler('blockSceneDownload', updateUI));
+  }
+  
+  // HD download blocker handlers
+  if (elements['block-hd-download-toggle']) {
+    elements['block-hd-download-toggle'].addEventListener('click', createToggleHandler('blockHDDownload', updateUI));
+  }
+  
+  // Stream for life blocker handlers
+  if (elements['block-stream-for-life-toggle']) {
+    elements['block-stream-for-life-toggle'].addEventListener('click', createToggleHandler('blockStreamForLife', updateUI));
+  }
+  
+  // HD rental blocker handlers
+  if (elements['block-hd-rental-toggle']) {
+    elements['block-hd-rental-toggle'].addEventListener('click', createToggleHandler('blockHDRental', updateUI));
+  }
+  
+  // Active button styling handlers
+  if (elements['style-active-buttons-toggle']) {
+    elements['style-active-buttons-toggle'].addEventListener('click', createToggleHandler('styleActiveButtons', updateUI));
+  }
 }
 

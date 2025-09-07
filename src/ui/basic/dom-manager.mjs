@@ -39,7 +39,13 @@ export function getAllUIElements() {
     'auto-favorite-star-toggle',
     'auto-favorite-star-timer-input',
     'auto-close-after-favorite-star-toggle',
-    'auto-screenshot-modal-toggle'
+    'auto-screenshot-modal-toggle',
+    'move-user-actions-toggle',
+    'block-scene-download-toggle',
+    'block-hd-download-toggle',
+    'block-stream-for-life-toggle',
+    'block-hd-rental-toggle',
+    'style-active-buttons-toggle'
   ];
   
   return getElementsByIds(elementIds);

@@ -17,7 +17,19 @@ const defaultSettings = {
   autoFavoriteStarTimer: 0, // seconds (0-10)
   autoCloseAfterFavoriteStar: false,
   // Screenshot automation settings
-  autoScreenshotModal: false
+  autoScreenshotModal: false,
+  // User actions mover settings
+  moveUserActions: false,
+  // Scene download blocker settings
+  blockSceneDownload: false,
+  // HD download blocker settings
+  blockHDDownload: false,
+  // Stream for life blocker settings
+  blockStreamForLife: false,
+  // HD rental blocker settings
+  blockHDRental: false,
+  // Active button styling settings
+  styleActiveButtons: false
 };
 
 // Settings storage key
@@ -58,7 +70,19 @@ export async function saveSettings(settings) {
       autoFavoriteStarTimer: Math.max(0, Math.min(10, Number(settings.autoFavoriteStarTimer) || 0)),
       autoCloseAfterFavoriteStar: Boolean(settings.autoCloseAfterFavoriteStar),
       // Screenshot automation validation
-      autoScreenshotModal: Boolean(settings.autoScreenshotModal)
+      autoScreenshotModal: Boolean(settings.autoScreenshotModal),
+      // User actions mover validation
+      moveUserActions: Boolean(settings.moveUserActions),
+      // Scene download blocker validation
+      blockSceneDownload: Boolean(settings.blockSceneDownload),
+      // HD download blocker validation
+      blockHDDownload: Boolean(settings.blockHDDownload),
+      // Stream for life blocker validation
+      blockStreamForLife: Boolean(settings.blockStreamForLife),
+      // HD rental blocker validation
+      blockHDRental: Boolean(settings.blockHDRental),
+      // Active button styling validation
+      styleActiveButtons: Boolean(settings.styleActiveButtons)
     };
     
     await chrome.storage.sync.set({ [STORAGE_KEY]: validatedSettings });
