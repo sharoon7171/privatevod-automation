@@ -282,4 +282,4 @@ const processLargeDataset = async (data) => {
 - **Group imports** - external, internal, relative
 - **Single default export** per module when possible
 - **Named exports** for utility collections
-- **Clear module boundaries** - see @ultra-modular-project-structure
+- **Clear module boundaries** - see @shared-reusable-project-structure

@@ -1,6 +1,14 @@
 ---
 description: Chrome Extension Development - Manifest V3, Modern JavaScript, Latest Standards
 globs:
+- "**/manifest.json"
+- "**/service-worker.*"
+- "**/*.mjs"
+- "**/*.js"
+- "**/popup/**"
+- "**/options/**"
+- "**/content-scripts/**"
+- "**/background/**"
 alwaysApply: true
 priority: critical
 ---
@@ -16,7 +24,7 @@ priority: critical
 - **Performance-optimized** - lazy loading, efficient memory usage
 
 ## Project Organization
-- **Use @ultra-modular-project-structure** for detailed architecture guidance
+- **Use @shared-reusable-project-structure** for detailed architecture guidance
 - **Component hierarchy** - components separated by complexity level
 - **Single file per component** - no mixing of responsibilities
 
@@ -28,7 +36,7 @@ priority: critical
 - Follow Content Security Policy v3 rules
 
 ## Code Standards
-- **Follow @ultra-modular-project-structure** - for naming conventions
+- **Follow @shared-reusable-project-structure** - for naming conventions
 - **Use @codebase-analysis-agent** - for thorough analysis and implementation
 - **Async/await only** - no callbacks or .then() chains
 - **Comprehensive error handling** - with custom error classes

@@ -6,7 +6,7 @@ globs:
 - "**/*permission*"
 - "**/background/**"
 - "**/content-scripts/**"
-alwaysApply: false
+alwaysApply: true
 priority: critical
 ---
 

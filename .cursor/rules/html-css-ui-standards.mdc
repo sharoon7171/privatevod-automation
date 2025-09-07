@@ -6,7 +6,7 @@ globs:
 - "**/popup/**"
 - "**/options/**"
 - "**/styles/**"
-alwaysApply: false
+alwaysApply: true
 priority: medium
 ---
 
