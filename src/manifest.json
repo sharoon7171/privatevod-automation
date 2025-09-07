@@ -2,13 +2,12 @@
   "manifest_version": 3,
   "name": "PrivateVOD Automation",
   "version": "1.0.0",
-  "description": "A minimal Chrome extension demo with popup and options pages only, following ultra-modular architecture standards.",
+  "description": "A minimal Chrome extension with options page only, following ultra-modular architecture standards.",
   "author": "SQ Tech",
   "homepage_url": "https://sqtech.dev",
   
   "action": {
-    "default_popup": "templates/pages/popup.html",
-    "default_title": "PrivateVOD Automation"
+    "default_title": "PrivateVOD Automation - Click to open settings"
   },
   
   "options_page": "templates/pages/options.html",
