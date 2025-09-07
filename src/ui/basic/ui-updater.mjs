@@ -63,11 +63,8 @@ export function updateUI(settings, elements) {
   // Update user actions mover toggle
   updateToggleState(elements['move-user-actions-toggle'], settings.moveUserActions);
   
-  // Update scene download blocker toggle
-  updateToggleState(elements['block-scene-download-toggle'], settings.blockSceneDownload);
-  
-  // Update HD download blocker toggle
-  updateToggleState(elements['block-hd-download-toggle'], settings.blockHDDownload);
+  // Update download blocker toggle
+  updateToggleState(elements['block-download-toggle'], settings.blockDownload);
   
   // Update stream for life blocker toggle
   updateToggleState(elements['block-stream-for-life-toggle'], settings.blockStreamForLife);

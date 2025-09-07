@@ -111,14 +111,9 @@ export function setupEventListeners(elements, updateUI) {
     elements['move-user-actions-toggle'].addEventListener('click', createToggleHandler('moveUserActions', updateUI));
   }
   
-  // Scene download blocker handlers
-  if (elements['block-scene-download-toggle']) {
-    elements['block-scene-download-toggle'].addEventListener('click', createToggleHandler('blockSceneDownload', updateUI));
-  }
-  
-  // HD download blocker handlers
-  if (elements['block-hd-download-toggle']) {
-    elements['block-hd-download-toggle'].addEventListener('click', createToggleHandler('blockHDDownload', updateUI));
+  // Download blocker handlers
+  if (elements['block-download-toggle']) {
+    elements['block-download-toggle'].addEventListener('click', createToggleHandler('blockDownload', updateUI));
   }
   
   // Stream for life blocker handlers

@@ -14,8 +14,7 @@ if (window.sceneDownloadBlockerInitialized) {
       // Bundle all dynamic imports in parallel
       const [
         { 
-          blockSceneDownloadCard, 
-          blockHDDownloadCard, 
+          blockDownloadCard, 
           blockStreamForLifeCard, 
           blockHDRentalCard 
         },
@@ -37,21 +36,15 @@ if (window.sceneDownloadBlockerInitialized) {
           
           let totalBlocked = 0;
 
-          // Block Scene Download cards
-          if (settings.blockSceneDownload) {
-            const success = blockSceneDownloadCard('Scene Download Blocker');
+          // Block Download cards
+          if (settings.blockDownload) {
+            const success = blockDownloadCard('Download Blocker');
             if (success) totalBlocked++;
           }
 
-          // Block HD Download cards
-          if (settings.blockHDDownload) {
-            const success = blockHDDownloadCard('HD Download Blocker');
-            if (success) totalBlocked++;
-          }
-
-          // Block Stream for Life cards
+          // Block Stream cards
           if (settings.blockStreamForLife) {
-            const success = blockStreamForLifeCard('Stream for Life Blocker');
+            const success = blockStreamForLifeCard('Stream Blocker');
             if (success) totalBlocked++;
           }
 

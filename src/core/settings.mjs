@@ -20,13 +20,11 @@ const defaultSettings = {
   autoScreenshotModal: false,
   // User actions mover settings
   moveUserActions: false,
-  // Scene download blocker settings
-  blockSceneDownload: false,
-  // HD download blocker settings
-  blockHDDownload: false,
-  // Stream for life blocker settings
+  // Download blocker settings (blocks all download types)
+  blockDownload: false,
+  // Stream blocker settings (blocks all stream types)
   blockStreamForLife: false,
-  // HD rental blocker settings
+  // Rental blocker settings (blocks all rental types)
   blockHDRental: false,
   // Active button styling settings
   styleActiveButtons: false,
@@ -78,11 +76,9 @@ export async function saveSettings(settings) {
       autoScreenshotModal: Boolean(settings.autoScreenshotModal),
       // User actions mover validation
       moveUserActions: Boolean(settings.moveUserActions),
-      // Scene download blocker validation
-      blockSceneDownload: Boolean(settings.blockSceneDownload),
-      // HD download blocker validation
-      blockHDDownload: Boolean(settings.blockHDDownload),
-      // Stream for life blocker validation
+      // Download blocker validation
+      blockDownload: Boolean(settings.blockDownload),
+      // Stream blocker validation
       blockStreamForLife: Boolean(settings.blockStreamForLife),
       // HD rental blocker validation
       blockHDRental: Boolean(settings.blockHDRental),

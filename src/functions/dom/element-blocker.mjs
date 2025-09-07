@@ -39,23 +39,51 @@ export function blockElement(selector, options = {}) {
 }
 
 /**
- * Block scene download card specifically
+ * Block download cards specifically (any download type)
  * @param {string} context - Context for logging
  * @returns {boolean} Success status
  */
-export function blockSceneDownloadCard(context = 'Scene Download Blocker') {
+export function blockDownloadCard(context = 'Download Blocker') {
   try {
-    // Look for any scene download card with "+ Stream for Life" title
-    const sceneCards = document.querySelectorAll('.card.m-2');
+    const cards = document.querySelectorAll('.card.m-2');
     let blockedCount = 0;
     
-    for (const card of sceneCards) {
-      const titleElement = card.querySelector('.card-title');
-      const priceElement = card.querySelector('.price.text-sale');
+    for (const card of cards) {
+      const priceElement = card.querySelector('.price');
       
-      // Check if this is a scene download card by looking for the title pattern
-      if (titleElement && titleElement.textContent.includes('+ Stream for Life')) {
-        // This is a scene download card we want to block
+      // Check if this is a download card by looking for "Download" in the price text
+      if (priceElement && priceElement.textContent.includes('Download')) {
+        card.remove();
+        blockedCount++;
+      }
+    }
+
+    if (blockedCount > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    return false;
+  }
+}
+
+
+/**
+ * Block Stream cards specifically (any stream type)
+ * @param {string} context - Context for logging
+ * @returns {boolean} Success status
+ */
+export function blockStreamForLifeCard(context = 'Stream Blocker') {
+  try {
+    const cards = document.querySelectorAll('.card.m-2');
+    let blockedCount = 0;
+    
+    for (const card of cards) {
+      const priceElement = card.querySelector('.price');
+      
+      // Check if this is a Stream card by looking for "Stream" in the price text
+      if (priceElement && priceElement.textContent.includes('Stream')) {
         card.remove();
         blockedCount++;
       }
@@ -72,83 +100,20 @@ export function blockSceneDownloadCard(context = 'Scene Download Blocker') {
 }
 
 /**
- * Block HD Download card specifically
+ * Block Rental card specifically (any rental type)
  * @param {string} context - Context for logging
  * @returns {boolean} Success status
  */
-export function blockHDDownloadCard(context = 'HD Download Blocker') {
+export function blockHDRentalCard(context = 'Rental Blocker') {
   try {
     const cards = document.querySelectorAll('.card.m-2');
     let blockedCount = 0;
     
     for (const card of cards) {
-      const titleElement = card.querySelector('.card-title');
-      const priceElement = card.querySelector('.price.text-sale');
+      const priceElement = card.querySelector('.price');
       
-      // Check if this is an HD Download card by looking for the title pattern
-      if (titleElement && titleElement.textContent.includes('+ Stream in HD for Life')) {
-        card.remove();
-        blockedCount++;
-      }
-    }
-
-    if (blockedCount > 0) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    return false;
-  }
-}
-
-/**
- * Block Stream for Life card specifically
- * @param {string} context - Context for logging
- * @returns {boolean} Success status
- */
-export function blockStreamForLifeCard(context = 'Stream for Life Blocker') {
-  try {
-    const cards = document.querySelectorAll('.card.m-2');
-    let blockedCount = 0;
-    
-    for (const card of cards) {
-      const titleElement = card.querySelector('.card-title');
-      const priceElement = card.querySelector('.price.text-sale');
-      
-      // Check if this is a Stream for Life card by looking for the title pattern
-      if (titleElement && titleElement.textContent.includes('Stream Only')) {
-        card.remove();
-        blockedCount++;
-      }
-    }
-
-    if (blockedCount > 0) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    return false;
-  }
-}
-
-/**
- * Block HD Rental card specifically
- * @param {string} context - Context for logging
- * @returns {boolean} Success status
- */
-export function blockHDRentalCard(context = 'HD Rental Blocker') {
-  try {
-    const cards = document.querySelectorAll('.card.m-2');
-    let blockedCount = 0;
-    
-    for (const card of cards) {
-      const titleElement = card.querySelector('.card-title');
-      const priceElement = card.querySelector('.price.text-sale');
-      
-      // Check if this is an HD Rental card by looking for the title pattern
-      if (titleElement && titleElement.textContent.includes('Stream in HD for 2 Days')) {
+      // Check if this is a Rental card by looking for "Rental" in the price text
+      if (priceElement && priceElement.textContent.includes('Rental')) {
         card.remove();
         blockedCount++;
       }
