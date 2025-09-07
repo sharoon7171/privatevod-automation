@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Build outputs (from webpack scripts)
+dist/
+packages/
+
+# Chrome Extension specific
+*.crx
+*.pem
+*.zip
+
+# OS files
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*

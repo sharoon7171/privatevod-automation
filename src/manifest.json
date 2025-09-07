@@ -1,0 +1,57 @@
+{
+  "manifest_version": 3,
+  "name": "PrivateVOD Automation",
+  "version": "1.0.0",
+  "description": "A minimal Chrome extension demo with popup and options pages only, following ultra-modular architecture standards.",
+  "author": "SQ Tech",
+  "homepage_url": "https://sqtech.dev",
+  
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "PrivateVOD Automation"
+  },
+  
+  "options_page": "options/options.html",
+  
+  "background": {
+    "service_worker": "background/service-worker.mjs"
+  },
+  
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
+  
+  "host_permissions": [
+    "https://www.privatevod.com/*",
+    "https://privatevod.com/*"
+  ],
+  
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.privatevod.com/*/*-video.html*",
+        "https://www.privatevod.com/*/*-videos.html*",
+        "https://privatevod.com/*/*-video.html*",
+        "https://privatevod.com/*/*-videos.html*"
+      ],
+      "js": [
+        "content-scripts/video-autoplay.mjs",
+        "content-scripts/auto-favorite-video.mjs"
+      ]
+    },
+    {
+      "matches": [
+        "https://www.privatevod.com/*/*-pornstars.html*",
+        "https://privatevod.com/*/*-pornstars.html*"
+      ],
+      "js": [
+        "content-scripts/auto-favorite-star.mjs"
+      ]
+    }
+  ],
+  
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}
