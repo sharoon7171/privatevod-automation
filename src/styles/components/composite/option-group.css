@@ -1,0 +1,21 @@
+/* Option Group Component */
+.option-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.option-section {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-gray);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  margin: var(--spacing-lg) 0;
+}
+
+.option-section h3 {
+  margin: 0 0 var(--spacing-lg) 0;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}

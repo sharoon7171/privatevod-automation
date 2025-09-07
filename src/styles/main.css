@@ -1,0 +1,31 @@
+/* Main CSS File - Imports all component styles */
+
+/* Base Styles */
+@import url('./base/reset.css');
+@import url('./base/variables.css');
+@import url('./base/typography.css');
+
+/* Basic Components */
+@import url('./components/basic/toggle.css');
+@import url('./components/basic/input.css');
+@import url('./components/basic/button.css');
+
+/* Composite Components */
+@import url('./components/composite/option-group.css');
+
+/* Page Styles */
+@import url('./pages/popup-page.css');
+@import url('./pages/options-page.css');
+
+/* Responsive Design */
+@media (max-width: 400px) {
+  .toggle-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+  
+  .option-section {
+    padding: var(--spacing-lg);
+  }
+}

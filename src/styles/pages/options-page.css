@@ -1,0 +1,29 @@
+/* Options Component */
+.options-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: var(--spacing-xxl);
+}
+
+.options-header {
+  margin-bottom: var(--spacing-xxxl);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--bg-border);
+}
+
+.options-title {
+  font-size: var(--font-size-xxl);
+  font-weight: var(--font-weight-bold);
+  color: var(--black);
+  margin-bottom: var(--spacing-sm);
+}
+
+.options-subtitle {
+  font-size: var(--font-size-md);
+  color: var(--text-secondary);
+}
+
+.options-content {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
