@@ -12,10 +12,10 @@ const TARGET_BUTTON_SELECTOR = '#ppmWatchNow';
 async function initializeContentScript() {
   try {
     // Dynamic imports for shared utilities
-    const { getSettings } = await import(chrome.runtime.getURL('shared/utilities/get-settings.mjs'));
-    const { delay } = await import(chrome.runtime.getURL('shared/utilities/delay.mjs'));
-    const { clickButton } = await import(chrome.runtime.getURL('shared/utilities/button-clicker.mjs'));
-    const { waitForPageLoad } = await import(chrome.runtime.getURL('shared/utilities/page-loader.mjs'));
+    const { getSettings } = await import(chrome.runtime.getURL('services/storage/get-settings.mjs'));
+    const { delay } = await import(chrome.runtime.getURL('functions/async/delay.mjs'));
+    const { clickButton } = await import(chrome.runtime.getURL('functions/dom/button-clicker.mjs'));
+    const { waitForPageLoad } = await import(chrome.runtime.getURL('functions/dom/page-loader.mjs'));
     
     // Get current settings
     const settings = await getSettings();
@@ -46,6 +46,6 @@ async function initializeContentScript() {
 
 // Wait for complete page load
 (async () => {
-  const { waitForPageLoad } = await import(chrome.runtime.getURL('shared/utilities/page-loader.mjs'));
+  const { waitForPageLoad } = await import(chrome.runtime.getURL('functions/dom/page-loader.mjs'));
   waitForPageLoad(initializeContentScript, 'Video Autoplay');
 })();

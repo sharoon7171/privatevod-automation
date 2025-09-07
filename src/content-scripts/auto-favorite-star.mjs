@@ -9,10 +9,10 @@
 async function initializeAutoFavoriteStar() {
   try {
     // Dynamic imports for shared utilities
-    const { getSettings } = await import(chrome.runtime.getURL('shared/utilities/get-settings.mjs'));
-    const { delay } = await import(chrome.runtime.getURL('shared/utilities/delay.mjs'));
-    const { closeCurrentTab } = await import(chrome.runtime.getURL('shared/utilities/close-tab.mjs'));
-    const { clickFavoriteButton } = await import(chrome.runtime.getURL('shared/utilities/click-favorite.mjs'));
+    const { getSettings } = await import(chrome.runtime.getURL('services/storage/get-settings.mjs'));
+    const { delay } = await import(chrome.runtime.getURL('functions/async/delay.mjs'));
+    const { closeCurrentTab } = await import(chrome.runtime.getURL('functions/dom/close-tab.mjs'));
+    const { clickFavoriteButton } = await import(chrome.runtime.getURL('functions/dom/click-favorite.mjs'));
     
     // Get settings
     const settings = await getSettings();
@@ -42,6 +42,6 @@ async function initializeAutoFavoriteStar() {
 
 // Wait for complete page load
 (async () => {
-  const { waitForPageLoad } = await import(chrome.runtime.getURL('shared/utilities/page-loader.mjs'));
+  const { waitForPageLoad } = await import(chrome.runtime.getURL('functions/dom/page-loader.mjs'));
   waitForPageLoad(initializeAutoFavoriteStar, 'Auto-Favorite Star');
 })();
