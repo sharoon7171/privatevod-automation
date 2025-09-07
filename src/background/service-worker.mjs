@@ -16,6 +16,11 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(clients.claim());
 });
 
+// Handle action click - open options page
+chrome.action.onClicked.addListener((tab) => {
+  chrome.runtime.openOptionsPage();
+});
+
 // Basic message handling (minimal structure)
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log('Service worker received message:', request);
