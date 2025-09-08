@@ -140,7 +140,6 @@ export class BaseService {
    * @param {string} context - Error context
    */
   handleError(error, context = 'Service') {
-    console.error(`${context}:`, error);
     // Add error reporting logic here
   }
 

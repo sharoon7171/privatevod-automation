@@ -45,7 +45,6 @@ export async function initializePage(pageName = "UI Page") {
     };
     
   } catch (error) {
-    console.error(`Error initializing ${pageName}:`, error);
     throw error;
   }
 }
@@ -59,7 +58,6 @@ export function initializeUIPage(pageName = "UI Page") {
     try {
       await initializePage(pageName);
     } catch (error) {
-      console.error(`Failed to initialize ${pageName}:`, error);
     }
   });
 }

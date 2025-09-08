@@ -45,7 +45,6 @@ export function detectScreenshotPattern(url1, url2) {
     };
     
   } catch (error) {
-    console.error('Screenshot Pattern Detection Error:', error);
     return null;
   }
 }
@@ -95,7 +94,6 @@ function parseImageUrl(url) {
     };
     
   } catch (error) {
-    console.error('URL Parsing Error:', error);
     return null;
   }
 }
@@ -130,7 +128,6 @@ export function extractTimecodeFromUrl(url) {
     const parts = parseImageUrl(url);
     return parts ? parts.timecode : 0;
   } catch (error) {
-    console.error('Timecode extraction error:', error);
     return 0;
   }
 }

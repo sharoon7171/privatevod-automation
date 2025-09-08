@@ -24,7 +24,6 @@ export function createToggleHandler(settingName, updateUI) {
       await saveSettings(newSettings);
       updateUI(newSettings);
     } catch (error) {
-      console.error(`Error toggling ${settingName}:`, error);
     }
   };
 }
@@ -49,7 +48,6 @@ export function createTimerHandler(settingName, inputElement, updateUI) {
       await saveSettings(newSettings);
       updateUI(newSettings);
     } catch (error) {
-      console.error(`Error updating ${settingName}:`, error);
     }
   };
 }
@@ -153,7 +151,6 @@ export function setupEventListeners(elements, updateUI) {
           showError('Error clearing favorites. Please try again.');
         }
       } catch (error) {
-        console.error('Error clearing favorites:', error);
         showError('Error clearing favorites. Please try again.');
       }
     });
@@ -173,7 +170,6 @@ export function setupEventListeners(elements, updateUI) {
           showError('Error clearing likes. Please try again.');
         }
       } catch (error) {
-        console.error('Error clearing likes:', error);
         showError('Error clearing likes. Please try again.');
       }
     });
@@ -231,7 +227,6 @@ Last updated: ${new Date().toLocaleString()}`;
       elements['storage-display'].value = displayText;
     }
   } catch (error) {
-    console.error('Error refreshing storage display:', error);
     if (elements['storage-display']) {
       elements['storage-display'].value = 'Error loading storage data.';
     }

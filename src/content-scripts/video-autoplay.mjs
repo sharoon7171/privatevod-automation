@@ -40,7 +40,6 @@ async function initializeContentScript() {
     clickButton(button, 'Video Autoplay');
     
   } catch (error) {
-    console.error('Video Autoplay: Error:', error);
   }
 }
 

@@ -60,7 +60,6 @@ export class VideoHidingService {
     try {
       // Skip video hiding on favorites page - user wants to see their own favorites
       if (window.location.pathname.includes('/account/scenes/favorites')) {
-        console.log('Video Hiding: Skipping on favorites page - user should see their own favorites');
         return;
       }
 
@@ -122,7 +121,6 @@ export class VideoHidingService {
       }
 
     } catch (error) {
-      console.error('Video Hiding Service: Error processing page:', error);
     }
   }
 
@@ -196,7 +194,6 @@ export class VideoHidingService {
         hideVideo(sceneId);
       }
     } catch (error) {
-      console.error('Video Hiding Service: Error processing new video:', error);
     }
   }
 

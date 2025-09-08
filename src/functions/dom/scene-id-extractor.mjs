@@ -14,7 +14,6 @@ export function extractSceneId(url = window.location.href) {
     const match = url.match(/\/\/(?:www\.)?privatevod\.com\/(\d+)\//);
     return match ? match[1] : null;
   } catch (error) {
-    console.error('Scene ID Extractor: Error extracting scene ID:', error);
     return null;
   }
 }

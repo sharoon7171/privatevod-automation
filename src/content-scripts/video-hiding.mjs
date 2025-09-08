@@ -75,7 +75,6 @@ if (window.videoHidingInitialized) {
           await videoHidingService.start();
 
         } catch (error) {
-          console.error('Video Hiding: Error:', error);
         }
       }
 
@@ -104,7 +103,6 @@ if (window.videoHidingInitialized) {
       }
 
     } catch (error) {
-      console.error('Video Hiding: Initialization error:', error);
     }
   })();
 }

@@ -13,7 +13,6 @@ export function createAndEmbedImageGrid(imageData) {
     // Find target container
     const targetContainer = document.querySelector('#video-container-details');
     if (!targetContainer) {
-      console.error('Target container not found');
       return null;
     }
     
@@ -30,7 +29,6 @@ export function createAndEmbedImageGrid(imageData) {
     return gridContainer;
     
   } catch (error) {
-    console.error('Grid Creation Error:', error);
     return null;
   }
 }

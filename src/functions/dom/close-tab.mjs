@@ -12,7 +12,6 @@ export async function closeCurrentTab() {
     await chrome.runtime.sendMessage({ action: 'closeTab' });
     return true;
   } catch (error) {
-    console.error('Error closing tab:', error);
     return false;
   }
 }
@@ -29,7 +28,6 @@ export async function closeTabAfterDelay(delaySeconds = 0) {
     }
     return await closeCurrentTab();
   } catch (error) {
-    console.error('Error closing tab after delay:', error);
     return false;
   }
 }

@@ -29,7 +29,6 @@ export async function getSettings() {
     const result = await chrome.storage.sync.get(['privatevod_settings']);
     return { ...defaultSettings, ...result.privatevod_settings };
   } catch (error) {
-    console.error('Error getting settings:', error);
     return defaultSettings;
   }
 }
@@ -45,7 +44,6 @@ export async function getSetting(key, defaultValue = null) {
     const settings = await getSettings();
     return settings[key] !== undefined ? settings[key] : defaultValue;
   } catch (error) {
-    console.error(`Error getting setting ${key}:`, error);
     return defaultValue;
   }
 }

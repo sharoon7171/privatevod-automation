@@ -18,7 +18,6 @@ export function clickButton(button, context = "Button") {
     button.click();
     return true;
   } catch (error) {
-    console.error(`${context}: Error clicking button:`, error);
     return false;
   }
 }

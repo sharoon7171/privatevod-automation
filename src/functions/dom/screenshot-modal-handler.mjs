@@ -13,7 +13,6 @@ export async function openScreenshotModal() {
     const screenshotsButton = document.querySelector('a[data-target="#screenshotModal"]');
     
     if (!screenshotsButton) {
-      console.error('Screenshots button not found');
       return false;
     }
     
@@ -26,7 +25,6 @@ export async function openScreenshotModal() {
     return true;
     
   } catch (error) {
-    console.error('Modal Open Error:', error);
     return false;
   }
 }
@@ -88,7 +86,6 @@ export async function closeScreenshotModal() {
     return true;
     
   } catch (error) {
-    console.error('Modal Close Error:', error);
     return false;
   }
 }

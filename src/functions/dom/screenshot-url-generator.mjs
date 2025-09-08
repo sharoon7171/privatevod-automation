@@ -55,7 +55,6 @@ function generateUrlFromPattern(pattern, timecode) {
     return `${pattern.baseUrl}_${formattedTimecode}_${pattern.suffix}`;
     
   } catch (error) {
-    console.error('URL Generation Error:', error);
     return null;
   }
 }
@@ -73,7 +72,6 @@ function extractTimecodesFromUrls(urls) {
       const timecodePart = filename.split('_')[1];
       return parseInt(timecodePart, 10);
     } catch (error) {
-      console.error('Timecode Extraction Error:', error);
       return null;
     }
   }).filter(timecode => timecode !== null);

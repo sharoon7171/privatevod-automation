@@ -53,7 +53,6 @@ export async function getSettings() {
     const result = await chrome.storage.sync.get([STORAGE_KEY]);
     return { ...defaultSettings, ...result[STORAGE_KEY] };
   } catch (error) {
-    console.error('Error getting settings:', error);
     return defaultSettings;
   }
 }
@@ -106,7 +105,6 @@ export async function saveSettings(settings) {
     await chrome.storage.sync.set({ [STORAGE_KEY]: validatedSettings });
     return true;
   } catch (error) {
-    console.error('Error saving settings:', error);
     return false;
   }
 }
@@ -120,7 +118,6 @@ export async function resetSettings() {
     await chrome.storage.sync.set({ [STORAGE_KEY]: defaultSettings });
     return true;
   } catch (error) {
-    console.error('Error resetting settings:', error);
     return false;
   }
 }

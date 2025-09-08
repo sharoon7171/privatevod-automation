@@ -17,7 +17,6 @@ export async function getFavorites() {
     const favorites = result[FAVORITES_KEY] || [];
     return new Set(favorites);
   } catch (error) {
-    console.error('Favorite Storage: Error getting favorites:', error);
     return new Set();
   }
 }
@@ -32,7 +31,6 @@ export async function getLikes() {
     const likes = result[LIKES_KEY] || [];
     return new Set(likes);
   } catch (error) {
-    console.error('Like Storage: Error getting likes:', error);
     return new Set();
   }
 }
@@ -47,10 +45,8 @@ export async function addFavorite(sceneId) {
     const favorites = await getFavorites();
     favorites.add(sceneId);
     await chrome.storage.local.set({ [FAVORITES_KEY]: Array.from(favorites) });
-    console.log(`Favorite Storage: Added scene ${sceneId} to favorites`);
     return true;
   } catch (error) {
-    console.error('Favorite Storage: Error adding favorite:', error);
     return false;
   }
 }
@@ -65,10 +61,8 @@ export async function removeFavorite(sceneId) {
     const favorites = await getFavorites();
     favorites.delete(sceneId);
     await chrome.storage.local.set({ [FAVORITES_KEY]: Array.from(favorites) });
-    console.log(`Favorite Storage: Removed scene ${sceneId} from favorites`);
     return true;
   } catch (error) {
-    console.error('Favorite Storage: Error removing favorite:', error);
     return false;
   }
 }
@@ -83,10 +77,8 @@ export async function addLike(sceneId) {
     const likes = await getLikes();
     likes.add(sceneId);
     await chrome.storage.local.set({ [LIKES_KEY]: Array.from(likes) });
-    console.log(`Like Storage: Added scene ${sceneId} to likes`);
     return true;
   } catch (error) {
-    console.error('Like Storage: Error adding like:', error);
     return false;
   }
 }
@@ -101,10 +93,8 @@ export async function removeLike(sceneId) {
     const likes = await getLikes();
     likes.delete(sceneId);
     await chrome.storage.local.set({ [LIKES_KEY]: Array.from(likes) });
-    console.log(`Like Storage: Removed scene ${sceneId} from likes`);
     return true;
   } catch (error) {
-    console.error('Like Storage: Error removing like:', error);
     return false;
   }
 }
@@ -136,10 +126,8 @@ export async function isLiked(sceneId) {
 export async function clearAllFavorites() {
   try {
     await chrome.storage.local.set({ [FAVORITES_KEY]: [] });
-    console.log('Favorite Storage: Cleared all favorites');
     return true;
   } catch (error) {
-    console.error('Favorite Storage: Error clearing favorites:', error);
     return false;
   }
 }
@@ -151,10 +139,8 @@ export async function clearAllFavorites() {
 export async function clearAllLikes() {
   try {
     await chrome.storage.local.set({ [LIKES_KEY]: [] });
-    console.log('Like Storage: Cleared all likes');
     return true;
   } catch (error) {
-    console.error('Like Storage: Error clearing likes:', error);
     return false;
   }
 }
@@ -173,7 +159,6 @@ export async function getStorageStats() {
       likes: Array.from(likes)
     };
   } catch (error) {
-    console.error('Storage Stats: Error getting stats:', error);
     return {
       favoritesCount: 0,
       likesCount: 0,

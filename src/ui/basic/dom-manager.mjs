@@ -75,7 +75,6 @@ export function validateElements(elements) {
   });
   
   if (missingElements.length > 0) {
-    console.error('Missing DOM elements:', missingElements);
     return false;
   }
   

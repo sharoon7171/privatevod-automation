@@ -36,7 +36,6 @@ async function initializeAutoFavoriteVideo() {
     }
     
   } catch (error) {
-    console.error('Auto-Favorite Video: Error in initialization:', error);
   }
 }
 

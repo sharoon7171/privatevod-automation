@@ -116,7 +116,6 @@ Last updated: ${new Date().toLocaleString()}`;
       elements['storage-display'].value = displayText;
     }
   } catch (error) {
-    console.error('Error loading storage display:', error);
     if (elements['storage-display']) {
       elements['storage-display'].value = 'Error loading storage data.';
     }

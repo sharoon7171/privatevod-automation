@@ -31,22 +31,18 @@ export class FavoriteLikeTracker {
    */
   async startTracking() {
     if (this.isTracking) {
-      console.log('Favorite/Like Tracker: Already tracking');
       return;
     }
 
     if (!isVideoPage()) {
-      console.log('Favorite/Like Tracker: Not a video page, skipping');
       return;
     }
 
     this.currentSceneId = extractSceneId();
     if (!this.currentSceneId) {
-      console.log('Favorite/Like Tracker: No scene ID found, skipping');
       return;
     }
 
-    console.log(`Favorite/Like Tracker: Starting tracking for scene ${this.currentSceneId}`);
     this.isTracking = true;
 
     // Initial status check and sync
@@ -65,7 +61,6 @@ export class FavoriteLikeTracker {
       this.observer = null;
     }
     this.isTracking = false;
-    console.log('Favorite/Like Tracker: Stopped tracking');
   }
 
   /**
@@ -80,11 +75,9 @@ export class FavoriteLikeTracker {
         const isCurrentlyFavorited = await isFavorited(this.currentSceneId);
         if (status.favorite.isActive && !isCurrentlyFavorited) {
           await addFavorite(this.currentSceneId);
-          console.log(`Favorite/Like Tracker: Scene ${this.currentSceneId} is favorited - added to storage`);
           this.notifyStorageChange(this.currentSceneId, 'favorite', true);
         } else if (!status.favorite.isActive && isCurrentlyFavorited) {
           await removeFavorite(this.currentSceneId);
-          console.log(`Favorite/Like Tracker: Scene ${this.currentSceneId} is not favorited - removed from storage`);
           this.notifyStorageChange(this.currentSceneId, 'favorite', false);
         }
       }
@@ -94,18 +87,14 @@ export class FavoriteLikeTracker {
         const isCurrentlyLiked = await isLiked(this.currentSceneId);
         if (status.like.isActive && !isCurrentlyLiked) {
           await addLike(this.currentSceneId);
-          console.log(`Favorite/Like Tracker: Scene ${this.currentSceneId} is liked - added to storage`);
           this.notifyStorageChange(this.currentSceneId, 'like', true);
         } else if (!status.like.isActive && isCurrentlyLiked) {
           await removeLike(this.currentSceneId);
-          console.log(`Favorite/Like Tracker: Scene ${this.currentSceneId} is not liked - removed from storage`);
           this.notifyStorageChange(this.currentSceneId, 'like', false);
         }
       }
 
-      console.log('Favorite/Like Tracker: Status synced');
     } catch (error) {
-      console.error('Favorite/Like Tracker: Error syncing status:', error);
     }
   }
 
@@ -134,7 +123,6 @@ export class FavoriteLikeTracker {
       });
     });
 
-    console.log('Favorite/Like Tracker: Status monitoring started');
   }
 
   /**
@@ -156,27 +144,22 @@ export class FavoriteLikeTracker {
         const isCurrentlyFavorited = await isFavorited(this.currentSceneId);
         if (isActive && !isCurrentlyFavorited) {
           await addFavorite(this.currentSceneId);
-          console.log(`Favorite/Like Tracker: Scene ${this.currentSceneId} favorited - added to storage`);
           this.notifyStorageChange(this.currentSceneId, 'favorite', true);
         } else if (!isActive && isCurrentlyFavorited) {
           await removeFavorite(this.currentSceneId);
-          console.log(`Favorite/Like Tracker: Scene ${this.currentSceneId} unfavorited - removed from storage`);
           this.notifyStorageChange(this.currentSceneId, 'favorite', false);
         }
       } else if (buttonType === 'like') {
         const isCurrentlyLiked = await isLiked(this.currentSceneId);
         if (isActive && !isCurrentlyLiked) {
           await addLike(this.currentSceneId);
-          console.log(`Favorite/Like Tracker: Scene ${this.currentSceneId} liked - added to storage`);
           this.notifyStorageChange(this.currentSceneId, 'like', true);
         } else if (!isActive && isCurrentlyLiked) {
           await removeLike(this.currentSceneId);
-          console.log(`Favorite/Like Tracker: Scene ${this.currentSceneId} unliked - removed from storage`);
           this.notifyStorageChange(this.currentSceneId, 'like', false);
         }
       }
     } catch (error) {
-      console.error('Favorite/Like Tracker: Error handling button change:', error);
     }
   }
 
@@ -230,7 +213,6 @@ export class FavoriteLikeTracker {
       try {
         listener(sceneId, type, isAdded);
       } catch (error) {
-        console.error('Favorite/Like Tracker: Error notifying listener:', error);
       }
     });
   }

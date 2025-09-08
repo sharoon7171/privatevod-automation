@@ -5,7 +5,6 @@
 
 // Check if already initialized
 if (window.favoriteLikeTrackerInitialized) {
-  console.log('Favorite/Like Tracker extension already initialized');
 } else {
   window.favoriteLikeTrackerInitialized = true;
 
@@ -31,17 +30,14 @@ if (window.favoriteLikeTrackerInitialized) {
           
           // Check if tracking is enabled
           if (!settings.trackFavoritesLikes) {
-            console.log('Favorite/Like Tracker: Tracking disabled in settings');
             return;
           }
 
           // Start tracking
           await favoriteLikeTracker.startTracking();
           
-          console.log('Favorite/Like Tracker: Successfully started tracking');
 
         } catch (error) {
-          console.error('Favorite/Like Tracker: Error:', error);
         }
       }
 
@@ -70,7 +66,6 @@ if (window.favoriteLikeTrackerInitialized) {
       }
 
     } catch (error) {
-      console.error('Favorite/Like Tracker: Initialization error:', error);
     }
   })();
 }

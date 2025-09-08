@@ -36,7 +36,6 @@ async function initializeAutoFavoriteStar() {
     }
     
   } catch (error) {
-    console.error('Auto-Favorite Star: Error in initialization:', error);
   }
 }
 

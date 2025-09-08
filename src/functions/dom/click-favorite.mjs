@@ -27,7 +27,6 @@ export async function clickFavoriteButton(context = "Item") {
     
     return true;
   } catch (error) {
-    console.error(`Auto-Favorite ${context}: Error clicking button:`, error);
     return false;
   }
 }
