@@ -1,6 +1,6 @@
 /**
  * PrivateVOD Automation - Image Grid Embedder
- * Creates and embeds image grid with 5 images per row
+ * Creates and embeds image grid with 7 images per row
  */
 
 /**
@@ -19,7 +19,7 @@ export function createAndEmbedImageGrid(imageData) {
     // Create grid container
     const gridContainer = createGridContainer();
     
-    // Create grid rows with 5 images per row
+    // Create grid rows with 7 images per row
     const rows = createGridRows(imageData);
     rows.forEach(row => gridContainer.appendChild(row));
     
@@ -63,13 +63,13 @@ function createGridContainer() {
 }
 
 /**
- * Create grid rows with 5 images per row
+ * Create grid rows with 7 images per row
  * @param {Array} imageData - Array of image data
  * @returns {Array} Array of row elements
  */
 function createGridRows(imageData) {
   const rows = [];
-  const imagesPerRow = 5; // 5 images per row
+  const imagesPerRow = 7; // 7 images per row
   
   for (let i = 0; i < imageData.length; i += imagesPerRow) {
     const rowImages = imageData.slice(i, i + imagesPerRow);
@@ -113,9 +113,9 @@ function createImageElement(imageData) {
   const imageContainer = document.createElement('div');
   imageContainer.className = 'screenshot-image-container';
   imageContainer.style.cssText = `
-    flex: 0 0 calc(20% - 10px);
-    max-width: calc(20% - 10px);
-    min-width: 120px;
+    flex: 0 0 calc(14.28% - 10px);
+    max-width: calc(14.28% - 10px);
+    min-width: 100px;
     aspect-ratio: 16/9;
     overflow: hidden;
     border-radius: 6px;
