@@ -17,28 +17,28 @@ const defaultSettings = {
   autoFavoriteStarTimer: 0, // seconds (0-10)
   autoCloseAfterFavoriteStar: false,
   // Screenshot automation settings
-  autoScreenshotModal: false,
+  autoScreenshotModal: true,
   // User actions mover settings
-  moveUserActions: false,
+  moveUserActions: true,
   // Download blocker settings (blocks all download types)
-  blockDownload: false,
+  blockDownload: true,
   // Stream blocker settings (blocks all stream types)
-  blockStreamForLife: false,
+  blockStreamForLife: true,
   // Rental blocker settings (blocks all rental types)
-  blockHDRental: false,
+  blockHDRental: true,
   // Active button styling settings
-  styleActiveButtons: false,
+  styleActiveButtons: true,
   // Favorite and like tracking settings
-  trackFavoritesLikes: false,
+  trackFavoritesLikes: true,
   // Video hiding settings
-  hideLikedVideos: false,
+  hideLikedVideos: true,
   hideFavoritedVideos: false,
   // Studio URL redirect settings
-  autoRedirectStudioUrls: false,
+  autoRedirectStudioUrls: true,
   // Pornstar URL redirect settings
-  autoRedirectPornstarUrls: false,
+  autoRedirectPornstarUrls: true,
   // Link merging settings
-  mergeTitleWithImageLinks: false
+  mergeTitleWithImageLinks: true
 };
 
 // Settings storage key
