@@ -15,11 +15,11 @@ if (window.userActionsExtensionInitialized) {
       const [
         { moveAndStyleUserActions },
         { getSettings },
-        { watchForTwoElements }
+        { watchForTwoElements },
       ] = await Promise.all([
-        import(chrome.runtime.getURL('functions/dom/element-mover.mjs')),
-        import(chrome.runtime.getURL('core/settings.mjs')),
-        import(chrome.runtime.getURL('functions/dom/element-watcher.mjs'))
+        import(chrome.runtime.getURL("functions/dom/element-mover.mjs")),
+        import(chrome.runtime.getURL("core/settings.mjs")),
+        import(chrome.runtime.getURL("functions/dom/element-watcher.mjs")),
       ]);
 
       /**
@@ -33,31 +33,26 @@ if (window.userActionsExtensionInitialized) {
             return;
           }
 
-
           // Move and style the user actions
-          const success = moveAndStyleUserActions('User Actions Mover');
-          
+          const success = moveAndStyleUserActions("User Actions Mover");
+
           if (success) {
           } else {
           }
-
-        } catch (error) {
-        }
+        } catch (error) {}
       }
 
       // Watch for both elements to become available
       watchForTwoElements(
-        '.user-actions',
-        '.membership-cards-container .card.m-2:first-child',
+        ".user-actions",
+        ".membership-cards-container .card.m-2:first-child",
         moveUserActionsWhenReady,
         {
           maxRetries: 50,
           retryInterval: 100,
-          context: 'User Actions Mover'
-        }
+          context: "User Actions Mover",
+        },
       );
-
-    } catch (error) {
-    }
+    } catch (error) {}
   })();
 }

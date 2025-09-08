@@ -3,17 +3,26 @@
  * Main service for tracking and managing favorite/like status
  */
 
-import { extractSceneId, isVideoPage } from '../functions/dom/scene-id-extractor.mjs';
-import { getButtonStatus, getBothButtonStatus, getButtonType, getSceneIdFromButton, isButtonActive } from '../functions/dom/button-status-tracker.mjs';
-import { 
-  addFavorite, 
-  removeFavorite, 
-  addLike, 
-  removeLike, 
-  isFavorited, 
+import {
+  extractSceneId,
+  isVideoPage,
+} from "../functions/dom/scene-id-extractor.mjs";
+import {
+  getButtonStatus,
+  getBothButtonStatus,
+  getButtonType,
+  getSceneIdFromButton,
+  isButtonActive,
+} from "../functions/dom/button-status-tracker.mjs";
+import {
+  addFavorite,
+  removeFavorite,
+  addLike,
+  removeLike,
+  isFavorited,
   isLiked,
-  getStorageStats
-} from './storage/favorite-like-storage.mjs';
+  getStorageStats,
+} from "./storage/favorite-like-storage.mjs";
 
 /**
  * Main tracker class
@@ -69,16 +78,16 @@ export class FavoriteLikeTracker {
   async syncCurrentStatus() {
     try {
       const status = getBothButtonStatus();
-      
+
       // Sync favorite status - only update if status actually changed
       if (status.favorite.sceneId === this.currentSceneId) {
         const isCurrentlyFavorited = await isFavorited(this.currentSceneId);
         if (status.favorite.isActive && !isCurrentlyFavorited) {
           await addFavorite(this.currentSceneId);
-          this.notifyStorageChange(this.currentSceneId, 'favorite', true);
+          this.notifyStorageChange(this.currentSceneId, "favorite", true);
         } else if (!status.favorite.isActive && isCurrentlyFavorited) {
           await removeFavorite(this.currentSceneId);
-          this.notifyStorageChange(this.currentSceneId, 'favorite', false);
+          this.notifyStorageChange(this.currentSceneId, "favorite", false);
         }
       }
 
@@ -87,15 +96,13 @@ export class FavoriteLikeTracker {
         const isCurrentlyLiked = await isLiked(this.currentSceneId);
         if (status.like.isActive && !isCurrentlyLiked) {
           await addLike(this.currentSceneId);
-          this.notifyStorageChange(this.currentSceneId, 'like', true);
+          this.notifyStorageChange(this.currentSceneId, "like", true);
         } else if (!status.like.isActive && isCurrentlyLiked) {
           await removeLike(this.currentSceneId);
-          this.notifyStorageChange(this.currentSceneId, 'like', false);
+          this.notifyStorageChange(this.currentSceneId, "like", false);
         }
       }
-
-    } catch (error) {
-    }
+    } catch (error) {}
   }
 
   /**
@@ -105,9 +112,15 @@ export class FavoriteLikeTracker {
     // Monitor for class changes on buttons
     this.observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+        if (
+          mutation.type === "attributes" &&
+          mutation.attributeName === "class"
+        ) {
           const target = mutation.target;
-          if (target.classList.contains('btn') && target.classList.contains('btn-secondary')) {
+          if (
+            target.classList.contains("btn") &&
+            target.classList.contains("btn-secondary")
+          ) {
             this.handleButtonChange(target);
           }
         }
@@ -115,14 +128,13 @@ export class FavoriteLikeTracker {
     });
 
     // Observe all buttons
-    const buttons = document.querySelectorAll('.btn.btn-secondary');
-    buttons.forEach(button => {
-      this.observer.observe(button, { 
-        attributes: true, 
-        attributeFilter: ['class'] 
+    const buttons = document.querySelectorAll(".btn.btn-secondary");
+    buttons.forEach((button) => {
+      this.observer.observe(button, {
+        attributes: true,
+        attributeFilter: ["class"],
       });
     });
-
   }
 
   /**
@@ -134,33 +146,32 @@ export class FavoriteLikeTracker {
       const buttonType = getButtonType(button);
       const sceneId = getSceneIdFromButton(button);
       const isActive = isButtonActive(button);
-      
+
       // Only process if this is for the current scene
       if (sceneId !== this.currentSceneId) {
         return;
       }
-      
-      if (buttonType === 'favorite') {
+
+      if (buttonType === "favorite") {
         const isCurrentlyFavorited = await isFavorited(this.currentSceneId);
         if (isActive && !isCurrentlyFavorited) {
           await addFavorite(this.currentSceneId);
-          this.notifyStorageChange(this.currentSceneId, 'favorite', true);
+          this.notifyStorageChange(this.currentSceneId, "favorite", true);
         } else if (!isActive && isCurrentlyFavorited) {
           await removeFavorite(this.currentSceneId);
-          this.notifyStorageChange(this.currentSceneId, 'favorite', false);
+          this.notifyStorageChange(this.currentSceneId, "favorite", false);
         }
-      } else if (buttonType === 'like') {
+      } else if (buttonType === "like") {
         const isCurrentlyLiked = await isLiked(this.currentSceneId);
         if (isActive && !isCurrentlyLiked) {
           await addLike(this.currentSceneId);
-          this.notifyStorageChange(this.currentSceneId, 'like', true);
+          this.notifyStorageChange(this.currentSceneId, "like", true);
         } else if (!isActive && isCurrentlyLiked) {
           await removeLike(this.currentSceneId);
-          this.notifyStorageChange(this.currentSceneId, 'like', false);
+          this.notifyStorageChange(this.currentSceneId, "like", false);
         }
       }
-    } catch (error) {
-    }
+    } catch (error) {}
   }
 
   /**
@@ -171,7 +182,7 @@ export class FavoriteLikeTracker {
     return {
       isTracking: this.isTracking,
       currentSceneId: this.currentSceneId,
-      isVideoPage: isVideoPage()
+      isVideoPage: isVideoPage(),
     };
   }
 
@@ -209,11 +220,10 @@ export class FavoriteLikeTracker {
    * @param {boolean} isAdded - Whether the scene ID was added or removed
    */
   notifyStorageChange(sceneId, type, isAdded) {
-    this.storageChangeListeners.forEach(listener => {
+    this.storageChangeListeners.forEach((listener) => {
       try {
         listener(sceneId, type, isAdded);
-      } catch (error) {
-      }
+      } catch (error) {}
     });
   }
 }

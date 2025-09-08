@@ -15,11 +15,11 @@ if (window.activeButtonStylerInitialized) {
       const [
         { styleFavoriteButtons, watchButtonStateChanges },
         { getSettings },
-        { watchForElements }
+        { watchForElements },
       ] = await Promise.all([
-        import(chrome.runtime.getURL('functions/dom/button-styler.mjs')),
-        import(chrome.runtime.getURL('core/settings.mjs')),
-        import(chrome.runtime.getURL('functions/dom/element-watcher.mjs'))
+        import(chrome.runtime.getURL("functions/dom/button-styler.mjs")),
+        import(chrome.runtime.getURL("core/settings.mjs")),
+        import(chrome.runtime.getURL("functions/dom/element-watcher.mjs")),
       ]);
 
       /**
@@ -33,44 +33,35 @@ if (window.activeButtonStylerInitialized) {
             return;
           }
 
-
           // Style existing active buttons
-          const success = styleFavoriteButtons('Active Button Styler');
-          
+          const success = styleFavoriteButtons("Active Button Styler");
+
           if (success) {
           } else {
           }
 
           // Set up continuous monitoring for state changes
           const stopWatching = watchButtonStateChanges(
-            '.btn.btn-secondary',
+            ".btn.btn-secondary",
             {
-              backgroundColor: '#BB1D1C',
-              textColor: 'white',
-              borderColor: '#BB1D1C'
+              backgroundColor: "#BB1D1C",
+              textColor: "white",
+              borderColor: "#BB1D1C",
             },
-            'Active Button Styler'
+            "Active Button Styler",
           );
 
           // Store stop function for potential cleanup
           window.stopActiveButtonWatching = stopWatching;
-
-        } catch (error) {
-        }
+        } catch (error) {}
       }
 
       // Watch for buttons to become available
-      watchForElements(
-        ['.btn.btn-secondary'],
-        styleActiveButtonsWhenReady,
-        {
-          maxRetries: 50,
-          retryInterval: 100,
-          context: 'Active Button Styler'
-        }
-      );
-
-    } catch (error) {
-    }
+      watchForElements([".btn.btn-secondary"], styleActiveButtonsWhenReady, {
+        maxRetries: 50,
+        retryInterval: 100,
+        context: "Active Button Styler",
+      });
+    } catch (error) {}
   })();
 }

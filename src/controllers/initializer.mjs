@@ -3,10 +3,13 @@
  * Page initialization utilities
  */
 
-import { getSettings, onSettingsChange } from '../core/settings.mjs';
-import { getAllUIElements, validateElements } from '../ui/basic/dom-manager.mjs';
-import { setupEventListeners } from './event-handlers.mjs';
-import { createUIUpdater } from '../ui/basic/ui-updater.mjs';
+import { getSettings, onSettingsChange } from "../core/settings.mjs";
+import {
+  getAllUIElements,
+  validateElements,
+} from "../ui/basic/dom-manager.mjs";
+import { setupEventListeners } from "./event-handlers.mjs";
+import { createUIUpdater } from "../ui/basic/ui-updater.mjs";
 
 /**
  * Initialize UI page with shared logic
@@ -17,33 +20,32 @@ export async function initializePage(pageName = "UI Page") {
   try {
     // Get all UI elements
     const elements = getAllUIElements();
-    
+
     // Validate that all required elements are present
     if (!validateElements(elements)) {
-      throw new Error('Missing required DOM elements');
+      throw new Error("Missing required DOM elements");
     }
-    
+
     // Load current settings
     const settings = await getSettings();
-    
+
     // Create UI updater function
     const updateUI = createUIUpdater(elements);
-    
+
     // Update UI with current settings
     updateUI(settings);
-    
+
     // Setup event listeners
     setupEventListeners(elements, updateUI);
-    
+
     // Listen for settings changes from other pages
     onSettingsChange(updateUI);
-    
+
     return {
       elements,
       updateUI,
-      settings
+      settings,
     };
-    
   } catch (error) {
     throw error;
   }
@@ -54,10 +56,9 @@ export async function initializePage(pageName = "UI Page") {
  * @param {string} pageName - Name of the page
  */
 export function initializeUIPage(pageName = "UI Page") {
-  document.addEventListener('DOMContentLoaded', async () => {
+  document.addEventListener("DOMContentLoaded", async () => {
     try {
       await initializePage(pageName);
-    } catch (error) {
-    }
+    } catch (error) {}
   });
 }

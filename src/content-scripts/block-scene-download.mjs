@@ -13,17 +13,13 @@ if (window.sceneDownloadBlockerInitialized) {
     try {
       // Bundle all dynamic imports in parallel
       const [
-        { 
-          blockDownloadCard, 
-          blockStreamForLifeCard, 
-          blockHDRentalCard 
-        },
+        { blockDownloadCard, blockStreamForLifeCard, blockHDRentalCard },
         { getSettings },
-        { watchForElements }
+        { watchForElements },
       ] = await Promise.all([
-        import(chrome.runtime.getURL('functions/dom/element-blocker.mjs')),
-        import(chrome.runtime.getURL('core/settings.mjs')),
-        import(chrome.runtime.getURL('functions/dom/element-watcher.mjs'))
+        import(chrome.runtime.getURL("functions/dom/element-blocker.mjs")),
+        import(chrome.runtime.getURL("core/settings.mjs")),
+        import(chrome.runtime.getURL("functions/dom/element-watcher.mjs")),
       ]);
 
       /**
@@ -33,47 +29,43 @@ if (window.sceneDownloadBlockerInitialized) {
         try {
           // Get settings
           const settings = await getSettings();
-          
+
           let totalBlocked = 0;
 
           // Block Download cards
           if (settings.blockDownload) {
-            const success = blockDownloadCard('Download Blocker');
+            const success = blockDownloadCard("Download Blocker");
             if (success) totalBlocked++;
           }
 
           // Block Stream cards
           if (settings.blockStreamForLife) {
-            const success = blockStreamForLifeCard('Stream Blocker');
+            const success = blockStreamForLifeCard("Stream Blocker");
             if (success) totalBlocked++;
           }
 
           // Block HD Rental cards
           if (settings.blockHDRental) {
-            const success = blockHDRentalCard('HD Rental Blocker');
+            const success = blockHDRentalCard("HD Rental Blocker");
             if (success) totalBlocked++;
           }
 
           if (totalBlocked > 0) {
           } else {
           }
-
-        } catch (error) {
-        }
+        } catch (error) {}
       }
 
       // Watch for membership cards container to become available
       watchForElements(
-        ['.membership-cards-container'],
+        [".membership-cards-container"],
         blockPurchaseCardsWhenReady,
         {
           maxRetries: 50,
           retryInterval: 100,
-          context: 'Purchase Card Blocker'
-        }
+          context: "Purchase Card Blocker",
+        },
       );
-
-    } catch (error) {
-    }
+    } catch (error) {}
   })();
 }

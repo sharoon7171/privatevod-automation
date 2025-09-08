@@ -3,7 +3,7 @@
  * Reusable utilities for replacing browser alerts with custom notifications
  */
 
-import { notificationManager } from '../ui/basic/notification.mjs';
+import { notificationManager } from "../ui/basic/notification.mjs";
 
 /**
  * Replace browser alert with custom notification
@@ -13,9 +13,9 @@ import { notificationManager } from '../ui/basic/notification.mjs';
  */
 export function showAlert(message, options = {}) {
   return notificationManager.info(message, {
-    title: 'PrivateVOD Automation',
+    title: "PrivateVOD Automation",
     duration: 4000,
-    ...options
+    ...options,
   });
 }
 
@@ -27,9 +27,9 @@ export function showAlert(message, options = {}) {
  */
 export function showSuccess(message, options = {}) {
   return notificationManager.success(message, {
-    title: 'Success',
+    title: "Success",
     duration: 3000,
-    ...options
+    ...options,
   });
 }
 
@@ -41,9 +41,9 @@ export function showSuccess(message, options = {}) {
  */
 export function showError(message, options = {}) {
   return notificationManager.error(message, {
-    title: 'Error',
+    title: "Error",
     duration: 6000,
-    ...options
+    ...options,
   });
 }
 
@@ -55,9 +55,9 @@ export function showError(message, options = {}) {
  */
 export function showWarning(message, options = {}) {
   return notificationManager.warning(message, {
-    title: 'Warning',
+    title: "Warning",
     duration: 5000,
-    ...options
+    ...options,
   });
 }
 
@@ -70,10 +70,10 @@ export function showWarning(message, options = {}) {
 export function showConfirm(message, options = {}) {
   return new Promise((resolve) => {
     const {
-      title = 'Confirm Action',
-      confirmText = 'Yes',
-      cancelText = 'No',
-      type = 'warning'
+      title = "Confirm Action",
+      confirmText = "Yes",
+      cancelText = "No",
+      type = "warning",
     } = options;
 
     const notificationId = notificationManager.show(message, {
@@ -81,13 +81,15 @@ export function showConfirm(message, options = {}) {
       title,
       duration: 0,
       persistent: true,
-      closable: false
+      closable: false,
     });
 
     // Create custom buttons
-    const notification = document.querySelector(`[data-id="${notificationId}"]`);
+    const notification = document.querySelector(
+      `[data-id="${notificationId}"]`,
+    );
     if (notification) {
-      const buttonContainer = document.createElement('div');
+      const buttonContainer = document.createElement("div");
       buttonContainer.style.cssText = `
         display: flex;
         gap: 8px;
@@ -95,9 +97,9 @@ export function showConfirm(message, options = {}) {
         justify-content: flex-end;
       `;
 
-      const confirmBtn = document.createElement('button');
+      const confirmBtn = document.createElement("button");
       confirmBtn.textContent = confirmText;
-      confirmBtn.className = 'btn btn-primary';
+      confirmBtn.className = "btn btn-primary";
       confirmBtn.style.cssText = `
         padding: 6px 12px;
         font-size: 12px;
@@ -108,9 +110,9 @@ export function showConfirm(message, options = {}) {
         resolve(true);
       };
 
-      const cancelBtn = document.createElement('button');
+      const cancelBtn = document.createElement("button");
       cancelBtn.textContent = cancelText;
-      cancelBtn.className = 'btn btn-secondary';
+      cancelBtn.className = "btn btn-secondary";
       cancelBtn.style.cssText = `
         padding: 6px 12px;
         font-size: 12px;
@@ -133,12 +135,12 @@ export function showConfirm(message, options = {}) {
  * @param {string} message - The loading message
  * @returns {string} - Notification ID
  */
-export function showLoading(message = 'Loading...') {
+export function showLoading(message = "Loading...") {
   return notificationManager.info(message, {
-    title: 'Processing',
+    title: "Processing",
     duration: 0,
     persistent: true,
-    closable: false
+    closable: false,
   });
 }
 
@@ -154,7 +156,7 @@ export function hideLoading(notificationId) {
  * Replace window.alert globally
  */
 export function replaceGlobalAlerts() {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     window.alert = showAlert;
     window.confirm = showConfirm;
   }
@@ -166,9 +168,9 @@ export function replaceGlobalAlerts() {
 export function initNotificationSystem() {
   // Replace global alerts
   replaceGlobalAlerts();
-  
+
   // Add to global scope for easy access
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     window.showAlert = showAlert;
     window.showSuccess = showSuccess;
     window.showError = showError;

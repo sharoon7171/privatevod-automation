@@ -5,12 +5,12 @@
  */
 
 // Service worker installation
-self.addEventListener('install', (event) => {
+self.addEventListener("install", (event) => {
   self.skipWaiting();
 });
 
 // Service worker activation
-self.addEventListener('activate', (event) => {
+self.addEventListener("activate", (event) => {
   event.waitUntil(clients.claim());
 });
 
@@ -24,33 +24,27 @@ chrome.webNavigation.onCommitted.addListener(async (details) => {
   try {
     // Only process main frame navigations (not iframes)
     if (details.frameId !== 0) return;
-    
-    
+
     // Check if this is a studio URL - matches ID/studio/ pattern
     const studioMatch = details.url.match(/(\d+)\/studio\//);
     if (!studioMatch) {
       return;
     }
-    
-    
+
     // Get settings to check if studio redirect is enabled
-    const result = await chrome.storage.sync.get(['privatevod_settings']);
+    const result = await chrome.storage.sync.get(["privatevod_settings"]);
     const settings = result.privatevod_settings || {};
-    
-    
+
     if (!settings.autoRedirectStudioUrls) {
       return;
     }
-    
+
     const studioId = studioMatch[1];
     const redirectUrl = `https://www.privatevod.com/watch-streaming-video-by-scene.html?sort=released&studio=${studioId}`;
-    
-    
+
     // Redirect immediately - page is already marked as visited
     chrome.tabs.update(details.tabId, { url: redirectUrl });
-    
-  } catch (error) {
-  }
+  } catch (error) {}
 });
 
 // Pornstar URL interception - redirect pornstar URLs to shop page
@@ -58,8 +52,7 @@ chrome.webNavigation.onCommitted.addListener(async (details) => {
   try {
     // Only process main frame navigations (not iframes)
     if (details.frameId !== 0) return;
-    
-    
+
     // Check if this is a pornstar URL - matches any URL containing pornstars.html
     // Examples:
     // /porn-videos/724441/eden-ivy-pornstars.html
@@ -71,45 +64,37 @@ chrome.webNavigation.onCommitted.addListener(async (details) => {
     if (!pornstarMatch) {
       return;
     }
-    
-    
+
     // Get settings to check if pornstar redirect is enabled
-    const result = await chrome.storage.sync.get(['privatevod_settings']);
+    const result = await chrome.storage.sync.get(["privatevod_settings"]);
     const settings = result.privatevod_settings || {};
-    
-    
+
     if (!settings.autoRedirectPornstarUrls) {
       return;
     }
-    
+
     const castId = pornstarMatch[1];
     const redirectUrl = `https://www.privatevod.com/shop-streaming-video-by-scene.html?cast=${castId}`;
-    
-    
+
     // Redirect immediately - page is already marked as visited
     chrome.tabs.update(details.tabId, { url: redirectUrl });
-    
-  } catch (error) {
-  }
+  } catch (error) {}
 });
-
 
 // Basic message handling (minimal structure)
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  
   // Handle different actions
-  if (request.action === 'ping') {
-    sendResponse({ success: true, message: 'Service worker is active' });
-  } else if (request.action === 'closeTab') {
+  if (request.action === "ping") {
+    sendResponse({ success: true, message: "Service worker is active" });
+  } else if (request.action === "closeTab") {
     // Close the tab that sent the message (the tab where content script is running)
     if (sender.tab && sender.tab.id) {
       chrome.tabs.remove(sender.tab.id);
-      sendResponse({ success: true, message: 'Tab closed' });
+      sendResponse({ success: true, message: "Tab closed" });
     } else {
-      sendResponse({ success: false, message: 'No tab ID found' });
+      sendResponse({ success: false, message: "No tab ID found" });
     }
   }
-  
+
   return true; // Indicate async response
 });
-

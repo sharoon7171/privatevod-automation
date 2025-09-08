@@ -12,20 +12,31 @@ if (window.screenshotExtensionInitialized) {
   (async function initScreenshotContentScript() {
     try {
       // Bundle all dynamic imports in parallel
-        const [
-          { waitForPageLoad },
-          { detectScreenshotPattern, getExistingImageUrls, countCarouselItems, extractTimecodeFromUrl },
-          { generateMissingUrls, validateGeneratedUrl },
-          { openScreenshotModal, getCarouselContainer, closeScreenshotModal },
-          { createAndEmbedImageGrid, removeExistingGrid },
-          { getSettings }
-        ] = await Promise.all([
-        import(chrome.runtime.getURL('functions/dom/page-loader.mjs')),
-        import(chrome.runtime.getURL('functions/dom/screenshot-pattern-detector.mjs')),
-        import(chrome.runtime.getURL('functions/dom/screenshot-url-generator.mjs')),
-        import(chrome.runtime.getURL('functions/dom/screenshot-modal-handler.mjs')),
-        import(chrome.runtime.getURL('functions/dom/image-grid-embedder.mjs')),
-        import(chrome.runtime.getURL('services/storage/get-settings.mjs'))
+      const [
+        { waitForPageLoad },
+        {
+          detectScreenshotPattern,
+          getExistingImageUrls,
+          countCarouselItems,
+          extractTimecodeFromUrl,
+        },
+        { generateMissingUrls, validateGeneratedUrl },
+        { openScreenshotModal, getCarouselContainer, closeScreenshotModal },
+        { createAndEmbedImageGrid, removeExistingGrid },
+        { getSettings },
+      ] = await Promise.all([
+        import(chrome.runtime.getURL("functions/dom/page-loader.mjs")),
+        import(
+          chrome.runtime.getURL("functions/dom/screenshot-pattern-detector.mjs")
+        ),
+        import(
+          chrome.runtime.getURL("functions/dom/screenshot-url-generator.mjs")
+        ),
+        import(
+          chrome.runtime.getURL("functions/dom/screenshot-modal-handler.mjs")
+        ),
+        import(chrome.runtime.getURL("functions/dom/image-grid-embedder.mjs")),
+        import(chrome.runtime.getURL("services/storage/get-settings.mjs")),
       ]);
 
       // Wait for complete page load
@@ -35,13 +46,12 @@ if (window.screenshotExtensionInitialized) {
         if (!settings.autoScreenshotModal) {
           return;
         }
-        
+
         await processScreenshotAutomation();
-      }, 'Screenshot Automation');
+      }, "Screenshot Automation");
 
       async function processScreenshotAutomation() {
         try {
-
           // Step 1: Open screenshot modal
           const modalOpened = await openScreenshotModal();
           if (!modalOpened) {
@@ -64,18 +74,24 @@ if (window.screenshotExtensionInitialized) {
           }
 
           // Step 4: Detect pattern from first 2 URLs
-          const pattern = detectScreenshotPattern(existingUrls[0], existingUrls[1]);
+          const pattern = detectScreenshotPattern(
+            existingUrls[0],
+            existingUrls[1],
+          );
           if (!pattern) {
             await closeScreenshotModal();
             return;
           }
 
-
           // Step 5: Count total carousel items
           const totalItems = countCarouselItems(carouselContainer);
 
           // Step 6: Generate missing URLs
-          const missingUrls = generateMissingUrls(pattern, totalItems, existingUrls);
+          const missingUrls = generateMissingUrls(
+            pattern,
+            totalItems,
+            existingUrls,
+          );
 
           // Step 7: Close modal
           await closeScreenshotModal();
@@ -85,24 +101,24 @@ if (window.screenshotExtensionInitialized) {
 
           // Step 9: Combine existing and generated URLs for grid
           const allImageData = [];
-          
+
           // Add existing URLs first
           existingUrls.forEach((url, index) => {
             allImageData.push({
               url: url,
               index: index + 1,
-              timecode: extractTimecodeFromUrl(url)
+              timecode: extractTimecodeFromUrl(url),
             });
           });
-          
+
           // Add generated URLs
-          missingUrls.forEach(missingUrl => {
+          missingUrls.forEach((missingUrl) => {
             allImageData.push(missingUrl);
           });
-          
+
           // Sort by timecode to maintain chronological order
           allImageData.sort((a, b) => a.timecode - b.timecode);
-          
+
           // Step 10: Create and embed image grid with all URLs
           if (allImageData.length > 0) {
             const gridElement = createAndEmbedImageGrid(allImageData);
@@ -111,12 +127,8 @@ if (window.screenshotExtensionInitialized) {
             }
           } else {
           }
-
-        } catch (error) {
-        }
+        } catch (error) {}
       }
-
-    } catch (error) {
-    }
+    } catch (error) {}
   })();
 }

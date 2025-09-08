@@ -38,11 +38,11 @@ const defaultSettings = {
   // Pornstar URL redirect settings
   autoRedirectPornstarUrls: true,
   // Link merging settings
-  mergeTitleWithImageLinks: true
+  mergeTitleWithImageLinks: true,
 };
 
 // Settings storage key
-const STORAGE_KEY = 'privatevod_settings';
+const STORAGE_KEY = "privatevod_settings";
 
 /**
  * Get current settings from storage
@@ -71,11 +71,19 @@ export async function saveSettings(settings) {
       enabled: Boolean(settings.enabled),
       // Auto-favorite video validation
       autoFavoriteVideo: Boolean(settings.autoFavoriteVideo),
-      autoFavoriteVideoTimer: Math.max(0, Math.min(10, Number(settings.autoFavoriteVideoTimer) || 0)),
-      autoCloseAfterFavoriteVideo: Boolean(settings.autoCloseAfterFavoriteVideo),
+      autoFavoriteVideoTimer: Math.max(
+        0,
+        Math.min(10, Number(settings.autoFavoriteVideoTimer) || 0),
+      ),
+      autoCloseAfterFavoriteVideo: Boolean(
+        settings.autoCloseAfterFavoriteVideo,
+      ),
       // Auto-favorite star validation
       autoFavoriteStar: Boolean(settings.autoFavoriteStar),
-      autoFavoriteStarTimer: Math.max(0, Math.min(10, Number(settings.autoFavoriteStarTimer) || 0)),
+      autoFavoriteStarTimer: Math.max(
+        0,
+        Math.min(10, Number(settings.autoFavoriteStarTimer) || 0),
+      ),
       autoCloseAfterFavoriteStar: Boolean(settings.autoCloseAfterFavoriteStar),
       // Screenshot automation validation
       autoScreenshotModal: Boolean(settings.autoScreenshotModal),
@@ -99,9 +107,9 @@ export async function saveSettings(settings) {
       // Pornstar URL redirect validation
       autoRedirectPornstarUrls: Boolean(settings.autoRedirectPornstarUrls),
       // Link merging validation
-      mergeTitleWithImageLinks: Boolean(settings.mergeTitleWithImageLinks)
+      mergeTitleWithImageLinks: Boolean(settings.mergeTitleWithImageLinks),
     };
-    
+
     await chrome.storage.sync.set({ [STORAGE_KEY]: validatedSettings });
     return true;
   } catch (error) {
@@ -128,7 +136,7 @@ export async function resetSettings() {
  */
 export function onSettingsChange(callback) {
   chrome.storage.onChanged.addListener((changes, namespace) => {
-    if (namespace === 'sync' && changes[STORAGE_KEY]) {
+    if (namespace === "sync" && changes[STORAGE_KEY]) {
       callback(changes[STORAGE_KEY].newValue);
     }
   });

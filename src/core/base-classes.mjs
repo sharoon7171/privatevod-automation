@@ -31,7 +31,7 @@ export class BaseComponent {
    * @returns {Element} The rendered element
    */
   render() {
-    throw new Error('render() method must be implemented by subclass');
+    throw new Error("render() method must be implemented by subclass");
   }
 
   /**
@@ -75,7 +75,7 @@ export class BaseComponent {
    */
   createElement(tag, options = {}) {
     const element = document.createElement(tag);
-    
+
     if (options.className) element.className = options.className;
     if (options.id) element.id = options.id;
     if (options.textContent) element.textContent = options.textContent;
@@ -90,7 +90,7 @@ export class BaseComponent {
         element.setAttribute(key, value);
       });
     }
-    
+
     return element;
   }
 
@@ -139,7 +139,7 @@ export class BaseService {
    * @param {Error} error - Error object
    * @param {string} context - Error context
    */
-  handleError(error, context = 'Service') {
+  handleError(error, context = "Service") {
     // Add error reporting logic here
   }
 
@@ -148,7 +148,7 @@ export class BaseService {
    * @param {string} message - Log message
    * @param {string} level - Log level (info, warn, error)
    */
-  log(message, level = 'info') {
+  log(message, level = "info") {
     const timestamp = new Date().toISOString();
     console[level](`[${timestamp}] ${this.constructor.name}: ${message}`);
   }

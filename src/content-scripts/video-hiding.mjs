@@ -13,23 +13,22 @@ if (window.videoHidingInitialized) {
   (async function initVideoHiding() {
     try {
       // Bundle all dynamic imports in parallel
-      const [
-        { videoHidingService },
-        { getSettings }
-      ] = await Promise.all([
-        import(chrome.runtime.getURL('services/video-hiding-service.mjs')),
-        import(chrome.runtime.getURL('core/settings.mjs'))
+      const [{ videoHidingService }, { getSettings }] = await Promise.all([
+        import(chrome.runtime.getURL("services/video-hiding-service.mjs")),
+        import(chrome.runtime.getURL("core/settings.mjs")),
       ]);
 
       // Listen for settings changes
       chrome.storage.onChanged.addListener((changes, namespace) => {
-        if (namespace === 'sync' && changes.privatevod_settings) {
+        if (namespace === "sync" && changes.privatevod_settings) {
           const newSettings = changes.privatevod_settings.newValue;
           const oldSettings = changes.privatevod_settings.oldValue;
-          
+
           // Check if hiding settings changed
-          if (newSettings.hideLikedVideos !== oldSettings.hideLikedVideos || 
-              newSettings.hideFavoritedVideos !== oldSettings.hideFavoritedVideos) {
+          if (
+            newSettings.hideLikedVideos !== oldSettings.hideLikedVideos ||
+            newSettings.hideFavoritedVideos !== oldSettings.hideFavoritedVideos
+          ) {
             videoHidingService.refreshHiding();
           }
         }
@@ -37,7 +36,7 @@ if (window.videoHidingInitialized) {
 
       // Listen for storage changes (favorites/likes)
       chrome.storage.onChanged.addListener((changes, namespace) => {
-        if (namespace === 'local') {
+        if (namespace === "local") {
           // Check if favorites or likes changed
           if (changes.privatevod_favorites || changes.privatevod_likes) {
             videoHidingService.refreshHiding();
@@ -51,15 +50,17 @@ if (window.videoHidingInitialized) {
       async function startVideoHidingWhenReady() {
         try {
           // Wait for document to be ready
-          if (document.readyState === 'loading') {
-            await new Promise(resolve => {
-              document.addEventListener('DOMContentLoaded', resolve, { once: true });
+          if (document.readyState === "loading") {
+            await new Promise((resolve) => {
+              document.addEventListener("DOMContentLoaded", resolve, {
+                once: true,
+              });
             });
           }
-          
+
           // Additional check to ensure body exists
           if (!document.body) {
-            await new Promise(resolve => {
+            await new Promise((resolve) => {
               const checkBody = () => {
                 if (document.body) {
                   resolve();
@@ -73,9 +74,7 @@ if (window.videoHidingInitialized) {
 
           // Always start video hiding service to handle both hiding and showing
           await videoHidingService.start();
-
-        } catch (error) {
-        }
+        } catch (error) {}
       }
 
       // Wait for videos to be available
@@ -101,8 +100,6 @@ if (window.videoHidingInitialized) {
           clearInterval(pollInterval);
         }, 10000);
       }
-
-    } catch (error) {
-    }
+    } catch (error) {}
   })();
 }

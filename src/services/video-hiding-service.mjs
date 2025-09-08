@@ -3,15 +3,15 @@
  * Manages hiding/showing videos based on settings and storage
  */
 
-import { 
-  hideVideo, 
-  showVideo, 
-  hideVideos, 
+import {
+  hideVideo,
+  showVideo,
+  hideVideos,
   showVideos,
-  getAllSceneIdsOnPage
-} from '../functions/dom/video-hider.mjs';
-import { getFavorites, getLikes } from './storage/favorite-like-storage.mjs';
-import { getSettings } from '../core/settings.mjs';
+  getAllSceneIdsOnPage,
+} from "../functions/dom/video-hider.mjs";
+import { getFavorites, getLikes } from "./storage/favorite-like-storage.mjs";
+import { getSettings } from "../core/settings.mjs";
 
 /**
  * Main video hiding service class
@@ -52,20 +52,18 @@ export class VideoHidingService {
     this.isActive = false;
   }
 
-
   /**
    * Process current page for video hiding
    */
   async processCurrentPage() {
     try {
       // Skip video hiding on favorites page - user wants to see their own favorites
-      if (window.location.pathname.includes('/account/scenes/favorites')) {
+      if (window.location.pathname.includes("/account/scenes/favorites")) {
         return;
       }
 
       const settings = await getSettings();
       this.currentSettings = settings;
-
 
       if (!settings.hideLikedVideos && !settings.hideFavoritedVideos) {
         // If both options are disabled, show all videos
@@ -77,22 +75,21 @@ export class VideoHidingService {
       }
 
       const sceneIdsOnPage = getAllSceneIdsOnPage();
-      
+
       if (sceneIdsOnPage.length === 0) {
         return;
       }
 
       const [favorites, likes] = await Promise.all([
         getFavorites(), // Always load favorites to check if video is favorited
-        settings.hideLikedVideos ? getLikes() : new Set()
+        settings.hideLikedVideos ? getLikes() : new Set(),
       ]);
-
 
       const videosToHide = new Set();
 
       // Add favorited videos to hide list (highest priority)
       if (settings.hideFavoritedVideos) {
-        sceneIdsOnPage.forEach(sceneId => {
+        sceneIdsOnPage.forEach((sceneId) => {
           if (favorites.has(sceneId)) {
             videosToHide.add(sceneId);
           }
@@ -101,7 +98,7 @@ export class VideoHidingService {
 
       // Add liked videos to hide list (only if NOT favorited)
       if (settings.hideLikedVideos) {
-        sceneIdsOnPage.forEach(sceneId => {
+        sceneIdsOnPage.forEach((sceneId) => {
           // Only hide if liked AND not favorited (manually liked only)
           if (likes.has(sceneId) && !favorites.has(sceneId)) {
             videosToHide.add(sceneId);
@@ -115,15 +112,14 @@ export class VideoHidingService {
       }
 
       // Show videos that should be visible (not in hide list)
-      const videosToShow = sceneIdsOnPage.filter(sceneId => !videosToHide.has(sceneId));
+      const videosToShow = sceneIdsOnPage.filter(
+        (sceneId) => !videosToHide.has(sceneId),
+      );
       if (videosToShow.length > 0) {
         showVideos(videosToShow);
       }
-
-    } catch (error) {
-    }
+    } catch (error) {}
   }
-
 
   /**
    * Start monitoring for new videos being added to the page
@@ -131,17 +127,24 @@ export class VideoHidingService {
   startVideoMonitoring() {
     this.observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.type === 'childList') {
+        if (mutation.type === "childList") {
           mutation.addedNodes.forEach((node) => {
             if (node.nodeType === Node.ELEMENT_NODE) {
               // Check if the added node is a video element
-              if (node.classList && node.classList.contains('grid-item') && node.id && node.id.startsWith('ascene_')) {
+              if (
+                node.classList &&
+                node.classList.contains("grid-item") &&
+                node.id &&
+                node.id.startsWith("ascene_")
+              ) {
                 this.processNewVideo(node);
               }
               // Check if the added node contains video elements
-              const videoElements = node.querySelectorAll && node.querySelectorAll('.grid-item[id^="ascene_"]');
+              const videoElements =
+                node.querySelectorAll &&
+                node.querySelectorAll('.grid-item[id^="ascene_"]');
               if (videoElements) {
-                videoElements.forEach(video => this.processNewVideo(video));
+                videoElements.forEach((video) => this.processNewVideo(video));
               }
             }
           });
@@ -153,16 +156,16 @@ export class VideoHidingService {
     if (document.body) {
       this.observer.observe(document.body, {
         childList: true,
-        subtree: true
+        subtree: true,
       });
     } else {
       // If document.body is not available, wait for DOMContentLoaded
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", () => {
           if (document.body) {
             this.observer.observe(document.body, {
               childList: true,
-              subtree: true
+              subtree: true,
             });
           }
         });
@@ -172,7 +175,7 @@ export class VideoHidingService {
           if (document.body) {
             this.observer.observe(document.body, {
               childList: true,
-              subtree: true
+              subtree: true,
             });
           }
         }, 100);
@@ -186,17 +189,18 @@ export class VideoHidingService {
    */
   async processNewVideo(videoElement) {
     try {
-      const sceneId = videoElement.id.replace('ascene_', '');
+      const sceneId = videoElement.id.replace("ascene_", "");
       if (!sceneId || !this.currentSettings) return;
 
-      const shouldHide = await this.shouldHideVideo(sceneId, this.currentSettings);
+      const shouldHide = await this.shouldHideVideo(
+        sceneId,
+        this.currentSettings,
+      );
       if (shouldHide) {
         hideVideo(sceneId);
       }
-    } catch (error) {
-    }
+    } catch (error) {}
   }
-
 
   /**
    * Check if a video should be hidden based on current settings
@@ -211,7 +215,7 @@ export class VideoHidingService {
 
     const [favorites, likes] = await Promise.all([
       getFavorites(), // Always load favorites to check if video is favorited
-      settings.hideLikedVideos ? getLikes() : new Set()
+      settings.hideLikedVideos ? getLikes() : new Set(),
     ]);
 
     // Hide if favorited and hide favorited videos is enabled (highest priority)
@@ -220,7 +224,11 @@ export class VideoHidingService {
     }
 
     // Hide if liked BUT NOT favorited and hide liked videos is enabled (manually liked only)
-    if (settings.hideLikedVideos && likes.has(sceneId) && !favorites.has(sceneId)) {
+    if (
+      settings.hideLikedVideos &&
+      likes.has(sceneId) &&
+      !favorites.has(sceneId)
+    ) {
       return true;
     }
 

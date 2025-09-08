@@ -7,10 +7,10 @@
  * Log Levels
  */
 export const LOG_LEVELS = {
-  ERROR: 'error',
-  WARN: 'warn',
-  INFO: 'info',
-  DEBUG: 'debug'
+  ERROR: "error",
+  WARN: "warn",
+  INFO: "info",
+  DEBUG: "debug",
 };
 
 /**
@@ -18,14 +18,14 @@ export const LOG_LEVELS = {
  * Centralized logging with different levels and contexts
  */
 export class Logger {
-  constructor(context = 'Logger', options = {}) {
+  constructor(context = "Logger", options = {}) {
     this.context = context;
     this.options = {
       enableConsole: true,
       enableStorage: false,
       maxStorageEntries: 100,
       logLevel: LOG_LEVELS.INFO,
-      ...options
+      ...options,
     };
   }
 
@@ -78,7 +78,7 @@ export class Logger {
       level,
       context: this.context,
       message,
-      data: data || null
+      data: data || null,
     };
 
     // Console logging
@@ -102,19 +102,19 @@ export class Logger {
 
     switch (level) {
       case LOG_LEVELS.ERROR:
-        console.error(formattedMessage, data || '');
+        console.error(formattedMessage, data || "");
         break;
       case LOG_LEVELS.WARN:
-        console.warn(formattedMessage, data || '');
+        console.warn(formattedMessage, data || "");
         break;
       case LOG_LEVELS.INFO:
-        console.info(formattedMessage, data || '');
+        console.info(formattedMessage, data || "");
         break;
       case LOG_LEVELS.DEBUG:
-        console.debug(formattedMessage, data || '');
+        console.debug(formattedMessage, data || "");
         break;
       default:
-        console.log(formattedMessage, data || '');
+        console.log(formattedMessage, data || "");
     }
   }
 
@@ -124,20 +124,20 @@ export class Logger {
    */
   async logToStorage(logEntry) {
     try {
-      const result = await chrome.storage.local.get(['app_logs']);
+      const result = await chrome.storage.local.get(["app_logs"]);
       const logs = result.app_logs || [];
-      
+
       // Add new log entry
       logs.push(logEntry);
-      
+
       // Keep only the most recent entries
       if (logs.length > this.options.maxStorageEntries) {
         logs.splice(0, logs.length - this.options.maxStorageEntries);
       }
-      
+
       await chrome.storage.local.set({ app_logs: logs });
     } catch (error) {
-      console.error('Failed to log to storage:', error);
+      console.error("Failed to log to storage:", error);
     }
   }
 
@@ -147,10 +147,10 @@ export class Logger {
    */
   async getStoredLogs() {
     try {
-      const result = await chrome.storage.local.get(['app_logs']);
+      const result = await chrome.storage.local.get(["app_logs"]);
       return result.app_logs || [];
     } catch (error) {
-      console.error('Failed to get stored logs:', error);
+      console.error("Failed to get stored logs:", error);
       return [];
     }
   }
@@ -160,9 +160,9 @@ export class Logger {
    */
   async clearStoredLogs() {
     try {
-      await chrome.storage.local.remove(['app_logs']);
+      await chrome.storage.local.remove(["app_logs"]);
     } catch (error) {
-      console.error('Failed to clear stored logs:', error);
+      console.error("Failed to clear stored logs:", error);
     }
   }
 }
@@ -181,10 +181,10 @@ export function createLogger(context, options = {}) {
  * Default logger instances for common contexts
  */
 export const loggers = {
-  contentScript: createLogger('Content Script', { logLevel: LOG_LEVELS.INFO }),
-  options: createLogger('Options', { logLevel: LOG_LEVELS.INFO }),
-  background: createLogger('Background', { logLevel: LOG_LEVELS.INFO }),
-  shared: createLogger('Shared', { logLevel: LOG_LEVELS.DEBUG })
+  contentScript: createLogger("Content Script", { logLevel: LOG_LEVELS.INFO }),
+  options: createLogger("Options", { logLevel: LOG_LEVELS.INFO }),
+  background: createLogger("Background", { logLevel: LOG_LEVELS.INFO }),
+  shared: createLogger("Shared", { logLevel: LOG_LEVELS.DEBUG }),
 };
 
 /**
@@ -194,5 +194,5 @@ export const log = {
   error: (message, error) => loggers.shared.error(message, error),
   warn: (message, data) => loggers.shared.warn(message, data),
   info: (message, data) => loggers.shared.info(message, data),
-  debug: (message, data) => loggers.shared.debug(message, data)
+  debug: (message, data) => loggers.shared.debug(message, data),
 };

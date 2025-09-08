@@ -5,28 +5,24 @@
   "description": "A minimal Chrome extension with options page only, following ultra-modular architecture standards.",
   "author": "SQ Tech",
   "homepage_url": "https://sqtech.dev",
-  
+
   "action": {
     "default_title": "PrivateVOD Automation - Click to open settings"
   },
-  
+
   "options_page": "templates/pages/options.html",
-  
+
   "background": {
     "service_worker": "background/service-worker.mjs"
   },
-  
-  "permissions": [
-    "storage",
-    "tabs",
-    "webNavigation"
-  ],
-  
+
+  "permissions": ["storage", "tabs", "webNavigation"],
+
   "host_permissions": [
     "https://www.privatevod.com/*",
     "https://privatevod.com/*"
   ],
-  
+
   "content_scripts": [
     {
       "matches": [
@@ -49,15 +45,10 @@
         "https://www.privatevod.com/*/*-pornstars.html*",
         "https://privatevod.com/*/*-pornstars.html*"
       ],
-      "js": [
-        "content-scripts/auto-favorite-star.mjs"
-      ]
+      "js": ["content-scripts/auto-favorite-star.mjs"]
     },
     {
-      "matches": [
-        "https://www.privatevod.com/*",
-        "https://privatevod.com/*"
-      ],
+      "matches": ["https://www.privatevod.com/*", "https://privatevod.com/*"],
       "js": [
         "content-scripts/style-active-buttons.mjs",
         "content-scripts/video-hiding.mjs",
@@ -66,11 +57,11 @@
       "run_at": "document_start"
     }
   ],
-  
+
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"
   },
-  
+
   "web_accessible_resources": [
     {
       "resources": [
@@ -82,10 +73,7 @@
         "utilities/*.mjs",
         "ui/basic/*.mjs"
       ],
-      "matches": [
-        "https://www.privatevod.com/*",
-        "https://privatevod.com/*"
-      ]
+      "matches": ["https://www.privatevod.com/*", "https://privatevod.com/*"]
     }
   ]
 }

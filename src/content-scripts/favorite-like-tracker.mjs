@@ -12,12 +12,9 @@ if (window.favoriteLikeTrackerInitialized) {
   (async function initFavoriteLikeTracker() {
     try {
       // Bundle all dynamic imports in parallel
-      const [
-        { favoriteLikeTracker },
-        { getSettings }
-      ] = await Promise.all([
-        import(chrome.runtime.getURL('services/favorite-like-tracker.mjs')),
-        import(chrome.runtime.getURL('core/settings.mjs'))
+      const [{ favoriteLikeTracker }, { getSettings }] = await Promise.all([
+        import(chrome.runtime.getURL("services/favorite-like-tracker.mjs")),
+        import(chrome.runtime.getURL("core/settings.mjs")),
       ]);
 
       /**
@@ -27,7 +24,7 @@ if (window.favoriteLikeTrackerInitialized) {
         try {
           // Get settings
           const settings = await getSettings();
-          
+
           // Check if tracking is enabled
           if (!settings.trackFavoritesLikes) {
             return;
@@ -35,15 +32,12 @@ if (window.favoriteLikeTrackerInitialized) {
 
           // Start tracking
           await favoriteLikeTracker.startTracking();
-          
-
-        } catch (error) {
-        }
+        } catch (error) {}
       }
 
       // Wait for buttons to be available
       const checkForButtons = () => {
-        const buttons = document.querySelectorAll('.btn.btn-secondary');
+        const buttons = document.querySelectorAll(".btn.btn-secondary");
         return buttons.length > 0;
       };
 
@@ -64,8 +58,6 @@ if (window.favoriteLikeTrackerInitialized) {
           clearInterval(pollInterval);
         }, 10000);
       }
-
-    } catch (error) {
-    }
+    } catch (error) {}
   })();
 }

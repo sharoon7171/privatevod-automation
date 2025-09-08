@@ -17,32 +17,32 @@ export const DEFAULT_SETTINGS = {
   autoFavoriteStar: false,
   autoFavoriteStarTimer: 0,
   autoCloseAfterFavoriteStar: false,
-  autoScreenshotModal: false
+  autoScreenshotModal: false,
 };
 
 /**
  * CSS selectors used across content scripts
  */
 export const SELECTORS = {
-  TARGET_BUTTON: '#ppmWatchNow',
-  FAVORITE_BUTTON: 'a[onclick*="ToggleProductFavorite"]'
+  TARGET_BUTTON: "#ppmWatchNow",
+  FAVORITE_BUTTON: 'a[onclick*="ToggleProductFavorite"]',
 };
 
 /**
  * Extension configuration constants
  */
 export const EXTENSION_CONFIG = {
-  NAME: 'PrivateVOD Automation',
-  VERSION: '1.0.0',
-  AUTHOR: 'SQ Tech',
-  WEBSITE: 'https://sqtech.dev'
+  NAME: "PrivateVOD Automation",
+  VERSION: "1.0.0",
+  AUTHOR: "SQ Tech",
+  WEBSITE: "https://sqtech.dev",
 };
 
 /**
  * Storage keys
  */
 export const STORAGE_KEYS = {
-  SETTINGS: 'privatevod_settings'
+  SETTINGS: "privatevod_settings",
 };
 
 /**
@@ -50,5 +50,5 @@ export const STORAGE_KEYS = {
  */
 export const TIMER_LIMITS = {
   MIN: 0,
-  MAX: 10
+  MAX: 10,
 };
