@@ -118,7 +118,9 @@ export class VideoHidingService {
       if (videosToShow.length > 0) {
         showVideos(videosToShow);
       }
-    } catch (error) {}
+    } catch (error) {
+      // Silent error handling
+    }
   }
 
   /**
@@ -130,21 +132,18 @@ export class VideoHidingService {
         if (mutation.type === "childList") {
           mutation.addedNodes.forEach((node) => {
             if (node.nodeType === Node.ELEMENT_NODE) {
-              // Check if the added node is a video element
-              if (
-                node.classList &&
-                node.classList.contains("grid-item") &&
-                node.id &&
-                node.id.startsWith("ascene_")
-              ) {
+              // Check if the added node is a video element (any format)
+              if (this.isVideoElement(node)) {
                 this.processNewVideo(node);
               }
               // Check if the added node contains video elements
-              const videoElements =
-                node.querySelectorAll &&
-                node.querySelectorAll('.grid-item[id^="ascene_"]');
+              const videoElements = node.querySelectorAll && node.querySelectorAll('.grid-item');
               if (videoElements) {
-                videoElements.forEach((video) => this.processNewVideo(video));
+                videoElements.forEach((video) => {
+                  if (this.isVideoElement(video)) {
+                    this.processNewVideo(video);
+                  }
+                });
               }
             }
           });
@@ -184,12 +183,45 @@ export class VideoHidingService {
   }
 
   /**
+   * Check if an element is a video element (any format)
+   * @param {Element} element - Element to check
+   * @returns {boolean} Whether the element is a video element
+   */
+  isVideoElement(element) {
+    if (!element || !element.classList) return false;
+    
+    // Check if it's a grid-item with video content
+    if (element.classList.contains('grid-item')) {
+      // Check for ascene_ format
+      if (element.id && element.id.startsWith('ascene_')) {
+        return true;
+      }
+      
+      // Check for data-scene-id format
+      if (element.querySelector('[data-scene-id]')) {
+        return true;
+      }
+      
+      // Check for href format (links with scene ID pattern)
+      const links = element.querySelectorAll('a[href*="/"][href*="-video.html"]');
+      if (links.length > 0) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+
+  /**
    * Process a newly added video element
    * @param {Element} videoElement - New video element
    */
   async processNewVideo(videoElement) {
     try {
-      const sceneId = videoElement.id.replace("ascene_", "");
+      // Import the getSceneIdFromVideoElement function
+      const { getSceneIdFromVideoElement } = await import('../functions/dom/video-hider.mjs');
+      
+      const sceneId = getSceneIdFromVideoElement(videoElement);
       if (!sceneId || !this.currentSettings) return;
 
       const shouldHide = await this.shouldHideVideo(
