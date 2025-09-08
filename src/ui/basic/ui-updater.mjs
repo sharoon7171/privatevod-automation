@@ -88,6 +88,9 @@ export function updateUI(settings, elements) {
   // Update pornstar URL redirect toggle
   updateToggleState(elements['auto-redirect-pornstar-urls-toggle'], settings.autoRedirectPornstarUrls);
   
+  // Update link merger toggle
+  updateToggleState(elements['merge-title-with-image-links-toggle'], settings.mergeTitleWithImageLinks);
+  
   // Load storage display on page load
   loadStorageDisplay(elements);
 }

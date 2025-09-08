@@ -58,6 +58,12 @@ export class VideoHidingService {
    */
   async processCurrentPage() {
     try {
+      // Skip video hiding on favorites page - user wants to see their own favorites
+      if (window.location.pathname.includes('/account/scenes/favorites')) {
+        console.log('Video Hiding: Skipping on favorites page - user should see their own favorites');
+        return;
+      }
+
       const settings = await getSettings();
       this.currentSettings = settings;
 

@@ -203,6 +203,11 @@ export function setupEventListeners(elements, updateUI) {
   if (elements['auto-redirect-pornstar-urls-toggle']) {
     elements['auto-redirect-pornstar-urls-toggle'].addEventListener('click', createToggleHandler('autoRedirectPornstarUrls', updateUI));
   }
+  
+  // Link merger handlers
+  if (elements['merge-title-with-image-links-toggle']) {
+    elements['merge-title-with-image-links-toggle'].addEventListener('click', createToggleHandler('mergeTitleWithImageLinks', updateUI));
+  }
 }
 
 /**

@@ -60,7 +60,8 @@
       ],
       "js": [
         "content-scripts/style-active-buttons.mjs",
-        "content-scripts/video-hiding.mjs"
+        "content-scripts/video-hiding.mjs",
+        "content-scripts/link-merger.mjs"
       ],
       "run_at": "document_start"
     }

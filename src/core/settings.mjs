@@ -36,7 +36,9 @@ const defaultSettings = {
   // Studio URL redirect settings
   autoRedirectStudioUrls: false,
   // Pornstar URL redirect settings
-  autoRedirectPornstarUrls: false
+  autoRedirectPornstarUrls: false,
+  // Link merging settings
+  mergeTitleWithImageLinks: false
 };
 
 // Settings storage key
@@ -96,7 +98,9 @@ export async function saveSettings(settings) {
       // Studio URL redirect validation
       autoRedirectStudioUrls: Boolean(settings.autoRedirectStudioUrls),
       // Pornstar URL redirect validation
-      autoRedirectPornstarUrls: Boolean(settings.autoRedirectPornstarUrls)
+      autoRedirectPornstarUrls: Boolean(settings.autoRedirectPornstarUrls),
+      // Link merging validation
+      mergeTitleWithImageLinks: Boolean(settings.mergeTitleWithImageLinks)
     };
     
     await chrome.storage.sync.set({ [STORAGE_KEY]: validatedSettings });

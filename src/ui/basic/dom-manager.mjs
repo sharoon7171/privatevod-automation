@@ -53,7 +53,8 @@ export function getAllUIElements() {
     'hide-liked-videos-toggle',
     'hide-favorited-videos-toggle',
     'auto-redirect-studio-urls-toggle',
-    'auto-redirect-pornstar-urls-toggle'
+    'auto-redirect-pornstar-urls-toggle',
+    'merge-title-with-image-links-toggle'
   ];
   
   return getElementsByIds(elementIds);
