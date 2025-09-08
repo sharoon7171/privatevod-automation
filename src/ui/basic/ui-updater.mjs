@@ -63,6 +63,9 @@ export function updateUI(settings, elements) {
   // Update user actions mover toggle
   updateToggleState(elements['move-user-actions-toggle'], settings.moveUserActions);
   
+  // Update container px-0 mover toggle
+  updateToggleState(elements['move-container-px0-toggle'], settings.moveContainerPx0);
+  
   // Update download blocker toggle
   updateToggleState(elements['block-download-toggle'], settings.blockDownload);
   
@@ -71,6 +74,9 @@ export function updateUI(settings, elements) {
   
   // Update HD rental blocker toggle
   updateToggleState(elements['block-hd-rental-toggle'], settings.blockHDRental);
+  
+  // Update DVD rental blocker toggle
+  updateToggleState(elements['block-dvd-rental-toggle'], settings.blockDVDRental);
   
   // Update active button styling toggle
   updateToggleState(elements['style-active-buttons-toggle'], settings.styleActiveButtons);

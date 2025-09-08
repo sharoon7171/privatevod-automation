@@ -20,12 +20,16 @@ const defaultSettings = {
   autoScreenshotModal: true,
   // User actions mover settings
   moveUserActions: true,
+  // Container px-0 mover settings
+  moveContainerPx0: true,
   // Download blocker settings (blocks all download types)
   blockDownload: true,
   // Stream blocker settings (blocks all stream types)
   blockStreamForLife: true,
   // Rental blocker settings (blocks all rental types)
   blockHDRental: true,
+  // DVD blocker settings (blocks any card containing DVD)
+  blockDVDRental: true,
   // Active button styling settings
   styleActiveButtons: true,
   // Favorite and like tracking settings
@@ -89,12 +93,16 @@ export async function saveSettings(settings) {
       autoScreenshotModal: Boolean(settings.autoScreenshotModal),
       // User actions mover validation
       moveUserActions: Boolean(settings.moveUserActions),
+      // Container px-0 mover validation
+      moveContainerPx0: Boolean(settings.moveContainerPx0),
       // Download blocker validation
       blockDownload: Boolean(settings.blockDownload),
       // Stream blocker validation
       blockStreamForLife: Boolean(settings.blockStreamForLife),
       // HD rental blocker validation
       blockHDRental: Boolean(settings.blockHDRental),
+      // DVD rental blocker validation
+      blockDVDRental: Boolean(settings.blockDVDRental),
       // Active button styling validation
       styleActiveButtons: Boolean(settings.styleActiveButtons),
       // Favorite and like tracking validation

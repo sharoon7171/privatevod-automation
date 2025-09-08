@@ -40,8 +40,9 @@
         "content-scripts/video-autoplay.mjs",
         "content-scripts/auto-favorite-video.mjs",
         "content-scripts/auto-screenshot-modal.mjs",
-        "content-scripts/move-user-actions.mjs",
+        "content-scripts/move-details-elements.mjs",
         "content-scripts/block-scene-download.mjs",
+        "content-scripts/block-dvd-cards.mjs",
         "content-scripts/favorite-like-tracker.mjs"
       ]
     },

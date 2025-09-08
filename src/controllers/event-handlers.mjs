@@ -159,6 +159,14 @@ export function setupEventListeners(elements, updateUI) {
     );
   }
 
+  // Container px-0 mover handlers
+  if (elements["move-container-px0-toggle"]) {
+    elements["move-container-px0-toggle"].addEventListener(
+      "click",
+      createToggleHandler("moveContainerPx0", updateUI),
+    );
+  }
+
   // Download blocker handlers
   if (elements["block-download-toggle"]) {
     elements["block-download-toggle"].addEventListener(
@@ -180,6 +188,14 @@ export function setupEventListeners(elements, updateUI) {
     elements["block-hd-rental-toggle"].addEventListener(
       "click",
       createToggleHandler("blockHDRental", updateUI),
+    );
+  }
+
+  // DVD rental blocker handlers
+  if (elements["block-dvd-rental-toggle"]) {
+    elements["block-dvd-rental-toggle"].addEventListener(
+      "click",
+      createToggleHandler("blockDVDRental", updateUI),
     );
   }
 
