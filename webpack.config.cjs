@@ -78,6 +78,10 @@ module.exports = {
         {
           from: 'src/utilities',
           to: 'utilities'
+        },
+        {
+          from: 'src/assets',
+          to: 'assets'
         }
       ]
     })

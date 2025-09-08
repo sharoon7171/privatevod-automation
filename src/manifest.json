@@ -6,8 +6,19 @@
   "author": "SQ Tech",
   "homepage_url": "https://sqtech.dev",
 
+  "icons": {
+    "16": "assets/icons/icon-16.png",
+    "48": "assets/icons/icon-48.png",
+    "128": "assets/icons/icon-128.png"
+  },
+
   "action": {
-    "default_title": "PrivateVOD Automation - Click to open settings"
+    "default_title": "PrivateVOD Automation - Click to open settings",
+    "default_icon": {
+      "16": "assets/icons/icon-16.png",
+      "48": "assets/icons/icon-48.png",
+      "128": "assets/icons/icon-128.png"
+    }
   },
 
   "options_page": "templates/pages/options.html",
