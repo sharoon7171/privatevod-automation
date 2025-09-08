@@ -49,14 +49,14 @@
   --text-inverse: #ffffff;
   
   /* Spacing System - Compact & Modern */
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 12px;
-  --spacing-lg: 16px;
-  --spacing-xl: 20px;
-  --spacing-xxl: 24px;
-  --spacing-xxxl: 32px;
-  --spacing-xxxxl: 40px;
+  --spacing-xs: 3px;
+  --spacing-sm: 6px;
+  --spacing-md: 10px;
+  --spacing-lg: 14px;
+  --spacing-xl: 18px;
+  --spacing-xxl: 22px;
+  --spacing-xxxl: 28px;
+  --spacing-xxxxl: 36px;
   
   /* Border Radius - Modern Rounded Corners */
   --radius-xs: 2px;

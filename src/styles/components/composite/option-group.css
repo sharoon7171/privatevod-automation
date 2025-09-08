@@ -2,8 +2,8 @@
 .option-group {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
-  padding: var(--spacing-lg);
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
   background: var(--white);
   border: 1px solid var(--gray-200);
   border-radius: var(--radius-lg);
@@ -20,8 +20,8 @@
   background: var(--white);
   border: 1px solid var(--gray-200);
   border-radius: var(--radius-xl);
-  padding: var(--spacing-xl);
-  margin: var(--spacing-lg) 0;
+  padding: var(--spacing-lg);
+  margin: var(--spacing-md) 0;
   box-shadow: var(--shadow-sm);
   transition: all var(--transition-fast);
 }
@@ -32,7 +32,7 @@
 }
 
 .option-section h3 {
-  margin: 0 0 var(--spacing-lg) 0;
+  margin: 0 0 var(--spacing-md) 0;
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
   color: var(--text-primary);
@@ -55,8 +55,8 @@
   background: var(--white);
   border: 1px solid var(--gray-200);
   border-radius: var(--radius-xl);
-  padding: var(--spacing-xl);
-  margin: var(--spacing-lg) 0;
+  padding: var(--spacing-lg);
+  margin: var(--spacing-md) 0;
   box-shadow: var(--shadow-sm);
   transition: all var(--transition-fast);
 }
@@ -70,7 +70,7 @@
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
   color: var(--text-primary);
-  margin: 0 0 var(--spacing-lg) 0;
+  margin: 0 0 var(--spacing-md) 0;
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
@@ -115,7 +115,7 @@
   background: var(--white);
   border: 1px solid var(--gray-200);
   border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
+  padding: var(--spacing-md);
   box-shadow: var(--shadow-xs);
   transition: all var(--transition-fast);
 }
@@ -129,7 +129,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
 }
 
 .option-card-title {
