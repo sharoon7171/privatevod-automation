@@ -77,7 +77,9 @@
         "services/*.mjs",
         "functions/dom/*.mjs",
         "functions/async/*.mjs",
-        "core/*.mjs"
+        "core/*.mjs",
+        "utilities/*.mjs",
+        "ui/basic/*.mjs"
       ],
       "matches": [
         "https://www.privatevod.com/*",

@@ -85,6 +85,9 @@ export function updateUI(settings, elements) {
   // Update studio URL redirect toggle
   updateToggleState(elements['auto-redirect-studio-urls-toggle'], settings.autoRedirectStudioUrls);
   
+  // Update pornstar URL redirect toggle
+  updateToggleState(elements['auto-redirect-pornstar-urls-toggle'], settings.autoRedirectPornstarUrls);
+  
   // Load storage display on page load
   loadStorageDisplay(elements);
 }

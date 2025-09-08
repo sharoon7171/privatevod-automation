@@ -4,6 +4,7 @@
  */
 
 import { getSettings, saveSettings } from '../core/settings.mjs';
+import { showSuccess, showError, initNotificationSystem } from '../utilities/notification-utils.mjs';
 
 /**
  * Handle toggle click event
@@ -59,6 +60,8 @@ export function createTimerHandler(settingName, inputElement, updateUI) {
  * @param {Function} updateUI - UI update function
  */
 export function setupEventListeners(elements, updateUI) {
+  // Initialize notification system
+  initNotificationSystem();
   // Autoplay toggle click handler
   if (elements['autoplay-toggle']) {
     elements['autoplay-toggle'].addEventListener('click', createToggleHandler('autoplay', updateUI));
@@ -143,15 +146,15 @@ export function setupEventListeners(elements, updateUI) {
         const { clearAllFavorites } = await import('../../services/storage/favorite-like-storage.mjs');
         const success = await clearAllFavorites();
         if (success) {
-          alert('All favorites cleared successfully!');
+          showSuccess('All favorites cleared successfully!');
           // Refresh the storage display
           await refreshStorageDisplay(elements);
         } else {
-          alert('Error clearing favorites. Please try again.');
+          showError('Error clearing favorites. Please try again.');
         }
       } catch (error) {
         console.error('Error clearing favorites:', error);
-        alert('Error clearing favorites. Please try again.');
+        showError('Error clearing favorites. Please try again.');
       }
     });
   }
@@ -163,15 +166,15 @@ export function setupEventListeners(elements, updateUI) {
         const { clearAllLikes } = await import('../../services/storage/favorite-like-storage.mjs');
         const success = await clearAllLikes();
         if (success) {
-          alert('All likes cleared successfully!');
+          showSuccess('All likes cleared successfully!');
           // Refresh the storage display
           await refreshStorageDisplay(elements);
         } else {
-          alert('Error clearing likes. Please try again.');
+          showError('Error clearing likes. Please try again.');
         }
       } catch (error) {
         console.error('Error clearing likes:', error);
-        alert('Error clearing likes. Please try again.');
+        showError('Error clearing likes. Please try again.');
       }
     });
   }
@@ -195,6 +198,10 @@ export function setupEventListeners(elements, updateUI) {
   // Studio URL redirect handlers
   if (elements['auto-redirect-studio-urls-toggle']) {
     elements['auto-redirect-studio-urls-toggle'].addEventListener('click', createToggleHandler('autoRedirectStudioUrls', updateUI));
+  }
+  
+  if (elements['auto-redirect-pornstar-urls-toggle']) {
+    elements['auto-redirect-pornstar-urls-toggle'].addEventListener('click', createToggleHandler('autoRedirectPornstarUrls', updateUI));
   }
 }
 

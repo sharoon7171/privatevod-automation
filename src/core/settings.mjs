@@ -34,7 +34,9 @@ const defaultSettings = {
   hideLikedVideos: false,
   hideFavoritedVideos: false,
   // Studio URL redirect settings
-  autoRedirectStudioUrls: false
+  autoRedirectStudioUrls: false,
+  // Pornstar URL redirect settings
+  autoRedirectPornstarUrls: false
 };
 
 // Settings storage key
@@ -92,7 +94,9 @@ export async function saveSettings(settings) {
       hideLikedVideos: Boolean(settings.hideLikedVideos),
       hideFavoritedVideos: Boolean(settings.hideFavoritedVideos),
       // Studio URL redirect validation
-      autoRedirectStudioUrls: Boolean(settings.autoRedirectStudioUrls)
+      autoRedirectStudioUrls: Boolean(settings.autoRedirectStudioUrls),
+      // Pornstar URL redirect validation
+      autoRedirectPornstarUrls: Boolean(settings.autoRedirectPornstarUrls)
     };
     
     await chrome.storage.sync.set({ [STORAGE_KEY]: validatedSettings });

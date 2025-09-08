@@ -52,7 +52,8 @@ export function getAllUIElements() {
     'storage-display',
     'hide-liked-videos-toggle',
     'hide-favorited-videos-toggle',
-    'auto-redirect-studio-urls-toggle'
+    'auto-redirect-studio-urls-toggle',
+    'auto-redirect-pornstar-urls-toggle'
   ];
   
   return getElementsByIds(elementIds);

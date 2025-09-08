@@ -145,11 +145,35 @@ export class VideoHidingService {
       });
     });
 
-    // Observe the document body for changes
-    this.observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
+    // Wait for document body to be available before observing
+    if (document.body) {
+      this.observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+    } else {
+      // If document.body is not available, wait for DOMContentLoaded
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          if (document.body) {
+            this.observer.observe(document.body, {
+              childList: true,
+              subtree: true
+            });
+          }
+        });
+      } else {
+        // Document is already loaded but body is not available, try again later
+        setTimeout(() => {
+          if (document.body) {
+            this.observer.observe(document.body, {
+              childList: true,
+              subtree: true
+            });
+          }
+        }, 100);
+      }
+    }
   }
 
   /**

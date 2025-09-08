@@ -1,21 +1,146 @@
-/* Option Group Component */
+/* Modern Option Group Component */
 .option-group {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xs);
+  transition: all var(--transition-fast);
+}
+
+.option-group:hover {
+  box-shadow: var(--shadow-sm);
+  border-color: var(--gray-300);
 }
 
 .option-section {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-gray);
-  border-radius: var(--radius-lg);
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-xl);
   padding: var(--spacing-xl);
   margin: var(--spacing-lg) 0;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+
+.option-section:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--gray-300);
 }
 
 .option-section h3 {
   margin: 0 0 var(--spacing-lg) 0;
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
   color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.option-section h3::before {
+  content: '';
+  width: 4px;
+  height: 20px;
+  background: var(--primary-color);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+/* Section Variants */
+.section {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  margin: var(--spacing-lg) 0;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+
+.section:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--gray-300);
+}
+
+.section-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-lg) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.section-title::before {
+  content: '';
+  width: 4px;
+  height: 20px;
+  background: var(--primary-color);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+/* Option Description */
+.option-description {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+  line-height: var(--line-height-relaxed);
+  margin: var(--spacing-sm) 0 0 0;
+  padding-left: var(--spacing-md);
+  border-left: 2px solid var(--gray-200);
+}
+
+/* Compact Layout */
+.option-group-compact {
+  padding: var(--spacing-md);
+  gap: var(--spacing-sm);
+}
+
+.option-group-compact .toggle-container {
+  margin: var(--spacing-sm) 0;
+}
+
+.option-group-compact .input-container {
+  margin: var(--spacing-sm) 0;
+}
+
+/* Card Layout */
+.option-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-xs);
+  transition: all var(--transition-fast);
+}
+
+.option-card:hover {
+  box-shadow: var(--shadow-sm);
+  border-color: var(--gray-300);
+}
+
+.option-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-md);
+}
+
+.option-card-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.option-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
 }

@@ -21,7 +21,7 @@ try {
 
   // Run webpack build
   console.log('📦 Running webpack build...');
-  execSync('npm run build', { 
+  execSync('npx webpack --mode production', { 
     cwd: projectRoot, 
     stdio: 'inherit' 
   });

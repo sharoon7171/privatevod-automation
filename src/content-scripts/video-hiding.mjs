@@ -50,6 +50,27 @@ if (window.videoHidingInitialized) {
        */
       async function startVideoHidingWhenReady() {
         try {
+          // Wait for document to be ready
+          if (document.readyState === 'loading') {
+            await new Promise(resolve => {
+              document.addEventListener('DOMContentLoaded', resolve, { once: true });
+            });
+          }
+          
+          // Additional check to ensure body exists
+          if (!document.body) {
+            await new Promise(resolve => {
+              const checkBody = () => {
+                if (document.body) {
+                  resolve();
+                } else {
+                  setTimeout(checkBody, 50);
+                }
+              };
+              checkBody();
+            });
+          }
+
           // Always start video hiding service to handle both hiding and showing
           await videoHidingService.start();
 
