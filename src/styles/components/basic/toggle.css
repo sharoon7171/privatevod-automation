@@ -9,12 +9,14 @@
 }
 
 .toggle-label {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
   color: var(--text-primary);
   user-select: none;
   cursor: pointer;
   flex: 1;
+  display: block;
+  line-height: 1.4;
 }
 
 .toggle-switch {
