@@ -155,39 +155,56 @@ function autoVideoLoaderScript() {
     if (conditions.AEVideoPlayer && conditions.jQuery && conditions.loadPlayer) {
       console.log('✅ Auto Video Loader: All conditions met - calling loadPlayer()');
       
+      // Check if player is already initialized to avoid multiple calls
+      if (typeof player !== 'undefined' && player && player.element) {
+        console.log('🎬 Auto Video Loader: Player already exists, skipping loadPlayer()');
+        return;
+      }
+      
       // Call loadPlayer() to initialize the player
       window.loadPlayer();
       
-      // Wait a bit for the player to initialize, then handle autoplay
-      setTimeout(() => {
-        try {
-          // Check if player object exists and has play method
-          if (typeof player !== 'undefined' && player && typeof player.play === 'function') {
-            console.log('🎬 Auto Video Loader: Player ready, attempting to play');
+      // Wait for player to be fully initialized
+      const waitForPlayerReady = () => {
+        if (typeof player !== 'undefined' && player && player.element && typeof player.play === 'function') {
+          // Check if player is actually ready (not just initialized)
+          const iframe = player.element;
+          if (iframe && iframe.src) {
+            console.log('🎬 Auto Video Loader: Player fully ready, attempting to play');
             
-            // Try to play the video
-            const playPromise = player.play();
-            
-            if (playPromise !== undefined) {
-              playPromise.then(() => {
-                console.log('✅ Auto Video Loader: Video started playing successfully');
-              }).catch(error => {
-                console.log('⚠️ Auto Video Loader: Play failed (likely autoplay policy):', error.name);
-                // This is normal - browsers often block autoplay
-              });
+            try {
+              // Try to play the video
+              const playPromise = player.play();
+              
+              if (playPromise !== undefined) {
+                playPromise.then(() => {
+                  console.log('✅ Auto Video Loader: Video started playing successfully');
+                }).catch(error => {
+                  console.log('⚠️ Auto Video Loader: Play failed (likely autoplay policy):', error.name);
+                  // This is normal - browsers often block autoplay
+                });
+              }
+            } catch (error) {
+              console.log('⚠️ Auto Video Loader: Error calling play():', error);
             }
+            
+            // Handle iframe autoplay if needed
+            if (iframe.src && iframe.src.includes('autoplay=true')) {
+              iframe.src = iframe.src.replace('&autoplay=true', '&autoplay=false');
+              console.log('✅ Auto Video Loader: Autoplay disabled in iframe URL');
+            }
+          } else {
+            // Player not fully ready yet, wait a bit more
+            setTimeout(waitForPlayerReady, 200);
           }
-          
-          // Also handle iframe autoplay if needed
-          const iframe = document.querySelector('#player iframe');
-          if (iframe && iframe.src && iframe.src.includes('autoplay=true')) {
-            iframe.src = iframe.src.replace('&autoplay=true', '&autoplay=false');
-            console.log('✅ Auto Video Loader: Autoplay disabled in iframe URL');
-          }
-        } catch (error) {
-          console.log('⚠️ Auto Video Loader: Error in post-loadPlayer handling:', error);
+        } else {
+          // Player not ready yet, wait a bit more
+          setTimeout(waitForPlayerReady, 200);
         }
-      }, 1000); // Increased delay to let player fully initialize
+      };
+      
+      // Start waiting for player to be ready
+      setTimeout(waitForPlayerReady, 500);
       
     } else {
       setTimeout(waitForConditions, 50);
