@@ -21,7 +21,7 @@
     "service_worker": "background/service-worker.mjs"
   },
 
-  "permissions": ["storage", "tabs", "webNavigation", "scripting", "activeTab"],
+  "permissions": ["storage", "tabs", "webNavigation", "scripting"],
 
   "host_permissions": [
     "https://www.privatevod.com/*",
@@ -38,7 +38,6 @@
       ],
       "js": [
         "content-scripts/auto-favorite-video.mjs",
-        "content-scripts/auto-screenshot-modal.mjs",
         "content-scripts/move-details-elements.mjs",
         "content-scripts/block-scene-download.mjs",
         "content-scripts/block-dvd-cards.mjs",
