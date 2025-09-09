@@ -149,9 +149,10 @@
   }
   
   .toggle-container {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-sm);
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
   }
   
   .flex.gap-md {
