@@ -12,9 +12,6 @@ async function initializeAutoFavoriteVideo() {
     const { getSettings } = await import(
       chrome.runtime.getURL("services/storage/get-settings.mjs")
     );
-    const { delay } = await import(
-      chrome.runtime.getURL("functions/async/delay.mjs")
-    );
     const { closeCurrentTab } = await import(
       chrome.runtime.getURL("functions/dom/close-tab.mjs")
     );
@@ -30,10 +27,6 @@ async function initializeAutoFavoriteVideo() {
       return;
     }
 
-    // Wait for timer if specified
-    if (settings.autoFavoriteVideoTimer > 0) {
-      await delay(settings.autoFavoriteVideoTimer);
-    }
 
     // Click favorite button
     const success = await clickFavoriteButton("Video");

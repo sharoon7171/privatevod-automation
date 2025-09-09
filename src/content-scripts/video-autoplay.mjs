@@ -15,9 +15,6 @@ async function initializeContentScript() {
     const { getSettings } = await import(
       chrome.runtime.getURL("services/storage/get-settings.mjs")
     );
-    const { delay } = await import(
-      chrome.runtime.getURL("functions/async/delay.mjs")
-    );
     const { clickButton } = await import(
       chrome.runtime.getURL("functions/dom/button-clicker.mjs")
     );
@@ -39,10 +36,6 @@ async function initializeContentScript() {
       return;
     }
 
-    // Wait for timer if specified
-    if (settings.timer > 0) {
-      await delay(settings.timer);
-    }
 
     // Click the button
     clickButton(button, "Video Autoplay");

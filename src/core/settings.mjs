@@ -6,15 +6,12 @@
 // Default settings
 const defaultSettings = {
   autoplay: false,
-  timer: 0, // seconds (0-10)
   enabled: true,
   // Auto-favorite video settings
   autoFavoriteVideo: false,
-  autoFavoriteVideoTimer: 0, // seconds (0-10)
   autoCloseAfterFavoriteVideo: false,
   // Auto-favorite star settings
   autoFavoriteStar: false,
-  autoFavoriteStarTimer: 0, // seconds (0-10)
   autoCloseAfterFavoriteStar: false,
   // Screenshot automation settings
   autoScreenshotModal: true,
@@ -71,23 +68,14 @@ export async function saveSettings(settings) {
     // Validate settings
     const validatedSettings = {
       autoplay: Boolean(settings.autoplay),
-      timer: Math.max(0, Math.min(10, Number(settings.timer) || 0)),
       enabled: Boolean(settings.enabled),
       // Auto-favorite video validation
       autoFavoriteVideo: Boolean(settings.autoFavoriteVideo),
-      autoFavoriteVideoTimer: Math.max(
-        0,
-        Math.min(10, Number(settings.autoFavoriteVideoTimer) || 0),
-      ),
       autoCloseAfterFavoriteVideo: Boolean(
         settings.autoCloseAfterFavoriteVideo,
       ),
       // Auto-favorite star validation
       autoFavoriteStar: Boolean(settings.autoFavoriteStar),
-      autoFavoriteStarTimer: Math.max(
-        0,
-        Math.min(10, Number(settings.autoFavoriteStarTimer) || 0),
-      ),
       autoCloseAfterFavoriteStar: Boolean(settings.autoCloseAfterFavoriteStar),
       // Screenshot automation validation
       autoScreenshotModal: Boolean(settings.autoScreenshotModal),

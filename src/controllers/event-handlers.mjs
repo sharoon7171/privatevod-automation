@@ -1,6 +1,6 @@
 /**
  * Shared Event Handling Functions for UI Pages
- * Toggle and timer event handling utilities
+ * Toggle event handling utilities
  */
 
 import { getSettings, saveSettings } from "../core/settings.mjs";
@@ -31,28 +31,6 @@ export function createToggleHandler(settingName, updateUI) {
   };
 }
 
-/**
- * Handle timer input change event
- * @param {string} settingName - Name of the setting to update
- * @param {Element} inputElement - Input element
- * @param {Function} updateUI - UI update function
- * @returns {Function} Event handler function
- */
-export function createTimerHandler(settingName, inputElement, updateUI) {
-  return async function handleTimerChange() {
-    try {
-      const timerValue = parseInt(inputElement.value) || 0;
-      const currentSettings = await getSettings();
-      const newSettings = {
-        ...currentSettings,
-        [settingName]: Math.max(0, Math.min(10, timerValue)),
-      };
-
-      await saveSettings(newSettings);
-      updateUI(newSettings);
-    } catch (error) {}
-  };
-}
 
 /**
  * Setup all event listeners for a page
@@ -70,16 +48,6 @@ export function setupEventListeners(elements, updateUI) {
     );
   }
 
-  // Autoplay input change handlers (instant save)
-  if (elements["timer-input"]) {
-    const timerHandler = createTimerHandler(
-      "timer",
-      elements["timer-input"],
-      updateUI,
-    );
-    elements["timer-input"].addEventListener("input", timerHandler);
-    elements["timer-input"].addEventListener("change", timerHandler);
-  }
 
   // Auto-favorite video handlers
   if (elements["auto-favorite-video-toggle"]) {
@@ -89,21 +57,6 @@ export function setupEventListeners(elements, updateUI) {
     );
   }
 
-  if (elements["auto-favorite-video-timer-input"]) {
-    const videoTimerHandler = createTimerHandler(
-      "autoFavoriteVideoTimer",
-      elements["auto-favorite-video-timer-input"],
-      updateUI,
-    );
-    elements["auto-favorite-video-timer-input"].addEventListener(
-      "input",
-      videoTimerHandler,
-    );
-    elements["auto-favorite-video-timer-input"].addEventListener(
-      "change",
-      videoTimerHandler,
-    );
-  }
 
   if (elements["auto-close-after-favorite-video-toggle"]) {
     elements["auto-close-after-favorite-video-toggle"].addEventListener(
@@ -120,21 +73,6 @@ export function setupEventListeners(elements, updateUI) {
     );
   }
 
-  if (elements["auto-favorite-star-timer-input"]) {
-    const starTimerHandler = createTimerHandler(
-      "autoFavoriteStarTimer",
-      elements["auto-favorite-star-timer-input"],
-      updateUI,
-    );
-    elements["auto-favorite-star-timer-input"].addEventListener(
-      "input",
-      starTimerHandler,
-    );
-    elements["auto-favorite-star-timer-input"].addEventListener(
-      "change",
-      starTimerHandler,
-    );
-  }
 
   if (elements["auto-close-after-favorite-star-toggle"]) {
     elements["auto-close-after-favorite-star-toggle"].addEventListener(

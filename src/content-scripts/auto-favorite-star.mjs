@@ -12,9 +12,6 @@ async function initializeAutoFavoriteStar() {
     const { getSettings } = await import(
       chrome.runtime.getURL("services/storage/get-settings.mjs")
     );
-    const { delay } = await import(
-      chrome.runtime.getURL("functions/async/delay.mjs")
-    );
     const { closeCurrentTab } = await import(
       chrome.runtime.getURL("functions/dom/close-tab.mjs")
     );
@@ -30,10 +27,6 @@ async function initializeAutoFavoriteStar() {
       return;
     }
 
-    // Wait for timer if specified
-    if (settings.autoFavoriteStarTimer > 0) {
-      await delay(settings.autoFavoriteStarTimer);
-    }
 
     // Click favorite button
     const success = await clickFavoriteButton("Star");

@@ -6,15 +6,12 @@
 // Default settings for content scripts
 const defaultSettings = {
   autoplay: false,
-  timer: 0,
   enabled: true,
   // Auto-favorite video settings
   autoFavoriteVideo: false,
-  autoFavoriteVideoTimer: 0,
   autoCloseAfterFavoriteVideo: false,
   // Auto-favorite star settings
   autoFavoriteStar: false,
-  autoFavoriteStarTimer: 0,
   autoCloseAfterFavoriteStar: false,
   // Screenshot automation settings
   autoScreenshotModal: false

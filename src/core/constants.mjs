@@ -9,13 +9,10 @@
  */
 export const DEFAULT_SETTINGS = {
   autoplay: false,
-  timer: 0,
   enabled: true,
   autoFavoriteVideo: false,
-  autoFavoriteVideoTimer: 0,
   autoCloseAfterFavoriteVideo: false,
   autoFavoriteStar: false,
-  autoFavoriteStarTimer: 0,
   autoCloseAfterFavoriteStar: false,
   autoScreenshotModal: false,
 };
@@ -45,10 +42,3 @@ export const STORAGE_KEYS = {
   SETTINGS: "privatevod_settings",
 };
 
-/**
- * Timer limits
- */
-export const TIMER_LIMITS = {
-  MIN: 0,
-  MAX: 10,
-};

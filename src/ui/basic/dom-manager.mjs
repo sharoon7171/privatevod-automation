@@ -32,12 +32,9 @@ export function getElementsByIds(ids) {
 export function getAllUIElements() {
   const elementIds = [
     'autoplay-toggle',
-    'timer-input',
     'auto-favorite-video-toggle',
-    'auto-favorite-video-timer-input',
     'auto-close-after-favorite-video-toggle',
     'auto-favorite-star-toggle',
-    'auto-favorite-star-timer-input',
     'auto-close-after-favorite-star-toggle',
     'auto-screenshot-modal-toggle',
     'move-user-actions-toggle',

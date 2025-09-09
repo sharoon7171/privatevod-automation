@@ -40,22 +40,13 @@ export function updateUI(settings, elements) {
   // Update autoplay toggle state
   updateToggleState(elements['autoplay-toggle'], settings.autoplay);
   
-  // Update autoplay timer input
-  updateInputValue(elements['timer-input'], settings.timer);
-  
   // Update auto-favorite video toggles
   updateToggleState(elements['auto-favorite-video-toggle'], settings.autoFavoriteVideo);
   updateToggleState(elements['auto-close-after-favorite-video-toggle'], settings.autoCloseAfterFavoriteVideo);
   
-  // Update auto-favorite video timer input
-  updateInputValue(elements['auto-favorite-video-timer-input'], settings.autoFavoriteVideoTimer);
-  
   // Update auto-favorite star toggles
   updateToggleState(elements['auto-favorite-star-toggle'], settings.autoFavoriteStar);
   updateToggleState(elements['auto-close-after-favorite-star-toggle'], settings.autoCloseAfterFavoriteStar);
-  
-  // Update auto-favorite star timer input
-  updateInputValue(elements['auto-favorite-star-timer-input'], settings.autoFavoriteStarTimer);
   
   // Update screenshot automation toggle
   updateToggleState(elements['auto-screenshot-modal-toggle'], settings.autoScreenshotModal);
