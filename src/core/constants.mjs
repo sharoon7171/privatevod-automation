@@ -21,7 +21,6 @@ export const DEFAULT_SETTINGS = {
  * CSS selectors used across content scripts
  */
 export const SELECTORS = {
-  TARGET_BUTTON: "#ppmWatchNow",
   FAVORITE_BUTTON: 'a[onclick*="ToggleProductFavorite"]',
 };
 

@@ -40,6 +40,7 @@ export function createToggleHandler(settingName, updateUI) {
 export function setupEventListeners(elements, updateUI) {
   // Initialize notification system
   initNotificationSystem();
+  
   // Autoplay toggle click handler
   if (elements["autoplay-toggle"]) {
     elements["autoplay-toggle"].addEventListener(
@@ -47,7 +48,6 @@ export function setupEventListeners(elements, updateUI) {
       createToggleHandler("autoplay", updateUI),
     );
   }
-
 
   // Auto-favorite video handlers
   if (elements["auto-favorite-video-toggle"]) {
