@@ -200,14 +200,33 @@ export class NotificationManager {
     notification.className = `notification ${type}`;
     notification.dataset.id = id;
 
-    notification.innerHTML = `
-      <div class="notification-header">
-        <h4 class="notification-title">${title}</h4>
-        ${closable ? '<button class="notification-close" aria-label="Close notification">&times;</button>' : ''}
-      </div>
-      <p class="notification-message">${message}</p>
-      <div class="notification-progress"></div>
-    `;
+    // Create notification structure safely
+    const header = document.createElement('div');
+    header.className = 'notification-header';
+    
+    const titleElement = document.createElement('h4');
+    titleElement.className = 'notification-title';
+    titleElement.textContent = title;
+    header.appendChild(titleElement);
+    
+    if (closable) {
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'notification-close';
+      closeBtn.setAttribute('aria-label', 'Close notification');
+      closeBtn.textContent = '×';
+      header.appendChild(closeBtn);
+    }
+    
+    const messageElement = document.createElement('p');
+    messageElement.className = 'notification-message';
+    messageElement.textContent = message;
+    
+    const progressElement = document.createElement('div');
+    progressElement.className = 'notification-progress';
+    
+    notification.appendChild(header);
+    notification.appendChild(messageElement);
+    notification.appendChild(progressElement);
 
     // Add close functionality
     if (closable) {

@@ -311,28 +311,56 @@ function screenshotGalleryScript() {
     const existingGallery = document.querySelector('#screenshotGallery');
     if (existingGallery) existingGallery.remove();
     
-    const galleryHTML = `
-      <div id="screenshotGallery" style="width: 100%; padding: 20px 0;">
-        <h4 style="padding: 0 15px;">Screenshots (${uniqueUrls.length})</h4>
-        <div class="row" style="margin: 0;">
-          ${uniqueUrls.map((url, index) => `
-            <div class="col-md-2 col-sm-4 col-6 mb-3" style="padding: 0 5px;">
-              <img src="${url}" 
-                   class="img-fluid rounded screenshot-thumbnail" 
-                   style="width: 100%; height: auto; cursor: pointer; border: 1px solid #ddd; transition: transform 0.2s;" 
-                   onclick="window.open('${url}', '_blank')" 
-                   onerror="this.style.display='none'" 
-                   loading="lazy" 
-                   title="Screenshot ${index + 1}" 
-                   onmouseover="this.style.transform='scale(1.05)'" 
-                   onmouseout="this.style.transform='scale(1)'">
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    `;
+    // Create gallery structure safely
+    const gallery = document.createElement('div');
+    gallery.id = 'screenshotGallery';
+    gallery.style.cssText = 'width: 100%; padding: 20px 0;';
     
-    scenesContainer.insertAdjacentHTML('beforebegin', galleryHTML);
+    const title = document.createElement('h4');
+    title.style.cssText = 'padding: 0 15px;';
+    title.textContent = `Screenshots (${uniqueUrls.length})`;
+    gallery.appendChild(title);
+    
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.style.cssText = 'margin: 0;';
+    
+    uniqueUrls.forEach((url, index) => {
+      // Validate URL for security
+      try {
+        const urlObj = new URL(url);
+        if (!urlObj.protocol.startsWith('http')) {
+          console.warn('Skipping invalid URL:', url);
+          return;
+        }
+      } catch (e) {
+        console.warn('Skipping malformed URL:', url);
+        return;
+      }
+      
+      const col = document.createElement('div');
+      col.className = 'col-md-2 col-sm-4 col-6 mb-3';
+      col.style.cssText = 'padding: 0 5px;';
+      
+      const img = document.createElement('img');
+      img.src = url;
+      img.className = 'img-fluid rounded screenshot-thumbnail';
+      img.style.cssText = 'width: 100%; height: auto; cursor: pointer; border: 1px solid #ddd; transition: transform 0.2s;';
+      img.loading = 'lazy';
+      img.title = `Screenshot ${index + 1}`;
+      
+      // Add safe event listeners instead of inline handlers
+      img.addEventListener('click', () => window.open(url, '_blank'));
+      img.addEventListener('error', () => img.style.display = 'none');
+      img.addEventListener('mouseover', () => img.style.transform = 'scale(1.05)');
+      img.addEventListener('mouseout', () => img.style.transform = 'scale(1)');
+      
+      col.appendChild(img);
+      row.appendChild(col);
+    });
+    
+    gallery.appendChild(row);
+    scenesContainer.insertAdjacentElement('beforebegin', gallery);
     console.log(`✅ Screenshot gallery created with ${uniqueUrls.length} images!`);
   }
 
