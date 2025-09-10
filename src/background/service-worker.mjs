@@ -1,23 +1,46 @@
 /**
  * PrivateVOD Automation - Service Worker
- * Minimal service worker with basic structure only
- * No background functionality as per project requirements
+ * Centralized service worker handling all background functionality
+ * Includes navigation enhancements, auto-features, and content injection
  */
+
+// =============================================================================
+// =============================================================================
+// =============================================================================
+//                    🔧 SERVICE WORKER CORE SETUP 🔧
+// =============================================================================
+// =============================================================================
+// =============================================================================
 
 // Service worker installation
 self.addEventListener("install", (event) => {
+  console.log('🔧 Service Worker: Installing...');
   self.skipWaiting();
 });
 
 // Service worker activation
 self.addEventListener("activate", (event) => {
+  console.log('🔧 Service Worker: Activating...');
   event.waitUntil(clients.claim());
 });
 
 // Handle action click - open options page
 chrome.action.onClicked.addListener((tab) => {
+  console.log('🔧 Service Worker: Opening options page');
   chrome.runtime.openOptionsPage();
 });
+
+// =============================================================================
+// =============================================================================
+// =============================================================================
+//                    🧭 NAVIGATION ENHANCEMENT FEATURES 🧭
+// =============================================================================
+// =============================================================================
+// =============================================================================
+
+// =============================================================================
+//                    🎯 STUDIO URL REDIRECTS 🎯
+// =============================================================================
 
 // Studio URL interception - redirect studio URLs to /watch-streaming-video-by-scene.html
 chrome.webNavigation.onCommitted.addListener(async (details) => {
@@ -31,21 +54,31 @@ chrome.webNavigation.onCommitted.addListener(async (details) => {
       return;
     }
 
+    console.log('🎯 Studio Redirect: Detected studio URL:', details.url);
+
     // Get settings to check if studio redirect is enabled
     const result = await chrome.storage.sync.get(["privatevod_settings"]);
     const settings = result.privatevod_settings || {};
 
     if (!settings.autoRedirectStudioUrls) {
+      console.log('🎯 Studio Redirect: Disabled in settings');
       return;
     }
 
     const studioId = studioMatch[1];
     const redirectUrl = `https://www.privatevod.com/watch-streaming-video-by-scene.html?sort=released&studio=${studioId}`;
 
+    console.log('🎯 Studio Redirect: Redirecting to:', redirectUrl);
     // Redirect immediately - page is already marked as visited
     chrome.tabs.update(details.tabId, { url: redirectUrl });
-  } catch (error) {}
+  } catch (error) {
+    console.error('🎯 Studio Redirect: Error:', error);
+  }
 });
+
+// =============================================================================
+//                    🌟 PORSTAR URL REDIRECTS 🌟
+// =============================================================================
 
 // Pornstar URL interception - redirect pornstar URLs to shop page
 chrome.webNavigation.onCommitted.addListener(async (details) => {
@@ -65,21 +98,240 @@ chrome.webNavigation.onCommitted.addListener(async (details) => {
       return;
     }
 
+    console.log('🌟 Pornstar Redirect: Detected pornstar URL:', details.url);
+
     // Get settings to check if pornstar redirect is enabled
     const result = await chrome.storage.sync.get(["privatevod_settings"]);
     const settings = result.privatevod_settings || {};
 
     if (!settings.autoRedirectPornstarUrls) {
+      console.log('🌟 Pornstar Redirect: Disabled in settings');
       return;
     }
 
     const castId = pornstarMatch[1];
     const redirectUrl = `https://www.privatevod.com/shop-streaming-video-by-scene.html?cast=${castId}`;
 
+    console.log('🌟 Pornstar Redirect: Redirecting to:', redirectUrl);
     // Redirect immediately - page is already marked as visited
     chrome.tabs.update(details.tabId, { url: redirectUrl });
-  } catch (error) {}
+  } catch (error) {
+    console.error('🌟 Pornstar Redirect: Error:', error);
+  }
 });
+
+// =============================================================================
+//                    🔗 LINK MERGING FUNCTIONALITY 🔗
+// =============================================================================
+
+// Link Merging functionality - inject script to merge title with image links
+function initLinkMerging() {
+  console.log('🔗 Link Merging: Module initialized');
+  
+  chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+    try {
+      // Check if page is fully loaded and matches our target
+      if (changeInfo.status === 'complete' && 
+          tab.url && 
+          tab.url.includes('privatevod.com')) {
+        
+        console.log('🔗 Link Merging: Detected PrivateVOD page:', tab.url);
+        
+        // Get settings to check if link merging is enabled
+        const result = await chrome.storage.sync.get(["privatevod_settings"]);
+        const settings = result.privatevod_settings || {};
+
+        if (!settings.enabled || !settings.mergeTitleWithImageLinks) {
+          console.log('🔗 Link Merging: Disabled in settings');
+          return;
+        }
+        
+        // Directly inject the link merging function into main world
+        await chrome.scripting.executeScript({
+          target: { tabId: tabId },
+          func: linkMergingScript,
+          world: 'MAIN'
+        });
+        
+        console.log('✅ Link Merging: Function injected successfully');
+      }
+    } catch (err) {
+      console.error('❌ Link Merging: Function injection failed:', err);
+    }
+  });
+}
+
+// =============================================================================
+//                    🔗 LINK MERGING MAIN WORLD SCRIPT 🔗
+// =============================================================================
+
+// Link Merging main world script
+function linkMergingScript() {
+  'use strict';
+  
+  console.log('🔗 Link Merging: Script loaded on:', window.location.href);
+  
+  class LinkMerger {
+    constructor() {
+      this.isEnabled = false;
+      this.observer = null;
+      this.processedElements = new WeakSet();
+    }
+
+    async init() {
+      try {
+        this.isEnabled = true;
+        console.log('🔗 Link Merging: Initializing...');
+
+        // Process existing content
+        this.processAllGridItems();
+
+        // Start watching for new content
+        this.startObserving();
+        
+        console.log('✅ Link Merging: Initialized successfully');
+      } catch (error) {
+        console.error('❌ Link Merging: Initialization failed:', error);
+      }
+    }
+
+    processAllGridItems() {
+      // Find all grid items - broader selectors for all page types
+      const gridItems = document.querySelectorAll(
+        '.grid-item, .scene-list-view-container, [data-category="GridViewScene"], [data-category="Item Page"], article.scene-widget, .scene-widget',
+      );
+
+      console.log(`🔗 Link Merging: Found ${gridItems.length} grid items to process`);
+
+      gridItems.forEach((gridItem, index) => {
+        this.processGridItem(gridItem, index);
+      });
+    }
+
+    processGridItem(gridItem, index) {
+      if (this.processedElements.has(gridItem)) {
+        return;
+      }
+
+      // Find all links in this grid item - broader selectors
+      const allLinks = gridItem.querySelectorAll(
+        'a[href*="/private-vod-"], a[href*="private-vod-"], a[href*="streaming-scene-video"], a[href*="porn-videos"]',
+      );
+
+      if (allLinks.length === 0) {
+        this.processedElements.add(gridItem);
+        return;
+      }
+
+      // Check if all links are the same
+      const uniqueUrls = [
+        ...new Set(Array.from(allLinks).map((link) => link.href)),
+      ];
+      if (uniqueUrls.length === 1) {
+        this.processedElements.add(gridItem);
+        return;
+      }
+
+      // Find the canonical URL (relative format, no AMP encoding)
+      let canonicalUrl = null;
+
+      for (const link of allLinks) {
+        const href = link.href;
+        // Prefer relative URLs over full URLs
+        if (href.startsWith("/") && !href.includes("&amp;")) {
+          canonicalUrl = href;
+          break;
+        }
+      }
+
+      // If no relative URL found, normalize the first URL
+      if (!canonicalUrl) {
+        const firstLink = allLinks[0];
+        canonicalUrl = firstLink.href
+          .replace("https://www.privatevod.com", "")
+          .replace("https://privatevod.com", "")
+          .replace(/&amp;/g, "&");
+      }
+
+      // Update all links to use canonical URL
+      let updatedCount = 0;
+      allLinks.forEach((link) => {
+        if (link.href !== canonicalUrl) {
+          link.href = canonicalUrl;
+          updatedCount++;
+        }
+      });
+
+      if (updatedCount > 0) {
+        console.log(`🔗 Link Merging: Updated ${updatedCount} links in grid item ${index}`);
+      }
+
+      this.processedElements.add(gridItem);
+    }
+
+    startObserving() {
+      if (this.observer) {
+        this.observer.disconnect();
+      }
+
+      this.observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === "childList") {
+            mutation.addedNodes.forEach((node) => {
+              if (node.nodeType === Node.ELEMENT_NODE) {
+                // Check if this is a grid item
+                if (
+                  node.matches &&
+                  node.matches(
+                    '.grid-item, .scene-list-view-container, [data-category="GridViewScene"], [data-category="Item Page"], article.scene-widget, .scene-widget',
+                  )
+                ) {
+                  this.processGridItem(node, "new");
+                }
+                // Check for grid items within the added node
+                const gridItems =
+                  node.querySelectorAll &&
+                  node.querySelectorAll(
+                    '.grid-item, .scene-list-view-container, [data-category="GridViewScene"], [data-category="Item Page"], article.scene-widget, .scene-widget',
+                  );
+                if (gridItems) {
+                  gridItems.forEach((gridItem, index) => {
+                    this.processGridItem(gridItem, `new-${index}`);
+                  });
+                }
+              }
+            });
+          }
+        });
+      });
+
+      this.observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+      });
+    }
+  }
+
+  // Initialize when DOM is ready
+  (async function initLinkMerger() {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", () => {
+        const linkMerger = new LinkMerger();
+        linkMerger.init();
+      });
+    } else {
+      const linkMerger = new LinkMerger();
+      linkMerger.init();
+    }
+  })();
+}
+
+// =============================================================================
+//                    🔗 INITIALIZE LINK MERGING 🔗
+// =============================================================================
+
+// Initialize Link Merging
+initLinkMerging();
 
 // =============================================================================
 // =============================================================================
@@ -89,9 +341,13 @@ chrome.webNavigation.onCommitted.addListener(async (details) => {
 // =============================================================================
 // =============================================================================
 
+// =============================================================================
+//                    🎬 AUTO VIDEO LOADER INITIALIZATION 🎬
+// =============================================================================
+
 // Auto Video Loader functionality
 function initAutoVideoLoader() {
-  console.log('🎬 Auto Video Loader module initialized');
+  console.log('🎬 Auto Video Loader: Module initialized');
   
   chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     try {
@@ -101,7 +357,7 @@ function initAutoVideoLoader() {
           (tab.url.includes('privatevod.com') && 
            (tab.url.includes('video.html') || tab.url.includes('videos.html')))) {
         
-        console.log('🎬 Auto Video Loader detected video page:', tab.url);
+        console.log('🎬 Auto Video Loader: Detected video page:', tab.url);
         
         // Get settings to check if autoplay is enabled
         const result = await chrome.storage.sync.get(["privatevod_settings"]);
@@ -119,10 +375,10 @@ function initAutoVideoLoader() {
           world: 'MAIN'
         });
         
-        console.log('✅ Auto Video Loader function injected successfully');
+        console.log('✅ Auto Video Loader: Function injected successfully');
       }
     } catch (err) {
-      console.log('❌ Auto Video Loader function injection failed:', err);
+      console.error('❌ Auto Video Loader: Function injection failed:', err);
     }
   });
 }
@@ -135,7 +391,7 @@ function initAutoVideoLoader() {
 function autoVideoLoaderScript() {
   'use strict';
   
-  console.log('🎬 Auto Video Loader script loaded on:', window.location.href);
+  console.log('🎬 Auto Video Loader: Script loaded on:', window.location.href);
   
   function waitForConditions() {
     const conditions = {
@@ -150,7 +406,7 @@ function autoVideoLoaderScript() {
       loadPlayer: typeof window.loadPlayer === 'function'
     };
     
-    console.log('🔍 Auto Video Loader checking conditions:', conditions);
+    console.log('🔍 Auto Video Loader: Checking conditions:', conditions);
     
     if (conditions.AEVideoPlayer && conditions.jQuery && conditions.loadPlayer) {
       console.log('✅ Auto Video Loader: All conditions met - calling loadPlayer()');
@@ -229,9 +485,13 @@ initAutoVideoLoader();
 // =============================================================================
 // =============================================================================
 
+// =============================================================================
+//                    📸 SCREENSHOT GALLERY INITIALIZATION 📸
+// =============================================================================
+
 // Screenshot Gallery functionality
 function initScreenshotGallery() {
-  console.log('📸 Screenshot Gallery module initialized');
+  console.log('📸 Screenshot Gallery: Module initialized');
   
   chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     try {
@@ -241,7 +501,7 @@ function initScreenshotGallery() {
           (tab.url.includes('privatevod.com') && 
            (tab.url.includes('video.html') || tab.url.includes('videos.html')))) {
         
-        console.log('📸 Screenshot Gallery detected video page:', tab.url);
+        console.log('📸 Screenshot Gallery: Detected video page:', tab.url);
         
         // Get settings to check if screenshot automation is enabled
         const result = await chrome.storage.sync.get(["privatevod_settings"]);
@@ -259,10 +519,10 @@ function initScreenshotGallery() {
           world: 'MAIN'
         });
         
-        console.log('✅ Screenshot Gallery function injected successfully');
+        console.log('✅ Screenshot Gallery: Function injected successfully');
       }
     } catch (err) {
-      console.log('❌ Screenshot Gallery function injection failed:', err);
+      console.error('❌ Screenshot Gallery: Function injection failed:', err);
     }
   });
 }
@@ -276,11 +536,11 @@ function screenshotGalleryScript() {
   'use strict';
 
   function createScreenshotGallery() {
-    console.log('🎬 Creating PrivateVOD Screenshot Gallery...');
+    console.log('📸 Screenshot Gallery: Creating PrivateVOD Screenshot Gallery...');
     
     const scenesContainer = document.querySelector('#scenes');
     if (!scenesContainer) {
-      console.log('❌ Not on a video page - scenes container not found');
+      console.log('❌ Screenshot Gallery: Not on a video page - scenes container not found');
       return;
     }
     
@@ -296,7 +556,7 @@ function screenshotGalleryScript() {
     });
     
     if (allUrls.length === 0) {
-      console.log('❌ No screenshot URLs found');
+      console.log('❌ Screenshot Gallery: No screenshot URLs found');
       return;
     }
     
@@ -306,7 +566,7 @@ function screenshotGalleryScript() {
       return timestampA && timestampB ? parseInt(timestampA[1]) - parseInt(timestampB[1]) : 0;
     });
     
-    console.log(`Found ${uniqueUrls.length} unique screenshots`);
+    console.log(`📸 Screenshot Gallery: Found ${uniqueUrls.length} unique screenshots`);
     
     const existingGallery = document.querySelector('#screenshotGallery');
     if (existingGallery) existingGallery.remove();
@@ -330,11 +590,11 @@ function screenshotGalleryScript() {
       try {
         const urlObj = new URL(url);
         if (!urlObj.protocol.startsWith('http')) {
-          console.warn('Skipping invalid URL:', url);
+          console.warn('📸 Screenshot Gallery: Skipping invalid URL:', url);
           return;
         }
       } catch (e) {
-        console.warn('Skipping malformed URL:', url);
+        console.warn('📸 Screenshot Gallery: Skipping malformed URL:', url);
         return;
       }
       
@@ -361,7 +621,7 @@ function screenshotGalleryScript() {
     
     gallery.appendChild(row);
     scenesContainer.insertAdjacentElement('beforebegin', gallery);
-    console.log(`✅ Screenshot gallery created with ${uniqueUrls.length} images!`);
+    console.log(`✅ Screenshot Gallery: Created with ${uniqueUrls.length} images!`);
   }
 
   createScreenshotGallery();
@@ -395,9 +655,13 @@ initScreenshotGallery();
 // =============================================================================
 // =============================================================================
 
+// =============================================================================
+//                    ⭐ AUTO-FAVORITE INITIALIZATION ⭐
+// =============================================================================
+
 // Common Auto-Favorite functionality
 function initAutoFavorite() {
-  console.log('⭐ Auto-Favorite module initialized');
+  console.log('⭐ Auto-Favorite: Module initialized');
   
   chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     try {
@@ -423,7 +687,7 @@ function initAutoFavorite() {
           return; // Not a target page
         }
         
-        console.log(`⭐ Auto-Favorite ${pageType} detected page:`, tab.url);
+        console.log(`⭐ Auto-Favorite ${pageType}: Detected page:`, tab.url);
         
         // Get settings to check if auto-favorite is enabled
         const result = await chrome.storage.sync.get(["privatevod_settings"]);
@@ -445,10 +709,10 @@ function initAutoFavorite() {
           world: 'MAIN'
         });
         
-        console.log(`✅ Auto-Favorite ${pageType} function injected successfully`);
+        console.log(`✅ Auto-Favorite ${pageType}: Function injected successfully`);
       }
     } catch (err) {
-      console.log('❌ Auto-Favorite function injection failed:', err);
+      console.error('❌ Auto-Favorite: Function injection failed:', err);
     }
   });
 }
@@ -461,8 +725,8 @@ function initAutoFavorite() {
 function autoFavoriteScript(pageType, shouldAutoClose) {
   'use strict';
   
-  console.log(`⭐ Auto-Favorite ${pageType} script loaded on:`, window.location.href);
-  console.log('⭐ Auto-close enabled:', shouldAutoClose);
+  console.log(`⭐ Auto-Favorite ${pageType}: Script loaded on:`, window.location.href);
+  console.log('⭐ Auto-Favorite: Auto-close enabled:', shouldAutoClose);
   
   async function performAutoFavorite() {
     try {
@@ -491,7 +755,7 @@ function autoFavoriteScript(pageType, shouldAutoClose) {
       }
       
     } catch (error) {
-      console.log(`❌ Auto-Favorite ${pageType}: Error during auto-favorite:`, error);
+      console.error(`❌ Auto-Favorite ${pageType}: Error during auto-favorite:`, error);
     }
   }
   
@@ -510,13 +774,28 @@ function autoFavoriteScript(pageType, shouldAutoClose) {
 // Initialize Auto-Favorite
 initAutoFavorite();
 
+// =============================================================================
+// =============================================================================
+// =============================================================================
+//                    💬 MESSAGE HANDLING SYSTEM 💬
+// =============================================================================
+// =============================================================================
+// =============================================================================
+
+// =============================================================================
+//                    💬 RUNTIME MESSAGE HANDLER 💬
+// =============================================================================
 
 // Basic message handling (minimal structure)
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log('💬 Message Handler: Received message:', request.action);
+  
   // Handle different actions
   if (request.action === "ping") {
+    console.log('💬 Message Handler: Responding to ping');
     sendResponse({ success: true, message: "Service worker is active" });
   } else if (request.action === "closeTab") {
+    console.log('💬 Message Handler: Closing tab');
     // Close the tab that sent the message (the tab where content script is running)
     if (sender.tab && sender.tab.id) {
       chrome.tabs.remove(sender.tab.id);
@@ -524,6 +803,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     } else {
       sendResponse({ success: false, message: "No tab ID found" });
     }
+  } else {
+    console.log('💬 Message Handler: Unknown action:', request.action);
+    sendResponse({ success: false, message: "Unknown action" });
   }
 
   return true; // Indicate async response
