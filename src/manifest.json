@@ -46,8 +46,7 @@
     {
       "matches": ["https://www.privatevod.com/*", "https://privatevod.com/*"],
       "js": [
-        "content-scripts/style-active-buttons.mjs",
-        "content-scripts/video-hiding.mjs"
+        "content-scripts/style-active-buttons.mjs"
       ],
       "run_at": "document_start"
     }
@@ -63,7 +62,6 @@
         "services/storage/*.mjs",
         "services/*.mjs",
         "functions/dom/*.mjs",
-        "functions/async/*.mjs",
         "core/*.mjs",
         "utilities/*.mjs",
         "ui/basic/*.mjs"

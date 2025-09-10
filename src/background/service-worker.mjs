@@ -777,6 +777,483 @@ initAutoFavorite();
 // =============================================================================
 // =============================================================================
 // =============================================================================
+// =============================================================================
+// =============================================================================
+//                    🎬 VIDEO HIDING FUNCTIONALITY 🎬
+// =============================================================================
+// =============================================================================
+// =============================================================================
+
+// =============================================================================
+//                    🎬 VIDEO HIDING INITIALIZATION 🎬
+// =============================================================================
+
+// Video Hiding functionality
+function initVideoHiding() {
+  console.log('🎬 Video Hiding: Module initialized');
+  
+  chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+    try {
+      // Check if page is fully loaded and matches our target
+      if (changeInfo.status === 'complete' && 
+          tab.url && 
+          tab.url.includes('privatevod.com')) {
+        
+        console.log('🎬 Video Hiding: Detected PrivateVOD page:', tab.url);
+        
+        // Get settings to check if video hiding is enabled
+        const result = await chrome.storage.sync.get(["privatevod_settings"]);
+        const settings = result.privatevod_settings || {};
+
+        if (!settings.enabled || (!settings.hideLikedVideos && !settings.hideFavoritedVideos)) {
+          console.log('🎬 Video Hiding: Video hiding disabled in settings');
+          return;
+        }
+
+        // Get favorites and likes data to pass to the injected script
+        const [favoritesResult, likesResult] = await Promise.all([
+          chrome.storage.local.get(['privatevod_favorites']),
+          chrome.storage.local.get(['privatevod_likes'])
+        ]);
+
+        const favorites = favoritesResult.privatevod_favorites || [];
+        const likes = likesResult.privatevod_likes || [];
+        
+        // Directly inject the video hiding function into main world with data
+        await chrome.scripting.executeScript({
+          target: { tabId: tabId },
+          func: videoHidingScript,
+          args: [settings, favorites, likes],
+          world: 'MAIN'
+        });
+        
+        console.log('✅ Video Hiding: Function injected successfully');
+      }
+    } catch (err) {
+      console.error('❌ Video Hiding: Function injection failed:', err);
+    }
+  });
+}
+
+// =============================================================================
+//                    🎬 VIDEO HIDING MAIN WORLD SCRIPT 🎬
+// =============================================================================
+
+// Video Hiding main world script
+function videoHidingScript(settings, favorites, likes) {
+  'use strict';
+  
+  console.log('🎬 Video Hiding: Script loaded on:', window.location.href);
+  console.log('🎬 Video Hiding: Settings:', settings);
+  console.log('🎬 Video Hiding: Favorites count:', favorites.length);
+  console.log('🎬 Video Hiding: Likes count:', likes.length);
+  
+  // Define VideoHider class first
+  class VideoHider {
+    constructor(settings, favorites, likes) {
+      this.settings = settings;
+      this.favorites = new Set(favorites);
+      this.likes = new Set(likes);
+      this.observer = null;
+      this.isActive = false;
+    }
+
+    async init() {
+      try {
+        this.isActive = true;
+        console.log('🎬 Video Hiding: Initializing...');
+
+        // Skip video hiding on favorites page - user wants to see their own favorites
+        if (window.location.pathname.includes("/account/scenes/favorites")) {
+          console.log('🎬 Video Hiding: Skipping favorites page');
+          return;
+        }
+
+        // Process existing videos
+        await this.processCurrentPage();
+
+        // Start monitoring for new videos
+        this.startVideoMonitoring();
+        
+        console.log('✅ Video Hiding: Initialized successfully');
+      } catch (error) {
+        console.error('❌ Video Hiding: Initialization failed:', error);
+      }
+    }
+
+    async processCurrentPage() {
+      try {
+        const sceneIdsOnPage = this.getAllSceneIdsOnPage();
+
+        if (sceneIdsOnPage.length === 0) {
+          console.log('🎬 Video Hiding: No videos found on page');
+          return;
+        }
+
+        console.log(`🎬 Video Hiding: Found ${sceneIdsOnPage.length} videos on page`);
+
+        // Use the data passed from background script
+        const favorites = this.favorites;
+        const likes = this.settings.hideLikedVideos ? this.likes : new Set();
+
+        const videosToHide = new Set();
+
+        // Add favorited videos to hide list (highest priority)
+        if (this.settings.hideFavoritedVideos) {
+          sceneIdsOnPage.forEach((sceneId) => {
+            if (favorites.has(sceneId)) {
+              videosToHide.add(sceneId);
+            }
+          });
+        }
+
+        // Add liked videos to hide list (only if NOT favorited)
+        if (this.settings.hideLikedVideos) {
+          sceneIdsOnPage.forEach((sceneId) => {
+            // Only hide if liked AND not favorited (manually liked only)
+            if (likes.has(sceneId) && !favorites.has(sceneId)) {
+              videosToHide.add(sceneId);
+            }
+          });
+        }
+
+        // Hide videos that should be hidden
+        if (videosToHide.size > 0) {
+          this.hideVideos(Array.from(videosToHide));
+          console.log(`🎬 Video Hiding: Hidden ${videosToHide.size} videos`);
+        }
+
+        // Show videos that should be visible (not in hide list)
+        const videosToShow = sceneIdsOnPage.filter(
+          (sceneId) => !videosToHide.has(sceneId),
+        );
+        if (videosToShow.length > 0) {
+          this.showVideos(videosToShow);
+          console.log(`🎬 Video Hiding: Showed ${videosToShow.length} videos`);
+        }
+      } catch (error) {
+        console.error('❌ Video Hiding: Error processing page:', error);
+      }
+    }
+
+    getAllVideos() {
+      // Get all grid items that contain video links with scene ID in href
+      const allGridItems = Array.from(document.querySelectorAll('.grid-item'));
+      return allGridItems.filter(item => {
+        // Check if it has a link with scene ID pattern in href
+        const links = item.querySelectorAll('a[href*="/"][href*="-video.html"]');
+        return links.length > 0;
+      });
+    }
+
+    getSceneIdFromVideoElement(videoElement) {
+      // Extract scene ID from href - all videos have scene ID in href
+      const links = videoElement.querySelectorAll('a[href*="/"][href*="-video.html"]');
+      for (const link of links) {
+        const href = link.getAttribute('href');
+        if (href) {
+          // Extract scene ID from href like "/1749438/private-vod-scene-1-streaming-scene-video.html"
+          const match = href.match(/\/(\d+)\//);
+          if (match) {
+            return match[1];
+          }
+        }
+      }
+      
+      return null;
+    }
+
+    getAllSceneIdsOnPage() {
+      const videos = this.getAllVideos();
+      return videos.map(video => this.getSceneIdFromVideoElement(video)).filter(id => id !== null);
+    }
+
+    hideVideo(sceneId) {
+      // Find video element by scene ID in href
+      const allVideos = this.getAllVideos();
+      const videoElement = allVideos.find(video => this.getSceneIdFromVideoElement(video) === sceneId);
+      
+      if (videoElement) {
+        videoElement.style.display = 'none';
+        videoElement.setAttribute('data-hidden-by-extension', 'true');
+      }
+    }
+
+    showVideo(sceneId) {
+      // Find video element by scene ID in href
+      const allVideos = this.getAllVideos();
+      const videoElement = allVideos.find(video => this.getSceneIdFromVideoElement(video) === sceneId);
+      
+      if (videoElement) {
+        videoElement.style.display = '';
+        videoElement.removeAttribute('data-hidden-by-extension');
+      }
+    }
+
+    hideVideos(sceneIds) {
+      sceneIds.forEach(sceneId => this.hideVideo(sceneId));
+    }
+
+    showVideos(sceneIds) {
+      sceneIds.forEach(sceneId => this.showVideo(sceneId));
+    }
+
+    startVideoMonitoring() {
+      this.observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === "childList") {
+            mutation.addedNodes.forEach((node) => {
+              if (node.nodeType === Node.ELEMENT_NODE) {
+                // Check if the added node is a video element (any format)
+                if (this.isVideoElement(node)) {
+                  this.processNewVideo(node);
+                }
+                // Check if the added node contains video elements
+                const videoElements = node.querySelectorAll && node.querySelectorAll('.grid-item');
+                if (videoElements) {
+                  videoElements.forEach((video) => {
+                    if (this.isVideoElement(video)) {
+                      this.processNewVideo(video);
+                    }
+                  });
+                }
+              }
+            });
+          }
+        });
+      });
+
+      // Wait for document body to be available before observing
+      if (document.body) {
+        this.observer.observe(document.body, {
+          childList: true,
+          subtree: true,
+        });
+      } else {
+        // If document.body is not available, wait for DOMContentLoaded
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", () => {
+            if (document.body) {
+              this.observer.observe(document.body, {
+                childList: true,
+                subtree: true,
+              });
+            }
+          });
+        } else {
+          // Document is already loaded but body is not available, try again later
+          setTimeout(() => {
+            if (document.body) {
+              this.observer.observe(document.body, {
+                childList: true,
+                subtree: true,
+              });
+            }
+          }, 100);
+        }
+      }
+    }
+
+    isVideoElement(element) {
+      if (!element || !element.classList) return false;
+      
+      // Check if it's a grid-item with video content (href format only)
+      if (element.classList.contains('grid-item')) {
+        // Check for href format (links with scene ID in href)
+        const links = element.querySelectorAll('a[href*="/"][href*="-video.html"]');
+        return links.length > 0;
+      }
+      
+      return false;
+    }
+
+    async processNewVideo(videoElement) {
+      try {
+        const sceneId = this.getSceneIdFromVideoElement(videoElement);
+        if (!sceneId) return;
+
+        const shouldHide = await this.shouldHideVideo(sceneId);
+        if (shouldHide) {
+          this.hideVideo(sceneId);
+          console.log(`🎬 Video Hiding: Hidden new video ${sceneId}`);
+        }
+      } catch (error) {
+        console.error('❌ Video Hiding: Error processing new video:', error);
+      }
+    }
+
+    async shouldHideVideo(sceneId) {
+      if (!this.settings.hideLikedVideos && !this.settings.hideFavoritedVideos) {
+        return false;
+      }
+
+      // Use the data passed from background script
+      const favorites = this.favorites;
+      const likes = this.settings.hideLikedVideos ? this.likes : new Set();
+
+      // Hide if favorited and hide favorited videos is enabled (highest priority)
+      if (this.settings.hideFavoritedVideos && favorites.has(sceneId)) {
+        return true;
+      }
+
+      // Hide if liked BUT NOT favorited and hide liked videos is enabled (manually liked only)
+      if (
+        this.settings.hideLikedVideos &&
+        likes.has(sceneId) &&
+        !favorites.has(sceneId)
+      ) {
+        return true;
+      }
+
+      return false;
+    }
+
+
+    stop() {
+      if (this.observer) {
+        this.observer.disconnect();
+        this.observer = null;
+      }
+      this.isActive = false;
+    }
+  }
+
+  // Make VideoHider globally available
+  window.VideoHider = VideoHider;
+
+  // Initialize when DOM is ready
+  (async function initVideoHider() {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", () => {
+        const videoHider = new VideoHider(settings, favorites, likes);
+        videoHider.init();
+        // Store instance globally for refresh capability
+        window.videoHiderInstance = videoHider;
+      });
+    } else {
+      const videoHider = new VideoHider(settings, favorites, likes);
+      videoHider.init();
+      // Store instance globally for refresh capability
+      window.videoHiderInstance = videoHider;
+    }
+  })();
+}
+
+// =============================================================================
+//                    🎬 INITIALIZE VIDEO HIDING 🎬
+// =============================================================================
+
+// Initialize Video Hiding
+initVideoHiding();
+
+// =============================================================================
+//                    🎬 VIDEO HIDING STORAGE MONITORING 🎬
+// =============================================================================
+
+// Monitor storage changes for video hiding updates
+chrome.storage.onChanged.addListener(async (changes, namespace) => {
+  try {
+    // Check if settings changed
+    if (namespace === "sync" && changes.privatevod_settings) {
+      const newSettings = changes.privatevod_settings.newValue;
+      const oldSettings = changes.privatevod_settings.oldValue;
+
+      // Check if hiding settings changed
+      if (
+        newSettings.hideLikedVideos !== oldSettings.hideLikedVideos ||
+        newSettings.hideFavoritedVideos !== oldSettings.hideFavoritedVideos
+      ) {
+        console.log('🎬 Video Hiding: Settings changed, updating all PrivateVOD tabs');
+        await updateVideoHidingOnAllTabs(newSettings);
+      }
+    }
+
+    // Check if favorites or likes changed
+    if (namespace === "local") {
+      if (changes.privatevod_favorites || changes.privatevod_likes) {
+        console.log('🎬 Video Hiding: Favorites/likes changed, updating all PrivateVOD tabs');
+        await updateVideoHidingOnAllTabs();
+      }
+    }
+  } catch (error) {
+    console.error('❌ Video Hiding: Error handling storage changes:', error);
+  }
+});
+
+// Update video hiding on all PrivateVOD tabs
+async function updateVideoHidingOnAllTabs(settings = null) {
+  try {
+    // Get all tabs
+    const tabs = await chrome.tabs.query({ url: "*://*.privatevod.com/*" });
+    
+    if (tabs.length === 0) {
+      console.log('🎬 Video Hiding: No PrivateVOD tabs found');
+      return;
+    }
+
+    // Get current settings if not provided
+    if (!settings) {
+      const result = await chrome.storage.sync.get(["privatevod_settings"]);
+      settings = result.privatevod_settings || {};
+    }
+
+    // Get favorites and likes data
+    const [favoritesResult, likesResult] = await Promise.all([
+      chrome.storage.local.get(['privatevod_favorites']),
+      chrome.storage.local.get(['privatevod_likes'])
+    ]);
+
+    const favorites = favoritesResult.privatevod_favorites || [];
+    const likes = likesResult.privatevod_likes || [];
+
+    // Update each tab
+    for (const tab of tabs) {
+      try {
+        await chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          func: refreshVideoHidingScript,
+          args: [settings, favorites, likes],
+          world: 'MAIN'
+        });
+        console.log(`✅ Video Hiding: Updated tab ${tab.id}`);
+      } catch (error) {
+        console.error(`❌ Video Hiding: Failed to update tab ${tab.id}:`, error);
+      }
+    }
+  } catch (error) {
+    console.error('❌ Video Hiding: Error updating tabs:', error);
+  }
+}
+
+// Script to refresh video hiding on a page
+function refreshVideoHidingScript(settings, favorites, likes) {
+  'use strict';
+  
+  console.log('🎬 Video Hiding: Refreshing video hiding with new settings');
+  
+  // Check if VideoHider class is available
+  if (typeof window.VideoHider === 'undefined') {
+    console.error('❌ Video Hiding: VideoHider class not available, cannot refresh');
+    return;
+  }
+  
+  // Find existing video hider instance and refresh it
+  if (window.videoHiderInstance) {
+    window.videoHiderInstance.settings = settings;
+    window.videoHiderInstance.favorites = new Set(favorites);
+    window.videoHiderInstance.likes = new Set(likes);
+    window.videoHiderInstance.processCurrentPage();
+  } else {
+    // If no instance exists, create a new one
+    const videoHider = new window.VideoHider(settings, favorites, likes);
+    videoHider.init();
+    window.videoHiderInstance = videoHider;
+  }
+}
+
+// =============================================================================
+// =============================================================================
+// =============================================================================
 //                    💬 MESSAGE HANDLING SYSTEM 💬
 // =============================================================================
 // =============================================================================
