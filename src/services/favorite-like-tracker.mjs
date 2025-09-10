@@ -22,7 +22,7 @@ import {
   isFavorited,
   isLiked,
   getStorageStats,
-} from "./storage/favorite-like-storage.mjs";
+} from "../utilities/storage-utils.mjs";
 
 /**
  * Main tracker class

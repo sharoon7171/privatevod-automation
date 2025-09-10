@@ -810,20 +810,20 @@ function initVideoHiding() {
           return;
         }
 
-        // Get favorites and likes data to pass to the injected script
-        const [favoritesResult, likesResult] = await Promise.all([
-          chrome.storage.local.get(['privatevod_favorites']),
-          chrome.storage.local.get(['privatevod_likes'])
+        // Get favorites and likes data from IndexedDB to pass to the injected script
+        const [favorites, likes] = await Promise.all([
+          dbManager.getFavorites(),
+          dbManager.getLikes()
         ]);
 
-        const favorites = favoritesResult.privatevod_favorites || [];
-        const likes = likesResult.privatevod_likes || [];
+        const favoritesArray = Array.from(favorites);
+        const likesArray = Array.from(likes);
         
         // Directly inject the video hiding function into main world with data
         await chrome.scripting.executeScript({
           target: { tabId: tabId },
           func: videoHidingScript,
-          args: [settings, favorites, likes],
+          args: [settings, favoritesArray, likesArray],
           world: 'MAIN'
         });
         
@@ -1168,13 +1168,8 @@ chrome.storage.onChanged.addListener(async (changes, namespace) => {
       }
     }
 
-    // Check if favorites or likes changed
-    if (namespace === "local") {
-      if (changes.privatevod_favorites || changes.privatevod_likes) {
-        console.log('🎬 Video Hiding: Favorites/likes changed, updating all PrivateVOD tabs');
-        await updateVideoHidingOnAllTabs();
-      }
-    }
+    // Note: IndexedDB changes are handled via message passing, not storage events
+    // The video hiding will be updated when content scripts send messages about changes
   } catch (error) {
     console.error('❌ Video Hiding: Error handling storage changes:', error);
   }
@@ -1197,14 +1192,14 @@ async function updateVideoHidingOnAllTabs(settings = null) {
       settings = result.privatevod_settings || {};
     }
 
-    // Get favorites and likes data
-    const [favoritesResult, likesResult] = await Promise.all([
-      chrome.storage.local.get(['privatevod_favorites']),
-      chrome.storage.local.get(['privatevod_likes'])
+    // Get favorites and likes data from IndexedDB
+    const [favorites, likes] = await Promise.all([
+      dbManager.getFavorites(),
+      dbManager.getLikes()
     ]);
 
-    const favorites = favoritesResult.privatevod_favorites || [];
-    const likes = likesResult.privatevod_likes || [];
+    const favoritesArray = Array.from(favorites);
+    const likesArray = Array.from(likes);
 
     // Update each tab
     for (const tab of tabs) {
@@ -1212,7 +1207,7 @@ async function updateVideoHidingOnAllTabs(settings = null) {
         await chrome.scripting.executeScript({
           target: { tabId: tab.id },
           func: refreshVideoHidingScript,
-          args: [settings, favorites, likes],
+          args: [settings, favoritesArray, likesArray],
           world: 'MAIN'
         });
         console.log(`✅ Video Hiding: Updated tab ${tab.id}`);
@@ -1254,6 +1249,306 @@ function refreshVideoHidingScript(settings, favorites, likes) {
 // =============================================================================
 // =============================================================================
 // =============================================================================
+//                    🗄️ INDEXEDDB STORAGE SYSTEM 🗄️
+// =============================================================================
+// =============================================================================
+// =============================================================================
+
+// =============================================================================
+//                    🗄️ INDEXEDDB DATABASE MANAGER 🗄️
+// =============================================================================
+
+// IndexedDB Database Manager - Complete replacement for chrome.storage.local
+class IndexedDBManager {
+  constructor() {
+    this.dbName = 'PrivateVODExtensionDB';
+    this.dbVersion = 1;
+    this.db = null;
+    this.isInitialized = false;
+  }
+
+  // Initialize IndexedDB database
+  async init() {
+    if (this.isInitialized) {
+      return this.db;
+    }
+
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(this.dbName, this.dbVersion);
+
+      request.onerror = () => {
+        console.error('🗄️ IndexedDB: Failed to open database:', request.error);
+        reject(request.error);
+      };
+
+      request.onsuccess = () => {
+        this.db = request.result;
+        this.isInitialized = true;
+        console.log('✅ IndexedDB: Database initialized successfully');
+        resolve(this.db);
+      };
+
+      request.onupgradeneeded = (event) => {
+        const db = event.target.result;
+        console.log('🗄️ IndexedDB: Upgrading database to version', this.dbVersion);
+
+        // Create object stores
+        if (!db.objectStoreNames.contains('favorites')) {
+          const favoritesStore = db.createObjectStore('favorites', { keyPath: 'sceneId' });
+          favoritesStore.createIndex('timestamp', 'timestamp', { unique: false });
+        }
+
+        if (!db.objectStoreNames.contains('likes')) {
+          const likesStore = db.createObjectStore('likes', { keyPath: 'sceneId' });
+          likesStore.createIndex('timestamp', 'timestamp', { unique: false });
+        }
+
+        if (!db.objectStoreNames.contains('settings')) {
+          db.createObjectStore('settings', { keyPath: 'key' });
+        }
+
+        console.log('✅ IndexedDB: Database schema created successfully');
+      };
+    });
+  }
+
+  // Get database instance (initialize if needed)
+  async getDB() {
+    if (!this.isInitialized) {
+      await this.init();
+    }
+    return this.db;
+  }
+
+  // Generic method to perform database operations
+  async performOperation(storeName, operation, data = null) {
+    try {
+      const db = await this.getDB();
+      const transaction = db.transaction([storeName], 'readwrite');
+      const store = transaction.objectStore(storeName);
+
+      return new Promise((resolve, reject) => {
+        let request;
+
+        switch (operation) {
+          case 'get':
+            request = store.get(data);
+            break;
+          case 'getAll':
+            request = store.getAll();
+            break;
+          case 'add':
+            request = store.add(data);
+            break;
+          case 'put':
+            request = store.put(data);
+            break;
+          case 'delete':
+            request = store.delete(data);
+            break;
+          case 'clear':
+            request = store.clear();
+            break;
+          case 'count':
+            request = store.count();
+            break;
+          default:
+            reject(new Error(`Unknown operation: ${operation}`));
+            return;
+        }
+
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    } catch (error) {
+      console.error(`🗄️ IndexedDB: Error performing ${operation} on ${storeName}:`, error);
+      throw error;
+    }
+  }
+
+  // =============================================================================
+  //                    ⭐ FAVORITES MANAGEMENT ⭐
+  // =============================================================================
+
+  // Get all favorites
+  async getFavorites() {
+    try {
+      const favorites = await this.performOperation('favorites', 'getAll');
+      return new Set(favorites.map(item => item.sceneId));
+    } catch (error) {
+      console.error('🗄️ IndexedDB: Error getting favorites:', error);
+      return new Set();
+    }
+  }
+
+  // Add favorite
+  async addFavorite(sceneId) {
+    try {
+      const favoriteData = {
+        sceneId: sceneId,
+        timestamp: Date.now()
+      };
+      await this.performOperation('favorites', 'put', favoriteData);
+      console.log(`✅ IndexedDB: Added favorite ${sceneId}`);
+      return true;
+    } catch (error) {
+      console.error('🗄️ IndexedDB: Error adding favorite:', error);
+      return false;
+    }
+  }
+
+  // Remove favorite
+  async removeFavorite(sceneId) {
+    try {
+      await this.performOperation('favorites', 'delete', sceneId);
+      console.log(`✅ IndexedDB: Removed favorite ${sceneId}`);
+      return true;
+    } catch (error) {
+      console.error('🗄️ IndexedDB: Error removing favorite:', error);
+      return false;
+    }
+  }
+
+  // Check if scene is favorited
+  async isFavorited(sceneId) {
+    try {
+      const favorite = await this.performOperation('favorites', 'get', sceneId);
+      return favorite !== undefined;
+    } catch (error) {
+      console.error('🗄️ IndexedDB: Error checking if favorited:', error);
+      return false;
+    }
+  }
+
+  // Clear all favorites
+  async clearAllFavorites() {
+    try {
+      await this.performOperation('favorites', 'clear');
+      console.log('✅ IndexedDB: Cleared all favorites');
+      return true;
+    } catch (error) {
+      console.error('🗄️ IndexedDB: Error clearing favorites:', error);
+      return false;
+    }
+  }
+
+  // =============================================================================
+  //                    ❤️ LIKES MANAGEMENT ❤️
+  // =============================================================================
+
+  // Get all likes
+  async getLikes() {
+    try {
+      const likes = await this.performOperation('likes', 'getAll');
+      return new Set(likes.map(item => item.sceneId));
+    } catch (error) {
+      console.error('🗄️ IndexedDB: Error getting likes:', error);
+      return new Set();
+    }
+  }
+
+  // Add like
+  async addLike(sceneId) {
+    try {
+      const likeData = {
+        sceneId: sceneId,
+        timestamp: Date.now()
+      };
+      await this.performOperation('likes', 'put', likeData);
+      console.log(`✅ IndexedDB: Added like ${sceneId}`);
+      return true;
+    } catch (error) {
+      console.error('🗄️ IndexedDB: Error adding like:', error);
+      return false;
+    }
+  }
+
+  // Remove like
+  async removeLike(sceneId) {
+    try {
+      await this.performOperation('likes', 'delete', sceneId);
+      console.log(`✅ IndexedDB: Removed like ${sceneId}`);
+      return true;
+    } catch (error) {
+      console.error('🗄️ IndexedDB: Error removing like:', error);
+      return false;
+    }
+  }
+
+  // Check if scene is liked
+  async isLiked(sceneId) {
+    try {
+      const like = await this.performOperation('likes', 'get', sceneId);
+      return like !== undefined;
+    } catch (error) {
+      console.error('🗄️ IndexedDB: Error checking if liked:', error);
+      return false;
+    }
+  }
+
+  // Clear all likes
+  async clearAllLikes() {
+    try {
+      await this.performOperation('likes', 'clear');
+      console.log('✅ IndexedDB: Cleared all likes');
+      return true;
+    } catch (error) {
+      console.error('🗄️ IndexedDB: Error clearing likes:', error);
+      return false;
+    }
+  }
+
+  // =============================================================================
+  //                    📊 STORAGE STATISTICS 📊
+  // =============================================================================
+
+  // Get storage statistics
+  async getStorageStats() {
+    try {
+      const [favorites, likes] = await Promise.all([
+        this.getFavorites(),
+        this.getLikes()
+      ]);
+
+      return {
+        favoritesCount: favorites.size,
+        likesCount: likes.size,
+        favorites: Array.from(favorites),
+        likes: Array.from(likes)
+      };
+    } catch (error) {
+      console.error('🗄️ IndexedDB: Error getting storage stats:', error);
+      return {
+        favoritesCount: 0,
+        likesCount: 0,
+        favorites: [],
+        likes: []
+      };
+    }
+  }
+
+}
+
+// =============================================================================
+//                    🗄️ GLOBAL INDEXEDDB INSTANCE 🗄️
+// =============================================================================
+
+// Create global IndexedDB manager instance
+const dbManager = new IndexedDBManager();
+
+// Initialize IndexedDB on service worker startup
+(async function initIndexedDB() {
+  try {
+    await dbManager.init();
+    console.log('✅ IndexedDB: Initialized successfully');
+  } catch (error) {
+    console.error('❌ IndexedDB: Initialization failed:', error);
+  }
+})();
+
+// =============================================================================
+// =============================================================================
+// =============================================================================
 //                    💬 MESSAGE HANDLING SYSTEM 💬
 // =============================================================================
 // =============================================================================
@@ -1263,7 +1558,7 @@ function refreshVideoHidingScript(settings, favorites, likes) {
 //                    💬 RUNTIME MESSAGE HANDLER 💬
 // =============================================================================
 
-// Basic message handling (minimal structure)
+// Enhanced message handling with IndexedDB support
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log('💬 Message Handler: Received message:', request.action);
   
@@ -1280,6 +1575,102 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     } else {
       sendResponse({ success: false, message: "No tab ID found" });
     }
+  } else if (request.action === "getFavorites") {
+    // Get all favorites from IndexedDB
+    dbManager.getFavorites().then(favorites => {
+      sendResponse({ success: true, data: Array.from(favorites) });
+    }).catch(error => {
+      sendResponse({ success: false, error: error.message });
+    });
+    return true; // Indicate async response
+  } else if (request.action === "getLikes") {
+    // Get all likes from IndexedDB
+    dbManager.getLikes().then(likes => {
+      sendResponse({ success: true, data: Array.from(likes) });
+    }).catch(error => {
+      sendResponse({ success: false, error: error.message });
+    });
+    return true; // Indicate async response
+  } else if (request.action === "addFavorite") {
+    // Add favorite to IndexedDB
+    dbManager.addFavorite(request.sceneId).then(success => {
+      sendResponse({ success: success });
+    }).catch(error => {
+      sendResponse({ success: false, error: error.message });
+    });
+    return true; // Indicate async response
+  } else if (request.action === "removeFavorite") {
+    // Remove favorite from IndexedDB
+    dbManager.removeFavorite(request.sceneId).then(success => {
+      sendResponse({ success: success });
+    }).catch(error => {
+      sendResponse({ success: false, error: error.message });
+    });
+    return true; // Indicate async response
+  } else if (request.action === "addLike") {
+    // Add like to IndexedDB
+    dbManager.addLike(request.sceneId).then(success => {
+      sendResponse({ success: success });
+    }).catch(error => {
+      sendResponse({ success: false, error: error.message });
+    });
+    return true; // Indicate async response
+  } else if (request.action === "removeLike") {
+    // Remove like from IndexedDB
+    dbManager.removeLike(request.sceneId).then(success => {
+      sendResponse({ success: success });
+    }).catch(error => {
+      sendResponse({ success: false, error: error.message });
+    });
+    return true; // Indicate async response
+  } else if (request.action === "isFavorited") {
+    // Check if scene is favorited
+    dbManager.isFavorited(request.sceneId).then(isFavorited => {
+      sendResponse({ success: true, data: isFavorited });
+    }).catch(error => {
+      sendResponse({ success: false, error: error.message });
+    });
+    return true; // Indicate async response
+  } else if (request.action === "isLiked") {
+    // Check if scene is liked
+    dbManager.isLiked(request.sceneId).then(isLiked => {
+      sendResponse({ success: true, data: isLiked });
+    }).catch(error => {
+      sendResponse({ success: false, error: error.message });
+    });
+    return true; // Indicate async response
+  } else if (request.action === "getStorageStats") {
+    // Get storage statistics
+    dbManager.getStorageStats().then(stats => {
+      sendResponse({ success: true, data: stats });
+    }).catch(error => {
+      sendResponse({ success: false, error: error.message });
+    });
+    return true; // Indicate async response
+  } else if (request.action === "clearAllFavorites") {
+    // Clear all favorites
+    dbManager.clearAllFavorites().then(success => {
+      sendResponse({ success: success });
+    }).catch(error => {
+      sendResponse({ success: false, error: error.message });
+    });
+    return true; // Indicate async response
+  } else if (request.action === "clearAllLikes") {
+    // Clear all likes
+    dbManager.clearAllLikes().then(success => {
+      sendResponse({ success: success });
+    }).catch(error => {
+      sendResponse({ success: false, error: error.message });
+    });
+    return true; // Indicate async response
+  } else if (request.action === "refreshVideoHiding") {
+    // Refresh video hiding on all tabs when favorites/likes change
+    updateVideoHidingOnAllTabs().then(() => {
+      sendResponse({ success: true });
+    }).catch(error => {
+      sendResponse({ success: false, error: error.message });
+    });
+    return true; // Indicate async response
   } else {
     console.log('💬 Message Handler: Unknown action:', request.action);
     sendResponse({ success: false, message: "Unknown action" });

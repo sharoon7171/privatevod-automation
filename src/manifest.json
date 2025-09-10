@@ -59,7 +59,6 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "services/storage/*.mjs",
         "services/*.mjs",
         "functions/dom/*.mjs",
         "core/*.mjs",

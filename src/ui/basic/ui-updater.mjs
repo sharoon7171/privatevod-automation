@@ -98,7 +98,7 @@ export function updateUI(settings, elements) {
  */
 async function loadStorageDisplay(elements) {
   try {
-    const { getStorageStats } = await import('../../services/storage/favorite-like-storage.mjs');
+    const { getStorageStats } = await import('../../utilities/storage-utils.mjs');
     const stats = await getStorageStats();
     
     const displayText = `FAVORITES (${stats.favoritesCount}):

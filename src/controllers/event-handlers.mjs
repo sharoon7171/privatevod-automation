@@ -158,7 +158,7 @@ export function setupEventListeners(elements, updateUI) {
     elements["clear-favorites-btn"].addEventListener("click", async () => {
       try {
         const { clearAllFavorites } = await import(
-          "../../services/storage/favorite-like-storage.mjs"
+          "../../utilities/storage-utils.mjs"
         );
         const success = await clearAllFavorites();
         if (success) {
@@ -179,7 +179,7 @@ export function setupEventListeners(elements, updateUI) {
     elements["clear-likes-btn"].addEventListener("click", async () => {
       try {
         const { clearAllLikes } = await import(
-          "../../services/storage/favorite-like-storage.mjs"
+          "../../utilities/storage-utils.mjs"
         );
         const success = await clearAllLikes();
         if (success) {
@@ -248,7 +248,7 @@ export function setupEventListeners(elements, updateUI) {
 async function refreshStorageDisplay(elements) {
   try {
     const { getStorageStats } = await import(
-      "../../services/storage/favorite-like-storage.mjs"
+      "../../utilities/storage-utils.mjs"
     );
     const stats = await getStorageStats();
 
