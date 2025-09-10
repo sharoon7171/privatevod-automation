@@ -37,19 +37,11 @@
         "https://privatevod.com/*/*-videos.html*"
       ],
       "js": [
-        "content-scripts/auto-favorite-video.mjs",
         "content-scripts/move-details-elements.mjs",
         "content-scripts/block-scene-download.mjs",
         "content-scripts/block-dvd-cards.mjs",
         "content-scripts/favorite-like-tracker.mjs"
       ]
-    },
-    {
-      "matches": [
-        "https://www.privatevod.com/*/*-pornstars.html*",
-        "https://privatevod.com/*/*-pornstars.html*"
-      ],
-      "js": ["content-scripts/auto-favorite-star.mjs"]
     },
     {
       "matches": ["https://www.privatevod.com/*", "https://privatevod.com/*"],

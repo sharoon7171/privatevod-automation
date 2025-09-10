@@ -359,6 +359,129 @@ function screenshotGalleryScript() {
 // Initialize Screenshot Gallery
 initScreenshotGallery();
 
+// =============================================================================
+// =============================================================================
+// =============================================================================
+//                    ⭐ AUTO-FAVORITE FUNCTIONALITY ⭐
+// =============================================================================
+// =============================================================================
+// =============================================================================
+
+// Common Auto-Favorite functionality
+function initAutoFavorite() {
+  console.log('⭐ Auto-Favorite module initialized');
+  
+  chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+    try {
+      // Check if page is fully loaded and matches our target
+      if (changeInfo.status === 'complete' && 
+          tab.url && 
+          tab.url.includes('privatevod.com')) {
+        
+        // Determine page type and settings
+        let pageType = '';
+        let settingName = '';
+        let closeSettingName = '';
+        
+        if (tab.url.includes('video.html') || tab.url.includes('videos.html')) {
+          pageType = 'Video';
+          settingName = 'autoFavoriteVideo';
+          closeSettingName = 'autoCloseAfterFavoriteVideo';
+        } else if (tab.url.includes('pornstars.html')) {
+          pageType = 'Star';
+          settingName = 'autoFavoriteStar';
+          closeSettingName = 'autoCloseAfterFavoriteStar';
+        } else {
+          return; // Not a target page
+        }
+        
+        console.log(`⭐ Auto-Favorite ${pageType} detected page:`, tab.url);
+        
+        // Get settings to check if auto-favorite is enabled
+        const result = await chrome.storage.sync.get(["privatevod_settings"]);
+        const settings = result.privatevod_settings || {};
+
+        if (!settings.enabled || !settings[settingName]) {
+          console.log(`⭐ Auto-Favorite ${pageType}: Auto-favorite disabled in settings`);
+          return;
+        }
+        
+        // Pass settings to the injected script
+        const shouldAutoClose = settings[closeSettingName];
+        
+        // Directly inject the auto-favorite function into main world
+        await chrome.scripting.executeScript({
+          target: { tabId: tabId },
+          func: autoFavoriteScript,
+          args: [pageType, shouldAutoClose],
+          world: 'MAIN'
+        });
+        
+        console.log(`✅ Auto-Favorite ${pageType} function injected successfully`);
+      }
+    } catch (err) {
+      console.log('❌ Auto-Favorite function injection failed:', err);
+    }
+  });
+}
+
+// =============================================================================
+//                    ⭐ AUTO-FAVORITE MAIN WORLD SCRIPT ⭐
+// =============================================================================
+
+// Common Auto-Favorite main world script
+function autoFavoriteScript(pageType, shouldAutoClose) {
+  'use strict';
+  
+  console.log(`⭐ Auto-Favorite ${pageType} script loaded on:`, window.location.href);
+  console.log('⭐ Auto-close enabled:', shouldAutoClose);
+  
+  async function performAutoFavorite() {
+    try {
+      // Look for favorite button with ToggleProductFavorite onclick
+      const favoriteButton = document.querySelector('a[onclick*="ToggleProductFavorite"]');
+      
+      if (!favoriteButton) {
+        console.log(`⭐ Auto-Favorite ${pageType}: No favorite button found`);
+        return;
+      }
+      
+      // Check if already favorited (has 'active' class)
+      if (favoriteButton.classList.contains('active')) {
+        console.log(`⭐ Auto-Favorite ${pageType}: Already favorited, skipping`);
+        return;
+      }
+      
+      // Click the button using simple click method
+      favoriteButton.click();
+      console.log(`✅ Auto-Favorite ${pageType}: Button clicked successfully`);
+      
+      // Handle auto-close if enabled
+      if (shouldAutoClose) {
+        console.log(`⭐ Auto-Favorite ${pageType}: Auto-close enabled, closing tab immediately`);
+        window.close();
+      }
+      
+    } catch (error) {
+      console.log(`❌ Auto-Favorite ${pageType}: Error during auto-favorite:`, error);
+    }
+  }
+  
+  // Wait for page to be ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', performAutoFavorite);
+  } else {
+    performAutoFavorite();
+  }
+}
+
+// =============================================================================
+//                    ⭐ INITIALIZE AUTO-FAVORITE ⭐
+// =============================================================================
+
+// Initialize Auto-Favorite
+initAutoFavorite();
+
 
 // Basic message handling (minimal structure)
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
