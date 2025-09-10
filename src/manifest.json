@@ -37,6 +37,7 @@
         "https://privatevod.com/*/*-videos.html*"
       ],
       "js": [
+        "content-scripts/video-protection.mjs",
         "content-scripts/move-details-elements.mjs",
         "content-scripts/block-scene-download.mjs",
         "content-scripts/block-dvd-cards.mjs",

@@ -393,6 +393,16 @@ function autoVideoLoaderScript() {
   
   console.log('🎬 Auto Video Loader: Script loaded on:', window.location.href);
   
+  // Initialize video protection
+  (async function initVideoProtection() {
+    try {
+      // Video protection is already initialized by content script
+      console.log('🎬 Auto Video Loader: Video protection handled by content script');
+    } catch (error) {
+      console.log('⚠️ Auto Video Loader: Video protection initialization failed:', error);
+    }
+  })();
+  
   function waitForConditions() {
     const conditions = {
       AEVideoPlayer: (() => {
@@ -421,7 +431,7 @@ function autoVideoLoaderScript() {
       window.loadPlayer();
       
       // Wait for player to be fully initialized
-      const waitForPlayerReady = () => {
+      const waitForPlayerReady = async () => {
         if (typeof player !== 'undefined' && player && player.element && typeof player.play === 'function') {
           // Check if player is actually ready (not just initialized)
           const iframe = player.element;
@@ -429,15 +439,20 @@ function autoVideoLoaderScript() {
             console.log('🎬 Auto Video Loader: Player fully ready, attempting to play');
             
             try {
-              // Try to play the video
+              // Use safe play with AbortError protection
               const playPromise = player.play();
               
               if (playPromise !== undefined) {
                 playPromise.then(() => {
                   console.log('✅ Auto Video Loader: Video started playing successfully');
                 }).catch(error => {
-                  console.log('⚠️ Auto Video Loader: Play failed (likely autoplay policy):', error.name);
-                  // This is normal - browsers often block autoplay
+                  if (error.name === 'AbortError') {
+                    console.log('⚠️ Auto Video Loader: Play was aborted (normal behavior)');
+                  } else if (error.name === 'NotAllowedError') {
+                    console.log('⚠️ Auto Video Loader: Autoplay blocked by browser policy');
+                  } else {
+                    console.log('⚠️ Auto Video Loader: Play failed:', error.name);
+                  }
                 });
               }
             } catch (error) {
@@ -451,16 +466,16 @@ function autoVideoLoaderScript() {
             }
           } else {
             // Player not fully ready yet, wait a bit more
-            setTimeout(waitForPlayerReady, 200);
+            setTimeout(() => waitForPlayerReady(), 200);
           }
         } else {
           // Player not ready yet, wait a bit more
-          setTimeout(waitForPlayerReady, 200);
+          setTimeout(() => waitForPlayerReady(), 200);
         }
       };
       
       // Start waiting for player to be ready
-      setTimeout(waitForPlayerReady, 500);
+      setTimeout(() => waitForPlayerReady(), 500);
       
     } else {
       setTimeout(waitForConditions, 50);
