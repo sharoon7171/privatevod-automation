@@ -553,9 +553,14 @@ function screenshotGalleryScript() {
   function createScreenshotGallery() {
     console.log('📸 Screenshot Gallery: Creating PrivateVOD Screenshot Gallery...');
     
-    const scenesContainer = document.querySelector('#scenes');
-    if (!scenesContainer) {
-      console.log('❌ Screenshot Gallery: Not on a video page - scenes container not found');
+    // Look for recommendations section first, then fallback to scenes container
+    let targetContainer = document.querySelector('#recommendations');
+    if (!targetContainer) {
+      targetContainer = document.querySelector('#scenes');
+    }
+    
+    if (!targetContainer) {
+      console.log('❌ Screenshot Gallery: Not on a video page - neither recommendations nor scenes container found');
       return;
     }
     
@@ -635,8 +640,8 @@ function screenshotGalleryScript() {
     });
     
     gallery.appendChild(row);
-    scenesContainer.insertAdjacentElement('beforebegin', gallery);
-    console.log(`✅ Screenshot Gallery: Created with ${uniqueUrls.length} images!`);
+    targetContainer.insertAdjacentElement('beforebegin', gallery);
+    console.log(`✅ Screenshot Gallery: Created with ${uniqueUrls.length} images above ${targetContainer.id}!`);
   }
 
   createScreenshotGallery();
