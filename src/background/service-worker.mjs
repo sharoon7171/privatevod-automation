@@ -989,24 +989,32 @@ function videoHidingScript(settings, favorites, likes) {
     }
 
     hideVideo(sceneId) {
-      // Find video element by scene ID in href
+      // Find ALL video elements by scene ID in href (handle duplicates)
       const allVideos = this.getAllVideos();
-      const videoElement = allVideos.find(video => this.getSceneIdFromVideoElement(video) === sceneId);
+      const videoElements = allVideos.filter(video => this.getSceneIdFromVideoElement(video) === sceneId);
       
-      if (videoElement) {
+      videoElements.forEach(videoElement => {
         videoElement.style.display = 'none';
         videoElement.setAttribute('data-hidden-by-extension', 'true');
+      });
+      
+      if (videoElements.length > 0) {
+        console.log(`🎬 Video Hiding: Hidden ${videoElements.length} video(s) with scene ID ${sceneId}`);
       }
     }
 
     showVideo(sceneId) {
-      // Find video element by scene ID in href
+      // Find ALL video elements by scene ID in href (handle duplicates)
       const allVideos = this.getAllVideos();
-      const videoElement = allVideos.find(video => this.getSceneIdFromVideoElement(video) === sceneId);
+      const videoElements = allVideos.filter(video => this.getSceneIdFromVideoElement(video) === sceneId);
       
-      if (videoElement) {
+      videoElements.forEach(videoElement => {
         videoElement.style.display = '';
         videoElement.removeAttribute('data-hidden-by-extension');
+      });
+      
+      if (videoElements.length > 0) {
+        console.log(`🎬 Video Hiding: Showed ${videoElements.length} video(s) with scene ID ${sceneId}`);
       }
     }
 
