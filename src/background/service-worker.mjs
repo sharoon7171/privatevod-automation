@@ -137,26 +137,36 @@ function initLinkMerging() {
         
         console.log('🔗 Link Merging: Detected PrivateVOD page:', tab.url);
         
-        // Get settings to check if link merging is enabled
-        const result = await chrome.storage.sync.get(["privatevod_settings"]);
-        const settings = result.privatevod_settings || {};
+        // Check if page is accessible (not error page)
+        if (tab.status === 'complete' && !tab.url.includes('chrome-error://') && !tab.url.includes('chrome://')) {
+          // Get settings to check if link merging is enabled
+          const result = await chrome.storage.sync.get(["privatevod_settings"]);
+          const settings = result.privatevod_settings || {};
 
-        if (!settings.enabled || !settings.mergeTitleWithImageLinks) {
-          console.log('🔗 Link Merging: Disabled in settings');
-          return;
+          if (!settings.enabled || !settings.mergeTitleWithImageLinks) {
+            console.log('🔗 Link Merging: Disabled in settings');
+            return;
+          }
+          
+          // Directly inject the link merging function into main world
+          await chrome.scripting.executeScript({
+            target: { tabId: tabId },
+            func: linkMergingScript,
+            world: 'MAIN'
+          });
+          
+          console.log('✅ Link Merging: Function injected successfully');
+        } else {
+          console.log('🔗 Link Merging: Skipping error page or inaccessible tab');
         }
-        
-        // Directly inject the link merging function into main world
-        await chrome.scripting.executeScript({
-          target: { tabId: tabId },
-          func: linkMergingScript,
-          world: 'MAIN'
-        });
-        
-        console.log('✅ Link Merging: Function injected successfully');
       }
     } catch (err) {
-      console.error('❌ Link Merging: Function injection failed:', err);
+      // Only log error if it's not a frame error (which is expected on error pages)
+      if (!err.message.includes('Frame with ID 0 is showing error page')) {
+        console.error('❌ Link Merging: Function injection failed:', err);
+      } else {
+        console.log('🔗 Link Merging: Skipped injection on error page');
+      }
     }
   });
 }
@@ -359,26 +369,36 @@ function initAutoVideoLoader() {
         
         console.log('🎬 Auto Video Loader: Detected video page:', tab.url);
         
-        // Get settings to check if autoplay is enabled
-        const result = await chrome.storage.sync.get(["privatevod_settings"]);
-        const settings = result.privatevod_settings || {};
+        // Check if page is accessible (not error page)
+        if (tab.status === 'complete' && !tab.url.includes('chrome-error://') && !tab.url.includes('chrome://')) {
+          // Get settings to check if autoplay is enabled
+          const result = await chrome.storage.sync.get(["privatevod_settings"]);
+          const settings = result.privatevod_settings || {};
 
-        if (!settings.enabled || !settings.autoplay) {
-          console.log('🎬 Auto Video Loader: Autoplay disabled in settings');
-          return;
+          if (!settings.enabled || !settings.autoplay) {
+            console.log('🎬 Auto Video Loader: Autoplay disabled in settings');
+            return;
+          }
+          
+          // Directly inject the main function into main world
+          await chrome.scripting.executeScript({
+            target: { tabId: tabId },
+            func: autoVideoLoaderScript,
+            world: 'MAIN'
+          });
+          
+          console.log('✅ Auto Video Loader: Function injected successfully');
+        } else {
+          console.log('🎬 Auto Video Loader: Skipping error page or inaccessible tab');
         }
-        
-        // Directly inject the main function into main world
-        await chrome.scripting.executeScript({
-          target: { tabId: tabId },
-          func: autoVideoLoaderScript,
-          world: 'MAIN'
-        });
-        
-        console.log('✅ Auto Video Loader: Function injected successfully');
       }
     } catch (err) {
-      console.error('❌ Auto Video Loader: Function injection failed:', err);
+      // Only log error if it's not a frame error (which is expected on error pages)
+      if (!err.message.includes('Frame with ID 0 is showing error page')) {
+        console.error('❌ Auto Video Loader: Function injection failed:', err);
+      } else {
+        console.log('🎬 Auto Video Loader: Skipped injection on error page');
+      }
     }
   });
 }
@@ -537,7 +557,12 @@ function initScreenshotGallery() {
         console.log('✅ Screenshot Gallery: Function injected successfully');
       }
     } catch (err) {
-      console.error('❌ Screenshot Gallery: Function injection failed:', err);
+      // Only log error if it's not a frame error (which is expected on error pages)
+      if (!err.message.includes('Frame with ID 0 is showing error page')) {
+        console.error('❌ Screenshot Gallery: Function injection failed:', err);
+      } else {
+        console.log('📸 Screenshot Gallery: Skipped injection on error page');
+      }
     }
   });
 }
@@ -850,7 +875,12 @@ function initVideoHiding() {
         console.log('✅ Video Hiding: Function injected successfully');
       }
     } catch (err) {
-      console.error('❌ Video Hiding: Function injection failed:', err);
+      // Only log error if it's not a frame error (which is expected on error pages)
+      if (!err.message.includes('Frame with ID 0 is showing error page')) {
+        console.error('❌ Video Hiding: Function injection failed:', err);
+      } else {
+        console.log('🎬 Video Hiding: Skipped injection on error page');
+      }
     }
   });
 }
