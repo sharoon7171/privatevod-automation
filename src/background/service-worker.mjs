@@ -161,11 +161,13 @@ function initLinkMerging() {
         }
       }
     } catch (err) {
-      // Only log error if it's not a frame error (which is expected on error pages)
-      if (!err.message.includes('Frame with ID 0 is showing error page')) {
+      // Only log error if it's not a frame error (which is expected when page changes/refreshes)
+      if (!err.message.includes('Frame with ID 0 is showing error page') && 
+          !err.message.includes('Frame with ID 0 was removed') &&
+          !err.message.includes('No tab with id:')) {
         console.error('❌ Link Merging: Function injection failed:', err);
       } else {
-        console.log('🔗 Link Merging: Skipped injection on error page');
+        console.log('🔗 Link Merging: Skipped injection (page changed/refreshed)');
       }
     }
   });
@@ -557,11 +559,13 @@ function initScreenshotGallery() {
         console.log('✅ Screenshot Gallery: Function injected successfully');
       }
     } catch (err) {
-      // Only log error if it's not a frame error (which is expected on error pages)
-      if (!err.message.includes('Frame with ID 0 is showing error page')) {
+      // Only log error if it's not a frame error (which is expected when page changes/refreshes)
+      if (!err.message.includes('Frame with ID 0 is showing error page') && 
+          !err.message.includes('Frame with ID 0 was removed') &&
+          !err.message.includes('No tab with id:')) {
         console.error('❌ Screenshot Gallery: Function injection failed:', err);
       } else {
-        console.log('📸 Screenshot Gallery: Skipped injection on error page');
+        console.log('📸 Screenshot Gallery: Skipped injection (page changed/refreshed)');
       }
     }
   });
@@ -757,7 +761,14 @@ function initAutoFavorite() {
         console.log(`✅ Auto-Favorite ${pageType}: Function injected successfully`);
       }
     } catch (err) {
-      console.error('❌ Auto-Favorite: Function injection failed:', err);
+      // Only log error if it's not a frame error (which is expected when page changes/refreshes)
+      if (!err.message.includes('Frame with ID 0 is showing error page') && 
+          !err.message.includes('Frame with ID 0 was removed') &&
+          !err.message.includes('No tab with id:')) {
+        console.error('❌ Auto-Favorite: Function injection failed:', err);
+      } else {
+        console.log('⭐ Auto-Favorite: Skipped injection (page changed/refreshed)');
+      }
     }
   });
 }
@@ -784,19 +795,57 @@ function autoFavoriteScript(pageType, shouldAutoClose) {
       }
       
       // Check if already favorited (has 'active' class)
-      if (favoriteButton.classList.contains('active')) {
-        console.log(`⭐ Auto-Favorite ${pageType}: Already favorited, skipping`);
-        return;
-      }
+      const alreadyFavorited = favoriteButton.classList.contains('active');
       
-      // Click the button using simple click method
-      favoriteButton.click();
-      console.log(`✅ Auto-Favorite ${pageType}: Button clicked successfully`);
+      if (alreadyFavorited) {
+        console.log(`⭐ Auto-Favorite ${pageType}: Already favorited`);
+      } else {
+        // Click the button using simple click method
+        favoriteButton.click();
+        console.log(`✅ Auto-Favorite ${pageType}: Button clicked successfully`);
+      }
       
       // Handle auto-close if enabled
       if (shouldAutoClose) {
-        console.log(`⭐ Auto-Favorite ${pageType}: Auto-close enabled, closing tab immediately`);
-        window.close();
+        if (alreadyFavorited) {
+          console.log(`⭐ Auto-Favorite ${pageType}: Auto-close enabled, closing tab immediately (already favorited)`);
+          window.close();
+        } else {
+          console.log(`⭐ Auto-Favorite ${pageType}: Auto-close enabled, waiting for favorite to complete`);
+          
+          // Wait for the favorite action to complete by checking for the 'active' class
+          const checkFavoriteComplete = () => {
+            return new Promise((resolve) => {
+              const maxAttempts = 10; // Maximum 5 seconds (10 * 500ms)
+              let attempts = 0;
+              
+              const checkInterval = setInterval(() => {
+                attempts++;
+                
+                // Check if the button now has the 'active' class (favorited)
+                if (favoriteButton.classList.contains('active')) {
+                  console.log(`✅ Auto-Favorite ${pageType}: Favorite completed successfully`);
+                  clearInterval(checkInterval);
+                  resolve(true);
+                } else if (attempts >= maxAttempts) {
+                  console.log(`⚠️ Auto-Favorite ${pageType}: Timeout waiting for favorite to complete`);
+                  clearInterval(checkInterval);
+                  resolve(false);
+                }
+              }, 500); // Check every 500ms
+            });
+          };
+          
+          // Wait for favorite to complete, then close tab
+          checkFavoriteComplete().then((success) => {
+            if (success) {
+              console.log(`⭐ Auto-Favorite ${pageType}: Closing tab after successful favorite`);
+            } else {
+              console.log(`⭐ Auto-Favorite ${pageType}: Closing tab despite favorite timeout`);
+            }
+            window.close();
+          });
+        }
       }
       
     } catch (error) {
@@ -875,11 +924,13 @@ function initVideoHiding() {
         console.log('✅ Video Hiding: Function injected successfully');
       }
     } catch (err) {
-      // Only log error if it's not a frame error (which is expected on error pages)
-      if (!err.message.includes('Frame with ID 0 is showing error page')) {
+      // Only log error if it's not a frame error (which is expected when page changes/refreshes)
+      if (!err.message.includes('Frame with ID 0 is showing error page') && 
+          !err.message.includes('Frame with ID 0 was removed') &&
+          !err.message.includes('No tab with id:')) {
         console.error('❌ Video Hiding: Function injection failed:', err);
       } else {
-        console.log('🎬 Video Hiding: Skipped injection on error page');
+        console.log('🎬 Video Hiding: Skipped injection (page changed/refreshed)');
       }
     }
   });
