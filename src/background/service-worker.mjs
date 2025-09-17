@@ -223,9 +223,9 @@ function linkMergingScript() {
         return;
       }
 
-      // Find all links in this grid item - broader selectors
+      // Find all links in this grid item - only scene-related links (exclude pornstar profile links)
       const allLinks = gridItem.querySelectorAll(
-        'a[href*="/private-vod-"], a[href*="private-vod-"], a[href*="streaming-scene-video"], a[href*="porn-videos"]',
+        'a[href*="/private-vod-"], a[href*="private-vod-"], a[href*="streaming-scene-video"]',
       );
 
       if (allLinks.length === 0) {
